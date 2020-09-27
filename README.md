@@ -5,6 +5,10 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 
 NOUVEAUTÉ: Avec la commande t!create, vous avez la possibilité de mettre un rôle spécifique que les participants devront avoir. Pour le moment,
 cette fonctionnalité n'est pas incluse dans le t!start
+<h2>
+<a href="https://discord.com/oauth2/authorize?client_id=732003715426287676&permissions=355392&scope=bot">Inviter le bot</a> <br> <a href="https://discord.gg/VGt9S66">Serveur de support</a>
+</h2>
+
 
 
 Commandes principales:
