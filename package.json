@@ -33,7 +33,7 @@
   },
   "private": true,
   "author": "ezzud",
-  "license": "MIT",
+  "license": "MPL-2.0",
   "engines": {
     "node": ">=0.7.x"
   },
