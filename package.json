@@ -1,7 +1,7 @@
 {
   "name": "TADAA",
-  "version": "1.1.7",
-  "description": "Migrated to v12!\nt!create patched\nEvents and commands in handlers\nGiveaway end patched",
+  "version": "1.1.8",
+  "description": "Multi-end patched\nAll messages in embeds",
   "main": "shard.js",
   "scripts": {
     "test": "mocha -R spec"
