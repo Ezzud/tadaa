@@ -462,7 +462,9 @@ class GiveawaysManager extends EventEmitter {
         if (giveaways.length <= 0) return;
         this.giveaways.forEach(async giveawayData => {
             let giveaway = new Giveaway(this, giveawayData);
-            if (giveaway.ended === true) return;
+            if (giveaway.ended === true) {
+                return;
+            }
             if (!giveaway.channel) return;
             if (giveaway.remainingTime <= 0) {
                 await this.end(giveaway.messageID).catch(e => console.error(e));
@@ -502,27 +504,23 @@ class GiveawaysManager extends EventEmitter {
             let ending;
             if(giveaway.ended === true) {
                 return;
-            } else {
-            if(ending === true) return;
-            ending = true
-             if(delay > giveaway.endAt) {
+            } else if(delay > giveaway.endAt) {
                 console.log('Delay is superior')
                 giveaway.ended = true;
-                await this.checkEnd.call(this, giveaway.messageID);
+                await this.end.call(this, giveaway.messageID);
                 await this._markAsEnded(giveaway.messageID);
             } else if(delayup > giveaway.endAt) {
                 console.log('Delayup is superior')
                 giveaway.ended = true;
-                await this.checkEnd.call(this, giveaway.messageID);
+                await this.end.call(this, giveaway.messageID);
                 await this._markAsEnded(giveaway.messageID);     
             } else if (giveaway.remainingTime < this.options.updateCountdownEvery) {
                 console.log('Countdown')
                 giveaway.ended = true;
-                await this.checkEnd.call(this, giveaway.messageID);  
+                await this.end.call(this, giveaway.messageID);  
                 await this._markAsEnded(giveaway.messageID);
             }
-            ending = false;
-        }
+
         });
         
     }
