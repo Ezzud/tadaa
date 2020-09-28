@@ -1,7 +1,8 @@
 {
   "name": "TADAA",
   "version": "1.1.8",
-  "description": "Multi-end patched\nAll messages in embeds",
+  "description": "Bot discord de giveaways français, permet de créer des giveaways personnalisés",
+  "changelog":"Multi-end patched\nAll messages in embeds",
   "main": "shard.js",
   "scripts": {
     "test": "mocha -R spec"
