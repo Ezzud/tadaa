@@ -6,7 +6,7 @@ let embed = new Discord.MessageEmbed()
 .setColor('17F0C9')
 .addField(`\u200B`, `*Pinging...*`)
 .setFooter(`TADAA | créé par ezzud`)
-message.channel.send(embed).then((msg) => {
+await message.channel.send(embed).then(async (msg) => {
 	var timer = new Date().getTime() - message.createdTimestamp
 	let color;
 	if(timer > 500) {
@@ -21,7 +21,7 @@ message.channel.send(embed).then((msg) => {
 	.setColor(color)
 	.addField(`\u200B`, `Pong! *${timer}ms*`)
 	.setFooter(`TADAA | créé par ezzud`)
-	msg.edit(embed)
+	await msg.edit(embed)
 })
 
 }

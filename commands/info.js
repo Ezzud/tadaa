@@ -85,7 +85,7 @@ values3.forEach((value) => {
   .addField(`${getEmoji("memoire")} Utilisation de la mémoire\u200B`, `\`${bts(memory.heapUsed)}\`/\`2 GB\`\n\u200B`, false)
   .addField(`${getEmoji("dev")} Créateur\u200B`, "ezzud#0001\n\u200B", true)
   .addField(`:house: Nombre de serveurs`, `\` ${req} \`\n\u200B`, true)
-  .addField(`:newspaper: Changelog`, `**Version:** \`${json.version}\`\n${json.description}\n\u200B`, false)
+  .addField(`:newspaper: Changelog`, `**Version:** \`${json.version}\`\n${json.changelog}\n\u200B`, false)
   .addField(`\u200B`, `[${getEmoji("support")} Support](https://discord.gg/VGt9S66) - [${getEmoji("link")} Inviter le bot](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=355392&scope=bot)`)
   .setFooter(`TADAA | créé par ezzud`, message.author.avatarURL())
   await message.channel.send(embed)
