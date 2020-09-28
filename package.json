@@ -2,7 +2,7 @@
   "name": "TADAA",
   "version": "1.1.7",
   "description": "Migrated to v12!\nt!create patched\nEvents and commands in handlers\nGiveaway end patched",
-  "main": "index.js",
+  "main": "shard.js",
   "scripts": {
     "test": "mocha -R spec"
   },
