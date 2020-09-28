@@ -17,6 +17,10 @@ const { defaultGiveawaysManagerOptions, defaultGiveawaysMessages, defaultGiveawa
 const Giveaway = require('./Giveaway');
 const moment = require('moment')
 moment.locale('fr')
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+};
+
 
 class GiveawaysManager extends EventEmitter {
 
@@ -28,6 +32,8 @@ class GiveawaysManager extends EventEmitter {
 
         this.ready = false;
 
+        this.checking = false;
+
         this.giveaways = [];
 
         this.options = mergeOptions(defaultGiveawaysManagerOptions, options);
@@ -36,20 +42,17 @@ class GiveawaysManager extends EventEmitter {
         this._init();
     }
 
-    end(messageID) {
+    checkEnd(messageID) {
         return new Promise(async (resolve, reject) => {
         let storageContent = await readFileAsync(this.options.storage);
         let giveaways = await JSON.parse(storageContent);
-        if (giveaways.length <= 0) return;
+        if (giveaways.length <= 0) return(console.log('err'));
         this.giveaways = giveaways
             let giveawayData = this.giveaways.find(g => g.messageID === messageID)
             if (!giveawayData) {
                 return reject('No giveaway found with ID ' + messageID + '.');
             }
             let giveaway = new Giveaway(this, giveawayData);
-            if (giveaway.ended) {
-                return;
-            }
             if (!giveaway.channel) {
                 return reject('Unable to get the channel of the giveaway with message ID ' + giveaway.messageID + '.');
             }
@@ -59,7 +62,6 @@ class GiveawaysManager extends EventEmitter {
             }
             await this._markAsEnded(giveaway.messageID);
             let winners = await giveaway.roll();
-            await this.emit('end', giveaway, winners);
             if (winners.length > 0) {
                 let formattedWinners = winners.map(w => '<@' + w.id + '>').join(', ');
                 let str =
@@ -82,7 +84,8 @@ class GiveawaysManager extends EventEmitter {
                         .replace('{winners}', formattedWinners)
                         .replace('{prize}', giveaway.prize)
                 );
-                await resolve(winners);
+                await this.emit('end', giveaway, winners);
+                resolve(winners);
             } else {
                 let date = new Date()
                 date.setHours( date.getHours() + 2 );
@@ -95,7 +98,76 @@ class GiveawaysManager extends EventEmitter {
             .addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nAucun gagnant :(\n\u200B`)
                 await giveaway.message.edit({ embed });
                 await this._markAsEnded(giveaway.messageID);
-                await resolve();
+                await this.emit('end', giveaway, winners);
+                resolve();
+            }
+        });
+    }
+
+
+
+
+    end(messageID) {
+        return new Promise(async (resolve, reject) => {
+        let storageContent = await readFileAsync(this.options.storage);
+        let giveaways = await JSON.parse(storageContent);
+        if (giveaways.length <= 0) return(console.log('err'));
+        this.giveaways = giveaways
+            let giveawayData = this.giveaways.find(g => g.messageID === messageID)
+            if (!giveawayData) {
+                return reject('No giveaway found with ID ' + messageID + '.');
+            }
+            let giveaway = new Giveaway(this, giveawayData);
+            if (!giveaway.channel) {
+                return reject('Unable to get the channel of the giveaway with message ID ' + giveaway.messageID + '.');
+            }
+            if(giveaway.ended === true) {
+                return reject('Deéjà terminé');
+            }
+            await giveaway.fetchMessage().catch(() => {});
+            if (!giveaway.message) {
+                return reject('Unable to fetch message with ID ' + giveaway.messageID + '.');
+            }
+            await this._markAsEnded(giveaway.messageID);
+            let winners = await giveaway.roll();
+            if (winners.length > 0) {
+                let formattedWinners = winners.map(w => '<@' + w.id + '>').join(', ');
+                let str =
+                    giveaway.messages.winners.substr(0, 1).toUpperCase() +
+                    giveaway.messages.winners.substr(1, giveaway.messages.winners.length) +
+                    ': ' +
+                    formattedWinners;
+            let date = new Date()
+            date.setHours( date.getHours() + 2 );
+                let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
+                embed
+            .setAuthor(`Giveaway terminé!`)
+            .setColor(`#EF1106`)
+            .setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png')
+            .setFooter(`Terminé le: ${moment(date).format('LLLL')}`)
+            .addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nGagnant(s): ${formattedWinners}\n\u200B`)
+                await giveaway.message.edit({ embed });
+                await giveaway.message.channel.send(
+                    giveaway.messages.winMessage
+                        .replace('{winners}', formattedWinners)
+                        .replace('{prize}', giveaway.prize)
+                );
+                await this.emit('end', giveaway, winners);
+                resolve(winners);
+            } else {
+                let date = new Date()
+                date.setHours( date.getHours() + 2 );
+                let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
+                embed
+            .setAuthor(`Giveaway terminé!`)
+            .setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png')
+            .setColor(`#EF1106`)
+            .setFooter(`Terminé le: ${moment(date).format('LLLL')}`)
+            .addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nAucun gagnant :(\n\u200B`)
+                await giveaway.message.edit({ embed });
+                await this._markAsEnded(giveaway.messageID);
+                await this.emit('end', giveaway, winners);
+                resolve();
             }
         });
     }
@@ -104,7 +176,8 @@ class GiveawaysManager extends EventEmitter {
         return new Promise(async (resolve, reject) => {
 
             let storageContent = await readFileAsync(this.options.storage);
-            this.giveaways = await JSON.parse(storageContent);
+            let giveaways = await JSON.parse(storageContent);
+            this.giveaways = giveaways
             if (!this.ready) {
                 return reject('Chargement du bot...');
             }
@@ -366,7 +439,7 @@ class GiveawaysManager extends EventEmitter {
         if (giveaway.options.reaction) giveawayData.reaction = giveaway.options.reaction;
         if (giveaway.options.IsRequiredRole) giveawayData.IsRequiredRole = giveaway.options.IsRequiredRole;
     }
-        this.giveaways.push(giveawayData);
+        await this.giveaways.push(giveawayData);
         await writeFileAsync(this.options.storage, JSON.stringify(this.giveaways), 'utf-8');
         return;
     }
@@ -382,6 +455,7 @@ class GiveawaysManager extends EventEmitter {
     }
 
     async _checkGiveaway() {
+        this.checking = true
         let storageContent = await readFileAsync(this.options.storage);
         let giveaways = await JSON.parse(storageContent);
         this.giveaways = giveaways
@@ -430,27 +504,31 @@ class GiveawaysManager extends EventEmitter {
             } else if(delay > giveaway.endAt) {
                 console.log('Delay is superior')
                 giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID);
+                await this.checkEnd.call(this, giveaway.messageID);
                 await this._markAsEnded(giveaway.messageID);
             } else if(delayup > giveaway.endAt) {
                 console.log('Delayup is superior')
                 giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID);
+                await this.checkEnd.call(this, giveaway.messageID);
                 await this._markAsEnded(giveaway.messageID);     
             } else if (giveaway.remainingTime < this.options.updateCountdownEvery) {
                 console.log('Countdown')
                 giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID);
+                await this.checkEnd.call(this, giveaway.messageID);  
                 await this._markAsEnded(giveaway.messageID);
             }
         });
+        
     }
 
     async _init() {
+        this.checking = false;
         this.ready = true;
         this.giveaways = await this._initStorage();
-        await setInterval(async () => {
-            if (this.client.readyAt) await this._checkGiveaway();
+        setInterval(async () => {
+            if (this.client.readyAt) {
+                await this._checkGiveaway();
+            }
         }, 15000);
     
     }
