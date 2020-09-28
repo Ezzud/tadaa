@@ -499,9 +499,13 @@ class GiveawaysManager extends EventEmitter {
             }
             let delay = new Date()
             let delayup = delay + this.options.updateCountdownEvery
+            let ending;
             if(giveaway.ended === true) {
                 return;
-            } else if(delay > giveaway.endAt) {
+            } else {
+            if(ending === true) return;
+            ending = true
+             if(delay > giveaway.endAt) {
                 console.log('Delay is superior')
                 giveaway.ended = true;
                 await this.checkEnd.call(this, giveaway.messageID);
@@ -517,6 +521,8 @@ class GiveawaysManager extends EventEmitter {
                 await this.checkEnd.call(this, giveaway.messageID);  
                 await this._markAsEnded(giveaway.messageID);
             }
+            ending = false;
+        }
         });
         
     }
