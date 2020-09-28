@@ -18,6 +18,8 @@ Commandes principales:
 
 - t!info | Obtenir des informations sur le bot
 
+- t!ping | Voir le ping du bot
+
 </p>
 
 Commandes de giveaways (Permission requise: Gérer le serveur ou rôle nommé 'Giveaways'):
