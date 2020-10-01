@@ -38,7 +38,7 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 
 module.exports = async(client, message) => {
 
-const manager = new GiveawaysManager(client, {
+const manager = new GiveawayManagerWithShardSupport(client, {
     storage: `./data/storage/${client.shard.ids[0]}/giveaways.json`,
     updateCountdownEvery: 10000,
     default: {
