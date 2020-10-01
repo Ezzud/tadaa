@@ -1,14 +1,9 @@
 /**
-*
-*   Original creator: https://github.com/Androz2091/discord-giveaways
-*
-**/
-
-
-
+ *
+ *   Original creator: https://github.com/Androz2091/discord-giveaways
+ *
+ **/
 const Discord = require('discord.js');
-
-
 const GiveawaysMessages = {
     giveaway: 'Tiens tiens, que vois-je...',
     giveawayEnded: 'Fin du giveaway!',
@@ -28,7 +23,6 @@ const GiveawaysMessages = {
         pluralS: true
     }
 };
-
 const GiveawaysManagerOptions = {
     storage: './giveaways.json',
     updateCountdownEvery: 5000,
@@ -41,11 +35,9 @@ const GiveawaysManagerOptions = {
         reaction: '🎁'
     }
 };
-
 const GiveawayStartOptions = {
     isRequiredRole: false
 };
-
 const GiveawayRerollOptions = {
     winnerCount: null,
     messages: {
@@ -53,9 +45,7 @@ const GiveawayRerollOptions = {
         error: 'Aucun gagnant ne peut être choisi!'
     }
 };
-
 const GiveawayEditOptions = {};
-
 module.exports = {
     defaultGiveawaysMessages: GiveawaysMessages,
     defaultGiveawaysManagerOptions: GiveawaysManagerOptions,

@@ -1,0 +1,31 @@
+09-28-2020 01:42 | [34m[MANAGER] [0mManager pour Shard  Enabled[0m
+09-28-2020 01:42 | [34m[MANAGER] [0mStorage location: ./data/storage/0/giveaways.json[0m
+09-28-2020 01:42 | [32m [32mChargement des events effectué[0m
+09-28-2020 01:42 | [0m[Statut] [32m ON[0m
+09-28-2020 01:42 | 
+----------------------------------
+
+09-28-2020 01:42 | [DISCORD.JS] Connexion...
+09-28-2020 01:42 | [32m[EVENTS] [0mFichier guildCreate.js[0m
+09-28-2020 01:42 | [32m[EVENTS] [0mFichier guildDelete.js[0m
+09-28-2020 01:42 | [32m[EVENTS] [0mFichier invalidated.js[0m
+09-28-2020 01:42 | [32m[EVENTS] [0mFichier message.js[0m
+09-28-2020 01:42 | [32m[EVENTS] [0mFichier raw.js[0m
+09-28-2020 01:42 | [32m[EVENTS] [0mFichier ready.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier config.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier create.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier delete.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier edit.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier end.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier help.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier info.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier list.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier reload.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier reroll.js[0m
+09-28-2020 01:42 | [36m[COMMANDES] [0mFichier start.js[0m
+09-28-2020 01:42 | [32m [32mChargement des commandes effectué[0m
+09-28-2020 01:42 | [33m[DATA] [32mFichier de données 645727729353752592.json[0m
+09-28-2020 01:42 | [33m[DATA] [32mFichier de données 656744068134469633.json[0m
+09-28-2020 01:42 | [33m[DATA] [32mFichier de données 745513696591216720.json[0m
+09-28-2020 01:42 | [32m [32mChargement des fichiers de données effectué[0m
+09-28-2020 01:42 | [32m[SHARD] [0mSHARD #0 OPERATIONNEL

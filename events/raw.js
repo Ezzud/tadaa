@@ -1,7 +1,6 @@
+'use strict';
 const Discord = require("discord.js");
-
-module.exports = async(client, packet) => {
-
+module.exports = async (client, packet) => {
     if (!['MESSAGE_REACTION_ADD'].includes(packet.t)) return;
     const channel = client.channels.cache.get(packet.d.channel_id);
     if (channel.messages.cache.has(packet.d.message_id)) return;
@@ -13,5 +12,4 @@ module.exports = async(client, packet) => {
             client.emit('messageReactionAdd', reaction, client.users.cache.get(packet.d.user_id));
         }
     });
-
 }

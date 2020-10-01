@@ -1,8 +1,8 @@
 {
   "name": "TADAA",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "Bot discord de giveaways français, permet de créer des giveaways personnalisés",
-  "changelog":"Multi-end patched\nAll messages in embeds",
+  "changelog":"Multi Check fix\nPermissions detection\n**MAJOR FIX**: time shift patched",
   "main": "shard.js",
   "scripts": {
     "test": "mocha -R spec"
@@ -34,7 +34,7 @@
   },
   "private": true,
   "author": "ezzud",
-  "license": "MPL-2.0",
+  "license": "MIT",
   "engines": {
     "node": ">=0.7.x"
   },
