@@ -20,7 +20,10 @@ moment.locale('fr')
 const sleep = (milliseconds) => {
   return new Promise(resolve => setTimeout(resolve, milliseconds))
 };
-
+let shard0;
+let shard1;
+let shard2;
+let actualshard
 
 class GiveawaysManager extends EventEmitter {
 
@@ -392,6 +395,9 @@ class GiveawaysManager extends EventEmitter {
     }
 
     async _saveGiveaway(giveaway) {
+        let storageContent = await readFileAsync(this.options.storage);
+        let giveaways = await JSON.parse(storageContent);
+        this.giveaways = giveaways
         this.giveaways = this.giveaways.filter(g => g.messageID !== giveaway.messageID);
         let giveawayData;
         if(giveaway.IsRequiredRole === true) {
@@ -455,7 +461,16 @@ class GiveawaysManager extends EventEmitter {
     }
 
     async _checkGiveaway() {
-        this.checking = true
+        if(this.options.storage === `./data/storage/0/giveaways.json`) {
+            if(shard0 === true) return;
+            shard0 = true
+        } else if(this.options.storage === `./data/storage/1/giveaways.json`) {
+            if(shard1 === true) return;
+            shard1 = true
+        } else if(this.options.storage === `./data/storage/2/giveaways.json`) {
+            if(shard2 === true) return;
+            shard2 = true
+        }
         let storageContent = await readFileAsync(this.options.storage);
         let giveaways = await JSON.parse(storageContent);
         this.giveaways = giveaways
@@ -521,6 +536,7 @@ class GiveawaysManager extends EventEmitter {
                 await this._markAsEnded(giveaway.messageID);
             }
 
+
         });
         
     }
@@ -532,6 +548,15 @@ class GiveawaysManager extends EventEmitter {
         setInterval(async () => {
             if (this.client.readyAt) {
                 await this._checkGiveaway();
+                setTimeout(async () => {
+                    if(this.options.storage === `./data/storage/0/giveaways.json`) {
+                        shard0 = false
+                    } else if(this.options.storage === `./data/storage/1/giveaways.json`) {
+                        shard1 = false
+                    } else if(this.options.storage === `./data/storage/2/giveaways.json`) {
+                        shard2 = false
+                    }
+                }, 15000)
             }
         }, 15000);
     
