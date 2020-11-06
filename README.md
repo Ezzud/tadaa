@@ -2,7 +2,7 @@
 [![Github All Releases](https://img.shields.io/github/downloads/Ezzud/tadaa/total?style=flat-square)]()
 [![Github package.json version](https://img.shields.io/github/package-json/v/Ezzud/tadaa?style=flat-square)]()
 
-![Screenshot](4df305b3a69cd7fcb041cab90255a9ff.png)
+![Screenshot](4df305b3a69cd7fcb041cab90255a9ff-1.png)
 
 TADAA est un bot qui vous permettra de créer des giveaways sur vos serveurs, il dispose de plusieurs commandes permettant de configurer vos giveaways
 Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi récupérer le préfixe du bot en le mentionnant
