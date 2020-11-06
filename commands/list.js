@@ -37,7 +37,7 @@ module.exports.run = async (client, pf, message, args, nope, info, okay, what, w
     if (!message.guild.member(client.user).hasPermission(19456)) return (message.channel.send(permembed));
     let onServer;
     onServer = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
-    onServer = client.giveawaysManager.giveaways.filter((g) => g.ended !== true);
+    onServer = onServer.filter((g) => g.ended !== true);
     let onServer2;
     let onServer3;
     let onServer4;

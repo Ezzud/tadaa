@@ -23,10 +23,10 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager) => {
+module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager, json) => {
     if (message.author.id === settings.ownerID) {
         let emoji = loadings;
-        let reloadEmbed = new Discord.MessageEmbed().setColor('D7E921').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\n\u200BEtat`, `${emoji} Redémarrage du shard \` ${client.shard.ids[0]} \` en cours\n\u200B`).setFooter(`TADAA | créé par ezzud`)
+        let reloadEmbed = new Discord.MessageEmbed().setColor('D7E921').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\n\u200BEtat`, `${emoji} Redémarrage du shard \` ${client.shard.ids[0]} \` en cours\n\u200B`).setFooter(`TADAA | v${json.version}`)
         await message.channel.send(reloadEmbed);
         let dater = new Date().getTime();
         await client.destroy()
@@ -44,7 +44,7 @@ module.exports.run = async (client, pf, message, args, nope, info, okay, what, w
         values.forEach((value) => {
             count = count + 1
         });
-        let reloadedEmbed = new Discord.MessageEmbed().setColor('5BCA2F').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\n\u200BEtat`, `${okay} Redémarrage du shard \` ${client.shard.ids[0]} \` effectué (*${time}s*)`).addField(`Shards`, `\`${count}\`/\`${client.shard.count}\`\n\u200B`).setFooter(`TADAA | créé par ezzud`)
+        let reloadedEmbed = new Discord.MessageEmbed().setColor('5BCA2F').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\n\u200BEtat`, `${okay} Redémarrage du shard \` ${client.shard.ids[0]} \` effectué (*${time}s*)`).addField(`Shards`, `\`${count}\`/\`${client.shard.count}\`\n\u200B`).setFooter(`TADAA | v${json.version}`)
         await message.channel.send(reloadedEmbed)
     }
 }

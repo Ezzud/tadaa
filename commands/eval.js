@@ -13,7 +13,7 @@ function getEmoji(name) {
 }
 module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager, json, command) => {
     function embed(input, output, error = false) {
-        return new Discord.MessageEmbed().setColor(error ? 'ED3316' : '6CDC3F').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`${getEmoji("send")} Entrée`, `\`\`\`${error ? "" : "js"}\n${input}\n\`\`\``).addField(error ? `${getEmoji("erreur")} Erreur` : `${getEmoji("result")} Résultat`, `\`\`\`${error ? "" : "js"}\n${output}\n\`\`\``).setFooter("TADAA | créé par Ezzud").setThumbnail(client.user.avatarURL());
+        return new Discord.MessageEmbed().setColor(error ? 'ED3316' : '6CDC3F').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`${getEmoji("send")} Entrée`, `\`\`\`${error ? "" : "js"}\n${input}\n\`\`\``).addField(error ? `${getEmoji("erreur")} Erreur` : `${getEmoji("result")} Résultat`, `\`\`\`${error ? "" : "js"}\n${output}\n\`\`\``).setFooter("TADAA | v${json.version}").setThumbnail(client.user.avatarURL());
     }
     if (message.author.id !== settings.ownerID) return;
     let code = message.content.replace(pf, ``);
