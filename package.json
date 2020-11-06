@@ -1,8 +1,8 @@
 {
   "name": "TADAA",
-  "version": "1.1.9",
+  "version": "1.2.0",
   "description": "Bot discord de giveaways français, permet de créer des giveaways personnalisés",
-  "changelog":"Multi Check fix\nPermissions detection\n**MAJOR FIX**: time shift patched",
+  "changelog": "t!list patched\nt!info footer emojis removed\nUpdated on github\n**TO-DO**:\nChange storage to quick.db or mysql\nMulti-lang",
   "main": "shard.js",
   "scripts": {
     "test": "mocha -R spec"
@@ -39,7 +39,6 @@
     "node": ">=0.7.x"
   },
   "dependencies": {
-    "better-sqlite3": "^7.1.1",
     "bindings": "^1.5.0",
     "discord-giveaways": "^3.2.3",
     "discord.js": "^12.3.1",

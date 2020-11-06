@@ -59,7 +59,7 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-const manager = new GiveawayManagerWithShardSupport(client, {
+const manager = new GiveawaysManager(client, {
     storage: `./data/storage/${client.shard.ids[0]}/giveaways.json`,
     updateCountdownEvery: 10000,
     default: {
