@@ -31,16 +31,7 @@ function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
 module.exports = async (client, message) => {
-    const manager = new GiveawayManagerWithShardSupport(client, {
-        storage: `./data/storage/${client.shard.ids[0]}/giveaways.json`,
-        updateCountdownEvery: 10000,
-        default: {
-            botsCanWin: false,
-            exemptPermissions: ["MANAGE_MESSAGES", "ADMINISTRATOR"],
-            embedColor: "#4FCAF1",
-            reaction: "🎁"
-        }
-    });
+    const manager = client.giveawaysManager;
     if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
     var adapting = new FileSync(`./data/${client.shard.ids[0]}/${message.guild.id}.json`);
