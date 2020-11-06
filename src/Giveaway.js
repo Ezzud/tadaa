@@ -21,6 +21,9 @@ class Giveaway extends EventEmitter {
         this.endAt = options.endAt;
         this.IsRequiredRole = options.isRequiredRole;
         this.requiredRole = options.requiredRole
+        this.IsRequiredServer = options.isRequiredServer;
+        this.requiredServer = options.requiredServer;
+        this.requiredServerName = options.requiredServerName;
         this.ended = options.ended;
         this.channelID = options.channelID;
         this.messageID = options.messageID;
@@ -98,6 +101,11 @@ class Giveaway extends EventEmitter {
             users = (this.manager.v12 ? await reaction.users.fetch() : await reaction.fetchUsers()).filter(u => u.bot === this.botsCanWin).filter(u => u.id !== this.message.client.id).filter(u => this.channel.guild.member(u.id).roles.find(x => x.id === this.requiredRole)).filter(u => this.manager.v12 ? this.channel.guild.members.cache.get(u.id) : this.channel.guild.members.get(u.id)).random(winnerCount || this.winnerCount).filter(u => u);
         } else {
             users = (this.manager.v12 ? await reaction.users.fetch() : await reaction.fetchUsers()).filter(u => u.bot === this.botsCanWin).filter(u => u.id !== this.message.client.id).filter(u => this.manager.v12 ? this.channel.guild.members.cache.get(u.id) : this.channel.guild.members.get(u.id)).random(winnerCount || this.winnerCount).filter(u => u);
+        }
+        if(this.IsRequiredServer === true) {
+            let guild = this.client.guilds.cache.get(this.requiredServer)
+            if(!guild) return;
+            users = users.filter(u => guild.members.cache.get(u.id) !== undefined)
         }
         return users;
     }

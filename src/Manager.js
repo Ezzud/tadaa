@@ -12,6 +12,8 @@ const {
     readFile,
     exists
 } = require('fs');
+const editJsonFile = require('edit-json-file')
+const config = editJsonFile('./check.json')
 const {
     promisify
 } = require('util');
@@ -33,7 +35,10 @@ const sleep = (milliseconds) => {
 let shard0;
 let shard1;
 let shard2;
-let actualshard
+let actualshard;
+let count0 = 0
+ let count1 = 0
+ let count2 = 0
 class GiveawaysManager extends EventEmitter {
     constructor(client, options) {
         super();
@@ -108,7 +113,7 @@ class GiveawaysManager extends EventEmitter {
                 return reject('Unable to get the channel of the giveaway with message ID ' + giveaway.messageID + '.');
             }
             if (giveaway.ended === true) {
-                return reject('Deéjà terminé');
+                return reject('Déjà terminé');
             }
             await giveaway.fetchMessage().catch(() => {});
             if (!giveaway.message) {
@@ -170,69 +175,68 @@ class GiveawaysManager extends EventEmitter {
                 return reject(`Le RequiredRole n'est pas défini`);
             }
             let giveaway;
-            if (options.IsRequiredRole === true) {
-                giveaway = new Giveaway(this, {
-                    startAt: Date.now(),
-                    endAt: Date.now() + options.time,
-                    winnerCount: options.winnerCount,
-                    channelID: channel.id,
-                    guildID: channel.guild.id,
-                    ended: false,
-                    IsRequiredRole: true,
-                    requiredRole: options.requiredRole,
-                    prize: options.prize,
-                    hostedBy: (options.hostedBy ? options.hostedBy.toString() : null),
-                    messages: options.messages,
-                    reaction: options.reaction,
-                    botsCanWin: options.botsCanWin,
-                    exemptPermissions: options.exemptPermissions,
-                    exemptMembers: options.exemptMembers,
-                    embedColor: options.embedColor,
-                    embedColorEnd: options.embedColorEnd,
-                    reaction: options.reaction
-                });
-            } else {
-                giveaway = new Giveaway(this, {
-                    startAt: Date.now(),
-                    endAt: Date.now() + options.time,
-                    winnerCount: options.winnerCount,
-                    channelID: channel.id,
-                    guildID: channel.guild.id,
-                    ended: false,
-                    IsRequiredRole: false,
-                    requiredRole: null,
-                    prize: options.prize,
-                    hostedBy: (options.hostedBy ? options.hostedBy.toString() : null),
-                    messages: options.messages,
-                    reaction: options.reaction,
-                    botsCanWin: options.botsCanWin,
-                    exemptPermissions: options.exemptPermissions,
-                    exemptMembers: options.exemptMembers,
-                    embedColor: options.embedColor,
-                    embedColorEnd: options.embedColorEnd,
-                    reaction: options.reaction
-                });
+            if (options.IsRequiredRole === false) {
+            	options.requiredRole = null
             }
+            if (options.IsRequiredServer === false) {
+            	options.requiredServer = null
+            	options.requiredServerName = undefined
+            }
+                giveaway = new Giveaway(this, {
+                    startAt: Date.now(),
+                    endAt: Date.now() + options.time,
+                    winnerCount: options.winnerCount,
+                    channelID: channel.id,
+                    guildID: channel.guild.id,
+                    ended: false,
+                    IsRequiredRole: options.IsRequiredRole,
+                    requiredRole: options.requiredRole,
+                    IsRequiredServer: options.IsRequiredServer,
+                    requiredServer: options.requiredServer,
+                    requiredServerName: options.requiredServerName,
+                    prize: options.prize,
+                    hostedBy: (options.hostedBy ? options.hostedBy.toString() : null),
+                    messages: options.messages,
+                    reaction: options.reaction,
+                    botsCanWin: options.botsCanWin,
+                    exemptPermissions: options.exemptPermissions,
+                    exemptMembers: options.exemptMembers,
+                    embedColor: options.embedColor,
+                    embedColorEnd: options.embedColorEnd,
+                    reaction: options.reaction
+                });
             let date = new Date(giveaway.endAt);
             date.setHours(date.getHours() + 2);
             let embed;
             giveaway.IsRequiredRole = options.IsRequiredRole
+            giveaway.IsRequiredServer = options.IsRequiredServer
             console.log(`RequiredRole Verification: ` + options.IsRequiredRole)
-            if (options.IsRequiredRole === true) {
+            console.log(`RequiredServer Verification ${giveaway.IsRequiredServer}`)
+            if (options.IsRequiredRole === true && !options.IsRequiredServer) {
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(`Nouveau Giveaway!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n:bust_in_silhouette: Rôle requis: <@&${giveaway.requiredRole}>\n\u200B`)
-            } else {
+                embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n:bust_in_silhouette: Rôle requis: <@&${giveaway.requiredRole}>\n\u200B`)
+
+            } else if (!options.IsRequiredRole && !options.IsRequiredServer){
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(`Nouveau Giveaway!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n\u200B`)
+                embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n\u200B`)
+
+            } else if(options.IsRequiredRole === true && options.IsRequiredServer === true) {
+                embed = new Discord.MessageEmbed();
+                embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n:bust_in_silhouette: Rôle requis: <@&${giveaway.requiredRole}>\n:warning: Vous devez rejoindre le serveur **${giveaway.requiredServerName}**\n\u200B`)
+
+            } else if(!options.IsRequiredRole && options.IsRequiredServer === true) {
+                embed = new Discord.MessageEmbed();
+                embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n:warning: Vous devez rejoindre le serveur **${giveaway.requiredServerName}**\n\u200B`)
             }
             let message = await channel.send({
                 embed
             });
-            await message.react(giveaway.reaction);
             giveaway.messageID = message.id;
             await this.giveaways.push(giveaway);
             await this._saveGiveaway(giveaway);
-            resolve(giveaway);
+            await this._checkGiveaway();
+            await message.react(giveaway.reaction);
+            return resolve(giveaway);
         });
     }
     reroll(messageID, options = {}) {
@@ -354,7 +358,6 @@ class GiveawaysManager extends EventEmitter {
         this.giveaways = giveaways
         this.giveaways = this.giveaways.filter(g => g.messageID !== giveaway.messageID);
         let giveawayData;
-        if (giveaway.IsRequiredRole === true) {
             giveawayData = {
                 messageID: giveaway.messageID,
                 channelID: giveaway.channelID,
@@ -363,10 +366,13 @@ class GiveawaysManager extends EventEmitter {
                 endAt: giveaway.endAt,
                 ended: giveaway.ended,
                 winnerCount: giveaway.winnerCount,
-                IsRequiredRole: true,
+                IsRequiredRole: giveaway.IsRequiredRole,
                 requiredRole: giveaway.requiredRole,
                 prize: giveaway.prize,
-                messages: giveaway.messages
+                messages: giveaway.messages,
+                IsRequiredServer: giveaway.IsRequiredServer,
+                requiredServer: giveaway.requiredServer,
+                requiredServerName: giveaway.requiredServerName
             };
             if (giveaway.options.hostedBy) giveawayData.hostedBy = giveaway.options.hostedBy;
             if (giveaway.options.embedColor) giveawayData.embedColor = giveaway.options.embedColor;
@@ -376,29 +382,7 @@ class GiveawaysManager extends EventEmitter {
             if (giveaway.options.exemptMembers) giveawayData.exemptMembers = giveaway.options.exemptMembers;
             if (giveaway.options.reaction) giveawayData.reaction = giveaway.options.reaction;
             if (giveaway.options.IsRequiredRole) giveawayData.IsRequiredRole = giveaway.options.IsRequiredRole;
-        } else {
-            giveawayData = {
-                messageID: giveaway.messageID,
-                channelID: giveaway.channelID,
-                guildID: giveaway.guildID,
-                startAt: giveaway.startAt,
-                endAt: giveaway.endAt,
-                ended: giveaway.ended,
-                winnerCount: giveaway.winnerCount,
-                IsRequiredRole: false,
-                requiredRole: giveaway.requiredRole,
-                prize: giveaway.prize,
-                messages: giveaway.messages
-            };
-            if (giveaway.options.hostedBy) giveawayData.hostedBy = giveaway.options.hostedBy;
-            if (giveaway.options.embedColor) giveawayData.embedColor = giveaway.options.embedColor;
-            if (giveaway.options.embedColorEnd) giveawayData.embedColorEnd = giveaway.options.embedColorEnd;
-            if (giveaway.options.botsCanWin) giveawayData.botsCanWin = giveaway.options.botsCanWin;
-            if (giveaway.options.exemptPermissions) giveawayData.exemptPermissions = giveaway.options.exemptPermissions;
-            if (giveaway.options.exemptMembers) giveawayData.exemptMembers = giveaway.options.exemptMembers;
-            if (giveaway.options.reaction) giveawayData.reaction = giveaway.options.reaction;
-            if (giveaway.options.IsRequiredRole) giveawayData.IsRequiredRole = giveaway.options.IsRequiredRole;
-        }
+            if (giveaway.options.IsRequiredRole) giveawayData.IsRequiredServer = giveaway.options.IsRequiredServer;
         await this.giveaways.push(giveawayData);
         await writeFileAsync(this.options.storage, JSON.stringify(this.giveaways), 'utf-8');
         return;
@@ -411,18 +395,10 @@ class GiveawaysManager extends EventEmitter {
         this.giveaways.find(g => g.messageID === messageID).ended = true;
         await writeFileAsync(this.options.storage, JSON.stringify(this.giveaways), 'utf-8');
         return;
-    }
+    } 
+
+
     async _checkGiveaway() {
-        if (this.options.storage === `./data/storage/0/giveaways.json`) {
-            if (shard0 === true) return;
-            shard0 = true
-        } else if (this.options.storage === `./data/storage/1/giveaways.json`) {
-            if (shard1 === true) return;
-            shard1 = true
-        } else if (this.options.storage === `./data/storage/2/giveaways.json`) {
-            if (shard2 === true) return;
-            shard2 = true
-        }
         let storageContent = await readFileAsync(this.options.storage);
         let giveaways = await JSON.parse(storageContent);
         this.giveaways = giveaways
@@ -433,29 +409,36 @@ class GiveawaysManager extends EventEmitter {
                 return;
             }
             if (!giveaway.channel) return;
-            if (giveaway.remainingTime <= 0) {
-                await this.end(giveaway.messageID).catch(e => console.error(e));
-                await this._markAsEnded(giveaway.messageID);
-                return;
-            }
             await giveaway.fetchMessage().catch(() => {});
             if (!giveaway.message) {
                 giveaway.ended = true;
                 await this._markAsEnded(giveaway.messageID);
-                return;
+                return(console.log('Introuvable'));
             }
             let date = new Date(giveaway.endAt);
             date.setHours(date.getHours() + 2);
             let embed;
-            if (giveaway.options.IsRequiredRole === true) {
+            if (giveaway.options.IsRequiredRole === true && giveaway.options.IsRequiredServer === false) {
                 embed = new Discord.MessageEmbed();
                 embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n:bust_in_silhouette: Rôle requis: <@&${giveaway.requiredRole}>\n\u200B`)
                 await giveaway.message.edit({
                     embed
                 });
-            } else {
+            } else if (giveaway.options.IsRequiredRole === false && giveaway.options.IsRequiredServer === false){
                 embed = new Discord.MessageEmbed();
                 embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n\u200B`)
+                await giveaway.message.edit({
+                    embed
+                });
+            } else if(giveaway.options.IsRequiredRole === true && giveaway.options.IsRequiredServer === true) {
+                embed = new Discord.MessageEmbed();
+                embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n:bust_in_silhouette: Rôle requis: <@&${giveaway.requiredRole}>\n:warning: Vous devez rejoindre le serveur **${giveaway.requiredServerName}**\n\u200B`)
+                await giveaway.message.edit({
+                    embed
+                });
+            } else if(giveaway.options.IsRequiredRole === false && giveaway.options.IsRequiredServer === true) {
+                embed = new Discord.MessageEmbed();
+                embed.setAuthor(`Giveaway en cours!`).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(`Réagissez avec 🎁 pour participer! | Date de fin: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n:clock10: ${giveaway.content}\n:warning: Vous devez rejoindre le serveur **${giveaway.requiredServerName}**\n\u200B`)
                 await giveaway.message.edit({
                     embed
                 });
@@ -481,26 +464,22 @@ class GiveawaysManager extends EventEmitter {
                 await this.end.call(this, giveaway.messageID);
                 await this._markAsEnded(giveaway.messageID);
             }
+            return;
         });
+        return;
     }
     async _init() {
-        this.checking = false;
         this.ready = true;
         this.giveaways = await this._initStorage();
-        setInterval(async () => {
+        await setInterval(async () => {
             if (this.client.readyAt) {
+        			let storageContent = await readFileAsync(this.options.storage);
+        			let giveaways = await JSON.parse(storageContent);
+        			this.giveaways = giveaways;
                 await this._checkGiveaway();
-                setTimeout(async () => {
-                    if (this.options.storage === `./data/storage/0/giveaways.json`) {
-                        shard0 = false
-                    } else if (this.options.storage === `./data/storage/1/giveaways.json`) {
-                        shard1 = false
-                    } else if (this.options.storage === `./data/storage/2/giveaways.json`) {
-                        shard2 = false
-                    }
-                }, 15000)
             }
-        }, 15000);
+        }, 10000);
     }
+
 }
 module.exports = GiveawaysManager;
