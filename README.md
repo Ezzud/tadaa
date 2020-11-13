@@ -4,10 +4,11 @@
 
 ![Screenshot](4df305b3a69cd7fcb041cab90255a9ff-1.png)
 
+Preview v1.2.1
+
 TADAA est un bot qui vous permettra de créer des giveaways sur vos serveurs, il dispose de plusieurs commandes permettant de configurer vos giveaways
 Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi récupérer le préfixe du bot en le mentionnant
 
-#NOUVEAUTÉ: REQUIRED SERVER
 
 Features:
 - Possibilité de créer de giveaways complets avec la commande t!create
