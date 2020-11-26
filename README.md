@@ -1,6 +1,6 @@
 # TADAA
 [![Github All Releases](https://img.shields.io/github/downloads/Ezzud/tadaa/total?style=flat-square)]()
-[![Github package.json version](https://img.shields.io/github/package-json/v/Ezzud/tadaa?style=flat-square)]()
+[![Github package.json version](https://img.shields.io/github/package-json/v/Ezzud/tadaa)]()
 
 ![Screenshot](4df305b3a69cd7fcb041cab90255a9ff-1.png)
 
