@@ -13,35 +13,101 @@ const moment = require('moment');
 const json = require('./package.json')
 var util = require('util');
 const log_stdout = process.stdout;
-const GiveawayManagerWithShardSupport = class extends GiveawaysManager {
-    async refreshStorage() {
-        return client.shard.broadcastEval(() => this.giveawaysManager.getAllGiveaways());
+const storage = require("quick.db");
+const db = new storage.table('giveaways')
+if(!db.get("giveaways")) db.set("giveaways", []);
+ 
+const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
+ 
+    // This function is called when the manager needs to get all the giveaway stored in the database.
+    async getAllGiveaways(){
+        // Get all the giveaway in the database
+        return db.get("giveaways");
     }
+ 
+    // This function is called when a giveaway needs to be saved in the database (when a giveaway is created or when a giveaway is edited).
+    async saveGiveaway(messageID, giveawayData){
+        // Add the new one
+        db.push("giveaways", giveawayData);
+        // Don't forget to return something!
+        return true;
+    }
+ 
+    async editGiveaway(messageID, giveawayData){
+        // Gets all the current giveaways
+        const giveaways = db.get("giveaways");
+        // Remove the old giveaway from the current giveaways ID
+        const newGiveawaysArray = giveaways.filter((giveaway) => giveaway.messageID !== messageID);
+        // Push the new giveaway to the array
+        newGiveawaysArray.push(giveawayData);
+        // Save the updated array
+        db.set("giveaways", newGiveawaysArray);
+        // Don't forget to return something!
+        return true;
+    }
+ 
+    // This function is called when a giveaway needs to be deleted from the database.
+    async deleteGiveaway(messageID){
+        // Remove the giveaway from the array
+        const newGiveawaysArray = db.get("giveaways").filter((giveaway) => giveaway.messageID !== messageID);
+        // Save the updated array
+        db.set("giveaways", newGiveawaysArray);
+        // Don't forget to return something!
+        return true;
+    }
+ 
 };
 let date = new Date();
 date.setHours(date.getHours() + 2);
-let path = `./logs/${moment(date).format('MM-D-YYYY-hh-mm')}-shard${client.shard.ids[0]}.log`;
+let path = `./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`;
 let logs;
 let logstr;
 try {
     if (fs.existsSync(path)) {
-        logs = new FileSync(`./logs/${moment(date).format('MM-D-YYYY-hh-mm')}-shard${client.shard.ids[0]}.log`);
-        logstr = `./logs/${moment(date).format('MM-D-YYYY-hh-mm')}-shard${client.shard.ids[0]}.log`;
+        logs = new FileSync(`./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`);
+        logstr = `./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`;
     } else {
-        logs = new FileSync(`./logs/${moment(date).format('MM-D-YYYY-hh-mm')}-shard${client.shard.ids[0]}.log`);
-        logstr = `./logs/${moment(date).format('MM-D-YYYY-hh-mm')}-shard${client.shard.ids[0]}.log`;
+        logs = new FileSync(`./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`);
+        logstr = `./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`;
     }
 } catch (err) {
     console.error(err);
 }
-const MyConsole = new console.Console(fs.createWriteStream(`${logstr}`));
-console.log(`Logs path set to: ${logstr}`)
+const logs_path = logstr;
+client.logs_path = logs_path;
+setInterval(async () => {
+    let date = new Date();
+date.setHours(date.getHours() + 2);
+let path = `./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`;
+let logs;
+let logstr;
+try {
+    if (fs.existsSync(path)) {
+        logs = new FileSync(`./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`);
+        logstr = `./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`;
+    } else {
+        logs = new FileSync(`./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`);
+        logstr = `./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`;
+    }
+} catch (err) {
+    console.error(err);
+}
+client.logs_path = logstr;
 console.log = function(d) {
     let date = new Date();
     date.setHours(date.getHours() + 2); //
-    MyConsole.log(`${moment(date).format('MM-D-YYYY hh:mm')} | ` + d);
+    fs.appendFileSync(`${logstr}`, `\n${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
     log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
 };
+console.log(`Logs path set to: ${logstr}`)
+}, 300000);
+console.log = function(d) {
+    let date = new Date();
+    date.setHours(date.getHours() + 2); //
+    fs.appendFileSync(`${logs_path}`, `\n${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
+    log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
+};
+console.log(`Logs path set to: ${logstr}`)
 let emojiMap = {
     link: "732605373185261629",
     dev: "732605373185261608",
@@ -59,7 +125,14 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-const manager = new GiveawaysManager(client, {
+
+
+
+
+
+
+
+const manager = new GiveawayManagerWithOwnDatabase(client, {
     storage: `./data/storage/${client.shard.ids[0]}/giveaways.json`,
     updateCountdownEvery: 10000,
     default: {
@@ -69,6 +142,12 @@ const manager = new GiveawaysManager(client, {
         reaction: "🎁"
     }
 });
+
+
+
+
+
+
 client.giveawaysManager = manager;
 console.log(`\x1b[34m[MANAGER]` + ` \x1b[0mManager pour Shard  Enabled` + `\x1b[0m`);
 console.log(`\x1b[34m[MANAGER]` + ` \x1b[0mStorage location: ${manager.options.storage}` + `\x1b[0m`)
