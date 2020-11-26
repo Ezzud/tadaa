@@ -1,8 +1,19 @@
 'use strict';
 const Discord = require("discord.js");
 const ms = require('ms');
-const fs = require('fs');
+const moment = require('moment');
+const fs = require('fs')
+var util = require('util');
+const log_stdout = process.stdout;
+var path = require('path');
+var commandname = path.basename(__filename);
 module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager,json) => {
+console.log = function(d) {
+    let date = new Date();
+    date.setHours(date.getHours() + 1); //
+    fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
+    log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
+};
     if (message.guild.member(message.author).hasPermission(32) === false) {
         let role = message.guild.member(message.author).roles.cache.find(x => x.name === "Giveaways")
         if (role !== undefined && role !== false && role !== null) {
@@ -75,7 +86,10 @@ module.exports.run = async (client, pf, message, args, nope, info, okay, what, w
         IsRequiredRole: false,
         requiredRole: null,
         prize: prize,
-        winnerCount: parseInt(winners)
+        winnerCount: parseInt(winners),
+        IsRequiredServer: false,
+        requiredServer: null,
+        requiredServerName: null
     }).then((gData) => {
         console.log(`SHARD #${client.shard.ids[0]} - Nouveau giveaway lancé dans le serveur " ${client.guilds.cache.get(gData.guildID).name} "`);
         let yembed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Le giveaway a bien été lançé dans le salon <#${gData.channelID}>*`).setFooter(`TADAA | v${json.version}`)

@@ -2,7 +2,11 @@
 const Discord = require("discord.js");
 const ms = require('ms');
 const moment = require('moment');
-const fs = require('fs');
+const fs = require('fs')
+var util = require('util');
+const log_stdout = process.stdout;
+var path = require('path');
+var commandname = path.basename(__filename);
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 let emojiMap = {
@@ -23,6 +27,12 @@ function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
 module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager,json) => {
+console.log = function(d) {
+    let date = new Date();
+    date.setHours(date.getHours() + 1); //
+    fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
+    log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
+};
     var adapting = new FileSync(`./data/${client.shard.ids[0]}/${message.guild.id}.json`);
     var database = low(adapting);
     if (message.guild.member(message.author).hasPermission(32) === false) {

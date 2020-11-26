@@ -1,6 +1,7 @@
 'use strict';
 const Discord = require("discord.js");
 module.exports = async (client, messageReaction, user) => {
+	if(!messageReaction) return;
     if (messageReaction.partial) {
         try {
             await messageReaction.fetch();
@@ -9,7 +10,7 @@ module.exports = async (client, messageReaction, user) => {
             console.log('Something went wrong when fetching the message: ', error);
         }
     }
-    if(!user) return
+    if(!user) return;
     if (user.bot) return;
     if (messageReaction.message.channel.type === 'dm') return;
     let guild = messageReaction.message.guild
