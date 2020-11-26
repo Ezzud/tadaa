@@ -24,7 +24,7 @@ const GiveawaysMessages = {
     }
 };
 const GiveawaysManagerOptions = {
-    storage: './giveaways.json',
+    storage: false,
     updateCountdownEvery: 5000,
     DJSlib: Discord.version.split('.')[0] === '12' ? 'v12' : 'v11',
     default: {

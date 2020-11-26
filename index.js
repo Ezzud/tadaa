@@ -133,7 +133,7 @@ function getEmoji(name) {
 
 
 const manager = new GiveawayManagerWithOwnDatabase(client, {
-    storage: `./data/storage/${client.shard.ids[0]}/giveaways.json`,
+    storage: false,
     updateCountdownEvery: 10000,
     default: {
         botsCanWin: false,
