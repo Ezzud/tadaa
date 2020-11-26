@@ -1,8 +1,8 @@
 {
   "name": "TADAA",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Bot discord de giveaways français, permet de créer des giveaways personnalisés",
-  "changelog": "t!list patched\nt!info footer emojis removed\nUpdated on github\n**TO-DO**:\nChange storage to quick.db or mysql\nMulti-lang",
+  "changelog": "Affichage des giveaways dans le t!list modifié\nFooters des commandes modifiés renseignant la version\nSystème de stockage des giveaways passé en quick.db\nUpdated on github\n**TO-DO**:\nMulti-lang",
   "main": "shard.js",
   "scripts": {
     "test": "mocha -R spec"
@@ -34,34 +34,24 @@
   },
   "private": true,
   "author": "ezzud",
-  "discord":"ezzud#0001",
   "license": "MIT",
   "engines": {
     "node": ">=0.7.x"
   },
   "dependencies": {
-    "bindings": "^1.5.0",
-    "discord-giveaways": "^3.2.3",
-    "discord.js": "^12.3.1",
+    "merge-options": "^2.0.0",
+    "pretty-ms": "^6.0.1",
+    "better-sqlite3": "^7.1.1",
+    "discord.js": "^12.4.1",
     "discord.js-commando": "^0.10.0",
     "edit-json-file": "^1.4.0",
     "fs": "0.0.1-security",
     "lowdb": "^1.0.0",
-    "make": "^0.8.1",
-    "makefile": "0.0.2",
-    "merge-options": "^2.0.0",
-    "moment": "^2.27.0",
-    "moment-timezone": "^0.5.31",
-    "node-gyp": "^6.1.0",
-    "node-schedule": "^1.3.2",
+    "moment": "^2.24.0",
     "opusscript": "0.0.7",
-    "pretty-ms": "^6.0.1",
-    "prism": "^4.1.2",
-    "prism-media": "^1.2.2",
-    "quick.db": "^7.1.1",
-    "sqlite3": "^5.0.0",
-    "uws": "^100.0.1",
-    "ytdl-core": "^1.0.9"
+    "path": "^0.12.7",
+    "quick.db": "^7.1.3",
+    "sqlite3": "^5.0.0"
   },
   "optionalDependencies": {
     "@discordjs/uws": "^11.149.1",

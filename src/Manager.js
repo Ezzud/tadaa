@@ -12,8 +12,6 @@ const {
     readFile,
     exists
 } = require('fs');
-const editJsonFile = require('edit-json-file')
-const config = editJsonFile('./check.json')
 const {
     promisify
 } = require('util');
@@ -32,13 +30,6 @@ moment.locale('fr')
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 };
-let shard0;
-let shard1;
-let shard2;
-let actualshard;
-let count0 = 0
- let count1 = 0
- let count2 = 0
 class GiveawaysManager extends EventEmitter {
     constructor(client, options) {
         super();
@@ -75,7 +66,7 @@ class GiveawaysManager extends EventEmitter {
                 let formattedWinners = winners.map(w => '<@' + w.id + '>').join(', ');
                 let str = giveaway.messages.winners.substr(0, 1).toUpperCase() + giveaway.messages.winners.substr(1, giveaway.messages.winners.length) + ': ' + formattedWinners;
                 let date = new Date()
-                date.setHours(date.getHours() + 2);
+                date.setHours(date.getHours() + 1);
                 let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
                 embed.setAuthor(`Giveaway terminé!`).setColor(`#EF1106`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setFooter(`Terminé le: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nGagnant(s): ${formattedWinners}\n\u200B`)
                 await giveaway.message.edit({
@@ -86,7 +77,7 @@ class GiveawaysManager extends EventEmitter {
                 resolve(winners);
             } else {
                 let date = new Date()
-                date.setHours(date.getHours() + 2);
+                date.setHours(date.getHours() + 1);
                 let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
                 embed.setAuthor(`Giveaway terminé!`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setColor(`#EF1106`).setFooter(`Terminé le: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nAucun gagnant :(\n\u200B`)
                 await giveaway.message.edit({
@@ -125,7 +116,7 @@ class GiveawaysManager extends EventEmitter {
                 let formattedWinners = winners.map(w => '<@' + w.id + '>').join(', ');
                 let str = giveaway.messages.winners.substr(0, 1).toUpperCase() + giveaway.messages.winners.substr(1, giveaway.messages.winners.length) + ': ' + formattedWinners;
                 let date = new Date()
-                date.setHours(date.getHours() + 2);
+                date.setHours(date.getHours() + 1);
                 let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
                 embed.setAuthor(`Giveaway terminé!`).setColor(`#EF1106`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setFooter(`Terminé le: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nGagnant(s): ${formattedWinners}\n\u200B`)
                 await giveaway.message.edit({
@@ -136,7 +127,7 @@ class GiveawaysManager extends EventEmitter {
                 resolve(winners);
             } else {
                 let date = new Date()
-                date.setHours(date.getHours() + 2);
+                date.setHours(date.getHours() + 1);
                 let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
                 embed.setAuthor(`Giveaway terminé!`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setColor(`#EF1106`).setFooter(`Terminé le: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nAucun gagnant :(\n\u200B`)
                 await giveaway.message.edit({
@@ -206,7 +197,7 @@ class GiveawaysManager extends EventEmitter {
                     reaction: options.reaction
                 });
             let date = new Date(giveaway.endAt);
-            date.setHours(date.getHours() + 2);
+            date.setHours(date.getHours() + 1);
             let embed;
             giveaway.IsRequiredRole = options.IsRequiredRole
             giveaway.IsRequiredServer = options.IsRequiredServer
@@ -416,7 +407,7 @@ class GiveawaysManager extends EventEmitter {
                 return(console.log('Introuvable'));
             }
             let date = new Date(giveaway.endAt);
-            date.setHours(date.getHours() + 2);
+            date.setHours(date.getHours() + 1);
             let embed;
             if (giveaway.options.IsRequiredRole === true && giveaway.options.IsRequiredServer === false) {
                 embed = new Discord.MessageEmbed();

@@ -41,8 +41,8 @@ module.exports = async (client, message) => {
         pf = config.prefix
         await database.set(`data.prefix`, pf).write()
     }
-    if (message.content === '<@!732003715426287676>') {
-        var embed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`Préfixe: **${pf}**\n\n*Faites ${pf}help pour plus d'infos*`).setColor(`#F67272`).setTimestamp().setFooter(`TADAA |  créé par ezzud`, message.author.avatarURL)
+    if (message.content === '<@!732003715426287676>' || message.content === '<@732003715426287676>') {
+        var embed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`Préfixe: **${pf}**\n\n*Faites ${pf}help pour plus d'infos*`).setColor(`#F67272`).setTimestamp().setFooter(`TADAA v${json.version}`, message.author.avatarURL)
         message.channel.send(embed)
     }
     if (message.content.startsWith(pf)) {
@@ -55,12 +55,12 @@ module.exports = async (client, message) => {
         const warning = getEmoji("warn")
         let commands_file = client.commands.get(command);
         if(commands_file && !message.guild.channels.cache.get(message.channel.id).memberPermissions(message.guild.member(client.user)).has(2048)) {
-            let noPermembed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${getEmoji("nope")} Je n'ai pas la permission d'écrire dans le salon où la commande a été envoyée`).setColor(`#F67272`).setTimestamp().setFooter(`TADAA |  créé par ezzud`, message.author.avatarURL)      
+            let noPermembed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${getEmoji("nope")} Je n'ai pas la permission d'écrire dans le salon où la commande a été envoyée`).setColor(`#F67272`).setTimestamp().setFooter(`TADAA v${json.version}`, message.author.avatarURL)      
             return message.author.send(noPermembed);
         }
         if (command === 'edit' || command === 'delete' || command === 'end' || command === 'start') {
             if (gwDelay.has(message.author.id)) {
-                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `Veuillez patienter *10 secondes* avant chaque utilisation de cette commande`).setFooter(`TADAA | créé par ezzud`)
+                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `Veuillez patienter *10 secondes* avant chaque utilisation de cette commande`).setFooter(`TADAA v${json.version}`)
                 message.channel.send(embed)
                 return;
             } else {
@@ -71,7 +71,7 @@ module.exports = async (client, message) => {
             }
         } else {
             if (delay.has(message.author.id)) {
-                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `Veuillez patienter *3 secondes* avant chaque utilisation de commande`).setFooter(`TADAA | créé par ezzud`)
+                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `Veuillez patienter *3 secondes* avant chaque utilisation de commande`).setFooter(`TADAA v${json.version}`)
                 message.channel.send(embed)
                 return;
             } else {

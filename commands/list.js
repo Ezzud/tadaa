@@ -2,7 +2,11 @@
 const Discord = require("discord.js");
 const ms = require('ms');
 const moment = require('moment');
-const fs = require('fs');
+const fs = require('fs')
+var util = require('util');
+const log_stdout = process.stdout;
+var path = require('path');
+var commandname = path.basename(__filename);
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 let emojiMap = {
@@ -22,18 +26,24 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager) => {
+module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager,json) => {
+console.log = function(d) {
+    let date = new Date();
+    date.setHours(date.getHours() + 2); //
+    fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
+    log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
+};
     if (message.guild.member(message.author).hasPermission(32) === false) {
         let role = message.guild.member(message.author).roles.cache.find(x => x.name === "Giveaways")
         if (role !== undefined && role !== false && role !== null) {
-            console.log('Perms bypakdkdkkfkfdss')
+            console.log('Perms de bypass')
         } else {
-            let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Vous n'avez pas la permission ni le rôle \`Giveaways\`*`).setFooter(`TADAA | créé par ezzud`)
+            let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Vous n'avez pas la permission ni le rôle \`Giveaways\`*`).setFooter(`TADAA v${json.version}`)
             message.channel.send(embed)
             return;
         }
     }
-    let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} J'ai besoin des permissions \`Voir les salons, envoyer des messages, envoyer des liens et embed\` pour fonctionner`).setFooter(`TADAA | créé par ezzud`)
+    let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} J'ai besoin des permissions \`Voir les salons, envoyer des messages, envoyer des liens et embed\` pour fonctionner`).setFooter(`TADAA v${json.version}`)
     if (!message.guild.member(client.user).hasPermission(19456)) return (message.channel.send(permembed));
     let onServer;
     onServer = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
@@ -44,7 +54,7 @@ module.exports.run = async (client, pf, message, args, nope, info, okay, what, w
     if (!onServer) {
         onServer = 'Aucun :('
     } else {
-        onServer = onServer.map(g => `Prix: \`${g.prize}\` | Fin: ${moment(g.endAt).format('LLL')}. [\[Accéder\]](https://discordapp.com/channels/${g.guildID}/${g.channelID}/${g.messageID})::`)
+        onServer = onServer.map(g => `Prix: \`${g.prize}\` | Fin: ${moment(g.endAt).format('L')} ${moment(g.endAt).format('LT')} (${moment(g.endAt).fromNow()}). [\[Accéder\]](https://discordapp.com/channels/${g.guildID}/${g.channelID}/${g.messageID})::`)
         onServer = Array.from(onServer)
         if (onServer[6] !== undefined && onServer[10] !== undefined) {
             onServer2 = onServer.slice(6, 10)
@@ -79,7 +89,7 @@ module.exports.run = async (client, pf, message, args, nope, info, okay, what, w
     if (onServer4.lenght > 1000) {
         onServer4 = `\u200B`
     }
-    var embed = new Discord.MessageEmbed().setAuthor(`Liste des giveaways`).setThumbnail(client.user.avatarURL()).setColor(`#F79430`).addField(`\u200B`, onServer || `Aucun giveaway trouvé`).addField(`\u200B`, `${onServer2 || `\u200B`}`).addField(`\u200B`, `${onServer3 || `\u200B`}`).addField(`\u200B`, `${onServer4 || `\u200B`}\n\n\u200B`).addField(`Info!`, `*la liste ne peut afficher que 20 giveaways ainsi que ceux qui sont encore en cours*`).setFooter(`TADAA | créé par ezzud`, message.author.avatarURL()).setTimestamp()
+    var embed = new Discord.MessageEmbed().setAuthor(`Liste des giveaways`).setThumbnail(client.user.avatarURL()).setColor(`#F79430`).addField(`\u200B`, onServer || `Aucun giveaway trouvé`).addField(`\u200B`, `${onServer2 || `\u200B`}`).addField(`\u200B`, `${onServer3 || `\u200B`}`).addField(`\u200B`, `${onServer4 || `\u200B`}\n\n\u200B`).addField(`Info!`, `*la liste ne peut afficher que 20 giveaways ainsi que ceux qui sont encore en cours*`).setFooter(`TADAA v${json.version}`, message.author.avatarURL()).setTimestamp()
     message.channel.send(embed)
 }
 module.exports.help = {
