@@ -1,1 +1,0 @@
-screen -S tadaa node --max-old-space-size=2048 shard.js
