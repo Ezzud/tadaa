@@ -42,53 +42,7 @@ class GiveawaysManager extends EventEmitter {
         this.v12 = this.options.DJSlib === 'v12';
         this._init();
     }
-    checkEnd(messageID) {
-        return new Promise(async (resolve, reject) => {
-            let storageContent = await readFileAsync(this.options.storage);
-            let giveaways = await JSON.parse(storageContent);
-            if (giveaways.length <= 0) return (console.log('err'));
-            this.giveaways = giveaways
-            let giveawayData = this.giveaways.find(g => g.messageID === messageID)
-            if (!giveawayData) {
-                return reject('No giveaway found with ID ' + messageID + '.');
-            }
-            let giveaway = new Giveaway(this, giveawayData);
-            if (!giveaway.channel) {
-                return reject('Unable to get the channel of the giveaway with message ID ' + giveaway.messageID + '.');
-            }
-            await giveaway.fetchMessage().catch(() => {});
-            if (!giveaway.message) {
-                return reject('Unable to fetch message with ID ' + giveaway.messageID + '.');
-            }
-            await this._markAsEnded(giveaway.messageID);
-            let winners = await giveaway.roll();
-            if (winners.length > 0) {
-                let formattedWinners = winners.map(w => '<@' + w.id + '>').join(', ');
-                let str = giveaway.messages.winners.substr(0, 1).toUpperCase() + giveaway.messages.winners.substr(1, giveaway.messages.winners.length) + ': ' + formattedWinners;
-                let date = new Date()
-                date.setHours(date.getHours() + 1);
-                let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
-                embed.setAuthor(`Giveaway terminé!`).setColor(`#EF1106`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setFooter(`Terminé le: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nGagnant(s): ${formattedWinners}\n\u200B`)
-                await giveaway.message.edit({
-                    embed
-                });
-                await giveaway.message.channel.send(giveaway.messages.winMessage.replace('{winners}', formattedWinners).replace('{prize}', giveaway.prize));
-                await this.emit('end', giveaway, winners);
-                resolve(winners);
-            } else {
-                let date = new Date()
-                date.setHours(date.getHours() + 1);
-                let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
-                embed.setAuthor(`Giveaway terminé!`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setColor(`#EF1106`).setFooter(`Terminé le: ${moment(date).format('LLLL')}`).addField(`\u200B`, `\n\n🏆 Prix: \`${giveaway.prize}\`\n🏅 Nombre de gagnant: **${giveaway.winnerCount}**\n\nAucun gagnant :(\n\u200B`)
-                await giveaway.message.edit({
-                    embed
-                });
-                await this._markAsEnded(giveaway.messageID);
-                await this.emit('end', giveaway, winners);
-                resolve();
-            }
-        });
-    }
+
     end(messageID) {
         return new Promise(async (resolve, reject) => {
             let storageContent = await readFileAsync(this.options.storage);
@@ -290,7 +244,8 @@ class GiveawaysManager extends EventEmitter {
             if (options.addTime) modifiedGiveawayData.endAt = giveawayData.endAt + options.addTime;
             if (options.setEndTimestamp) modifiedGiveawayData.endAt = options.setEndTimestamp;
             let newGiveaway = new Giveaway(this, modifiedGiveawayData);
-            this._saveGiveaway(newGiveaway);
+            await this._saveGiveaway(newGiveaway);
+            await this._checkGiveaway()
             resolve(newGiveaway);
         });
     }

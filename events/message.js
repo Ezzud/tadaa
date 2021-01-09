@@ -25,7 +25,6 @@ const GiveawayManagerWithShardSupport = class extends GiveawaysManager {
         return client.shard.broadcastEval(() => this.giveawaysManager.getAllGiveaways());
     }
 };
-const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
@@ -41,26 +40,45 @@ module.exports = async (client, message) => {
         pf = config.prefix
         await database.set(`data.prefix`, pf).write()
     }
+    var lang = await database.get(`data.lang`).value()
+    if (!lang) {
+        lang = "fr_FR"
+        await database.set(`data.lang`, "fr_FR").write()
+    }
+    if(lang === "fr_FR") {
+        lang = require("../lang/fr_FR.json")
+    } else {
+        lang = require("../lang/en_US.json")
+    }
+    const langage = lang
     if (message.content === '<@!732003715426287676>' || message.content === '<@732003715426287676>') {
-        var embed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`Préfixe: **${pf}**\n\n*Faites ${pf}help pour plus d'infos*`).setColor(`#F67272`).setTimestamp().setFooter(`TADAA v${json.version}`, message.author.avatarURL)
+            if(message.author.id !== "638773138712428575") {
+        return message.channel.send(`Le bot est actuellement en *mode développement*, merci de bien vouloir patienter`);
+    }
+        var embed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${lang.mentionEmbed.split("%pf%").join(pf)}`).setColor(`#F67272`).setTimestamp().setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL)
         message.channel.send(embed)
     }
     if (message.content.startsWith(pf)) {
+            if(message.author.id !== "638773138712428575") {
+        return message.channel.send(`Le bot est actuellement en *mode développement*, merci de bien vouloir patienter`);
+    }
         let args = message.content.slice(pf.length).trim().split(/ +/g);
         let command = args.shift().toLowerCase();
-        const nope = getEmoji("nope")
-        const info = getEmoji("info")
-        const okay = getEmoji("okay")
-        const what = getEmoji("what")
-        const warning = getEmoji("warn")
+        client.nope = getEmoji("nope")
+        client.info = getEmoji("info")
+        client.okay = getEmoji("okay")
+        client.what = getEmoji("what")
+        client.warning = getEmoji("warn")
+        client.loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
+
         let commands_file = client.commands.get(command);
         if(commands_file && !message.guild.channels.cache.get(message.channel.id).memberPermissions(message.guild.member(client.user)).has(2048)) {
-            let noPermembed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${getEmoji("nope")} Je n'ai pas la permission d'écrire dans le salon où la commande a été envoyée`).setColor(`#F67272`).setTimestamp().setFooter(`TADAA v${json.version}`, message.author.avatarURL)      
+            let noPermembed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${getEmoji("nope")} ${lang.noPermission}`).setColor(`#F67272`).setTimestamp().setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL)      
             return message.author.send(noPermembed);
         }
         if (command === 'edit' || command === 'delete' || command === 'end' || command === 'start') {
             if (gwDelay.has(message.author.id)) {
-                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `Veuillez patienter *10 secondes* avant chaque utilisation de cette commande`).setFooter(`TADAA v${json.version}`)
+                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.GWcommandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 return;
             } else {
@@ -71,7 +89,7 @@ module.exports = async (client, message) => {
             }
         } else {
             if (delay.has(message.author.id)) {
-                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `Veuillez patienter *3 secondes* avant chaque utilisation de commande`).setFooter(`TADAA v${json.version}`)
+                let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.commandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 return;
             } else {
@@ -82,6 +100,6 @@ module.exports = async (client, message) => {
             }
         }
         let commande_file = client.commands.get(command);
-        if (commande_file) commande_file.run(client, pf, message, args, nope, info, okay, what, warning, manager, json, command);
+        if (commande_file) commande_file.run(client, pf, message, args, manager,json, langage);
     }
 };

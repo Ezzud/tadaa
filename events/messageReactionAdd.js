@@ -5,9 +5,8 @@ module.exports = async (client, messageReaction, user) => {
     if (messageReaction.partial) {
         try {
             await messageReaction.fetch();
-            console.log('partial')
         } catch (error) {
-            console.log('Something went wrong when fetching the message: ', error);
+            console.log('Erreur: ', error);
         }
     }
     if(!user) return;
