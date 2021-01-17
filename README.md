@@ -10,10 +10,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 </h2>
 
 
-<h3>
-Features
-</h3>
-
+![Features](https://cdn.discordapp.com/attachments/800365015642275850/800365270408757268/features.png)
 <p>
   
 - Commandes de giveaway rapide
@@ -30,7 +27,7 @@ Features
 
 
 
-Commandes principales:
+![Commandes principales](https://cdn.discordapp.com/attachments/800365015642275850/800365268710326292/principales.png)
 <p>
 
 - t!help | Affiche le menu d'aide
@@ -38,7 +35,8 @@ Commandes principales:
 - t!ping | Voir le ping du bot
 </p>
 
-Commandes de giveaways (Permission requise: Gérer le serveur ou rôle nommé 'Giveaways'):
+![Commandes de giveaway](https://cdn.discordapp.com/attachments/800365015642275850/800365267645104168/giveaway.png)
+(Permission requise: Gérer le serveur ou rôle nommé 'Giveaways'):
 <p>
 
 - t!create | Commencer le processus de création de giveaways
@@ -50,7 +48,8 @@ Commandes de giveaways (Permission requise: Gérer le serveur ou rôle nommé 'G
 - t!list | Afficher la liste des giveaways sur le serveur
 </p>
 
-Commandes de configuration (Permission requise: Administrateur):
+![Commandes de configuration](https://cdn.discordapp.com/attachments/800365015642275850/800365266197807114/configuration.png) 
+(Permission requise: Administrateur):
 <p>
 
 - t!config | Voir la configuration actuelle du bot
