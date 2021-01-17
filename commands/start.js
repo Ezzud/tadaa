@@ -86,8 +86,11 @@ console.log = function(d) {
         winnerCount: parseInt(winners),
         IsRequiredServer: false,
         requiredServer: null,
+        lang: "fr_FR",
+        langfile: lang,
         requiredServerName: null
     }).then((gData) => {
+    	console.log(gData.lang)
         console.log(`SHARD #${client.shard.ids[0]} - Nouveau giveaway lancé dans le serveur " ${client.guilds.cache.get(gData.guildID).name} "`);
         let yembed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startEmbedSuccess.split("%okay%").join(client.okay).split("%channel%").join(`<#${gData.channelID}>`)).setFooter(lang.footer.split("%version%").join(json.version))
         message.channel.send(yembed)

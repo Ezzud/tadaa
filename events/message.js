@@ -52,16 +52,11 @@ module.exports = async (client, message) => {
     }
     const langage = lang
     if (message.content === '<@!732003715426287676>' || message.content === '<@732003715426287676>') {
-            if(message.author.id !== "638773138712428575") {
-        return message.channel.send(`Le bot est actuellement en *mode développement*, merci de bien vouloir patienter`);
-    }
+        console.log(await database.get(`data.lang`).value())
         var embed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${lang.mentionEmbed.split("%pf%").join(pf)}`).setColor(`#F67272`).setTimestamp().setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL)
         message.channel.send(embed)
     }
     if (message.content.startsWith(pf)) {
-            if(message.author.id !== "638773138712428575") {
-        return message.channel.send(`Le bot est actuellement en *mode développement*, merci de bien vouloir patienter`);
-    }
         let args = message.content.slice(pf.length).trim().split(/ +/g);
         let command = args.shift().toLowerCase();
         client.nope = getEmoji("nope")
