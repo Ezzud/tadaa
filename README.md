@@ -9,6 +9,8 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 <a href="https://discord.com/oauth2/authorize?client_id=732003715426287676&permissions=355392&scope=bot" target="_blank">![Inviter le bot](https://cdn.discordapp.com/attachments/800365015642275850/800368450975170570/invite-button.png)</a><a href="https://discord.gg/VGt9S66" target="_blank">![Support](https://cdn.discordapp.com/attachments/800365015642275850/800368447526797332/support-button.png)</a>
 
 <br />
+
+
 ![Features](https://cdn.discordapp.com/attachments/800365015642275850/800365270408757268/features.png)
 <p>
   
