@@ -13,7 +13,9 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 <h3>
 Features
 </h3>
+
 <p>
+  
 - Commandes de giveaway rapide
 - Commande de giveaway complète
 - Permet de faire des giveaways où seules les personnes avec un rôle spécifique peuvent participer
