@@ -52,6 +52,5 @@ module.exports = async (client) => {
             },
             status: 'dnd'
         })
-        console.log(`Presence actualisée`)
     }, 300000);
 }

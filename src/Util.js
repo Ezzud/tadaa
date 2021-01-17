@@ -5,14 +5,14 @@
  **/
 const Discord = require('discord.js');
 const GiveawaysMessages = {
-    giveaway: 'Tiens tiens, que vois-je...',
-    giveawayEnded: 'Fin du giveaway!',
+    giveaway: 'a',
+    giveawayEnded: 'a',
     timeRemaining: 'Temps restant: **{duration}**',
     inviteToParticipate: 'Réagissez avec 🎁 pour participer!',
     winMessage: 'Félicitations {winners}! Tu remportes: **{prize}**!',
-    embedFooter: 'Khallazpaz',
-    noWinner: 'Le giveaway a été annulé',
-    hostedBy: 'Créateur: {user}',
+    embedFooter: 'a',
+    noWinner: 'a',
+    hostedBy: 'a',
     winners: 'Gagnant(s)',
     endedAt: 'Fin:',
     units: {

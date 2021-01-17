@@ -9,24 +9,8 @@ var path = require('path');
 var commandname = path.basename(__filename);
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
-let emojiMap = {
-    link: "732605373185261629",
-    dev: "732605373185261608",
-    sharding: "732605372954575029",
-    computer: "732607541061877760",
-    memoire: "732698462822596659",
-    okay: "732581317098602546",
-    nope: "732581316880498782",
-    info: "732581319971831808",
-    what: "732581319678361662",
-    warn: "732581316217929782"
-};
-const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 
-function getEmoji(name) {
-    return `<:${name}:${emojiMap[name]}>`;
-}
-module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager,json) => {
+module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {
     let date = new Date();
     date.setHours(date.getHours() + 1); //
@@ -37,18 +21,16 @@ console.log = function(d) {
     var database = low(adapting);
     if (message.guild.member(message.author).hasPermission(32) === false) {
         let role = message.guild.member(message.author).roles.cache.find(x => x.name === "Giveaways")
-        if (role !== undefined && role !== false && role !== null) {
-            console.log('Perms bypakdkdkkfkfdss')
-        } else {
-            let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Vous n'avez pas la permission ni le rôle \`Giveaways\`*`).setFooter(`TADAA | v${json.version}`)
+        if (role === undefined || role === false || role === null) {
+            let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
             message.channel.send(embed)
             return;
         }
     }
-    let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} J'ai besoin des permissions \`Voir les salons, envoyer des messages, envoyer des liens et embed\` pour fonctionner`).setFooter(`TADAA | v${json.version}`)
-    let opembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Une opération est déà en cours d'éxécution*`).setFooter(`TADAA | v${json.version}`)
+    let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+    let opembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationActive.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
     if (!message.guild.member(client.user).hasPermission(19456)) return (message.channel.send(permembed));
-    if (database.get(`data.creation`).value() === 'on') return (message.channel.send(opembed));
+    if (await database.get(`data.creation`).value() === 'on') return (message.channel.send(opembed));
     await database.set(`data.creation`, 'on').write()
     await database.set(`data.channel`, 'Erreur!').write()
     await database.set(`data.time`, 'Erreur!').write()
@@ -58,12 +40,12 @@ console.log = function(d) {
     await database.set(`data.requiredrole`, 'Erreur!').write()
     await database.set(`data.isrequiredserver`, 'Erreur!').write()
     await database.set(`data.requiredserver`, 'Erreur!').write()
-    let embedd = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setDescription(`${info} Création d'un giveaway`).setColor(`#FA921D`).addField(`Valeurs:`, `Aucune valeur définie pour le moment :(`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+    let embedd = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).setColor(`#FA921D`).addField(lang.createEmbedFieldTitle, lang.createEmbedFieldEmpty).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
     const member = message.author.id
     const channelID = message.channel.id
     let embed;
     await message.channel.send(embedd).then(async msg => {
-        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Tout d'abord, veuillez mentionner le salon dans lequel le giveaway aura lieu.`).setFooter(`TADAA | v${json.version}`)
+        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createChannelMessage).setFooter(lang.footer.split("%version%").join(json.version))
         await message.channel.send(embed)
         let answered;
         answered = false
@@ -84,7 +66,7 @@ console.log = function(d) {
                 if (mess === "cancel") {
                     await database.set(`data.channel`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     answered = true
                     return msg.delete();
@@ -97,7 +79,7 @@ console.log = function(d) {
                     await database.set(`data.channel`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Veuillez mentionner un salon, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createChannelError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
                 } else {
@@ -105,16 +87,17 @@ console.log = function(d) {
                         await database.set(`data.channel`, 'Erreur!').write()
                         await database.set(`data.creation`, 'off').write()
                         answered = true
-                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Veuillez mentionner un salon __textuel__, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createChannelTextError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                         return message.channel.send(embed);
                     }
                     await database.set(`data.channel`, channel.id).write()
-                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(`${info} Création d'un giveaway`).addField(`Valeurs:`, `Salon: <#${await database.get(`data.channel`).value()}>`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                    let new_channel = `<#${await database.get(`data.channel`).value()}>`
+                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createEmbedFieldChannel.split("%new_channel%").join(new_channel)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     await msg.edit(editembed)
                     answered = true
                 }
             }).catch(async (err) => {
-                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 await database.set(`data.creation`, 'off').write()
                 await database.set(`data.channel`, 'Erreur!').write()
@@ -128,12 +111,12 @@ console.log = function(d) {
             return;
         }
         if (!message.guild.channels.cache.get(database.get(`data.channel`).value()).memberPermissions(message.guild.member(client.user)).has(19456)) {
-            message.channel.send(`:warning: ATTENTION, je n'ai pas les permissions d'envoyer des embeds, d'envoyer des messages ou de voir le salon. Je ne pourrais donc pas commencer le giveaway`)
+            message.channel.send(lang.createChannelPermissionWarning)
         }
         if (database.get(`data.creation`).value() === 'off') {
             return;
         }
-        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Ensuite, veuillez renseigner la durée du giveaway (exemples: 10s, 10m, 10d, 1w)`).setFooter(`TADAA | v${json.version}`)
+        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createDurationMessage).setFooter(lang.footer.split("%version%").join(json.version))
         await message.channel.send(embed)
         answered = false
         while (answered === false) {
@@ -153,7 +136,7 @@ console.log = function(d) {
                 if (mess === "cancel") {
                     await database.set(`data.time`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     answered = true
                     return msg.delete();
@@ -162,18 +145,18 @@ console.log = function(d) {
                 if (!timems) {
                     await database.set(`data.time`, 'Erreur!').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Veuillez rentrer une durée valide (exemple: 10s, 10m, 10d), opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createDurationError.splice("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
                 } else {
                     mess = mess.replace(/-/g, '')
                     await database.set(`data.time`, mess).write()
-                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setDescription(`${info} Création d'un giveaway`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).addField(lang.createEmbedFieldTitle, lang.createDurationField.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value())).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     await msg.edit(editembed)
                     answered = true
                 }
             }).catch(async () => {
-                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 await database.set(`data.creation`, 'off').write()
                 await database.set(`data.time`, 'Erreur!').write()
@@ -188,7 +171,7 @@ console.log = function(d) {
         if (database.get(`data.creation`).value() === 'off') {
             return;
         }
-        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Renseignez maintenant le nombre de gagnants qui seront tirés au sort`).setFooter(`TADAA | v${json.version}`)
+        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createWinnersMessage).setFooter(lang.footer.split("%version%").join(json.version))
         await message.channel.send(embed)
         answered = false
         while (answered === false) {
@@ -208,7 +191,7 @@ console.log = function(d) {
                 if (mess === "cancel") {
                     await database.set(`data.winnerstr`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     answered = true
                     return msg.delete();
@@ -220,7 +203,7 @@ console.log = function(d) {
                     await database.set('winnerstr', 'Erreur!').write()
                     await database.set('creation', 'Erreur!').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Vous devez entrer un nombre, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createWinnersError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
                 } else {
@@ -228,12 +211,12 @@ console.log = function(d) {
                     Math.trunc(mess);
                     await database.set(`data.winnerint`, mess).write()
                     await database.set(`data.winnerstr`, mess.toString()).write()
-                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(`${info} Création d'un giveaway`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createWinnersField.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()) ).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     answered = true
                     await msg.edit(editembed)
                 }
             }).catch(async () => {
-                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 await database.set(`data.creation`, 'off').write()
                 await database.set(`data.winnerstr`, 'Erreur!').write()
@@ -248,7 +231,7 @@ console.log = function(d) {
         if (database.get(`data.creation`).value() === 'off') {
             return;
         }
-        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Veuillez rentrer le prix à gagner`).setFooter(`TADAA | v${json.version}`)
+        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createPrizeMessage).setFooter(lang.footer.split("%version%").join(json.version))
         await message.channel.send(embed)
         answered = false
         while (answered === false) {
@@ -268,7 +251,7 @@ console.log = function(d) {
                 if (mess === "cancel") {
                     await database.set(`data.price`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     answered = true
                     return msg.delete();
@@ -277,17 +260,17 @@ console.log = function(d) {
                     await database.set(`data.price`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Votre prix ne peut pas faire plus de 100 caractères, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createPrizeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
                 } else {
                     await database.set(`data.price`, mess).write()
-                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(`${info} Création d'un giveaway`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**\nPrix: \`${database.get(`data.price`).value()}\` `).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createPrizeField.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`))).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     answered = true
                     await msg.edit(editembed)
                 }
             }).catch(async () => {
-                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 await database.set(`data.creation`, 'off').write()
                 await database.set(`data.price`, 'Erreur!').write()
@@ -302,7 +285,7 @@ console.log = function(d) {
         if (database.get(`data.creation`).value() === 'off') {
             return;
         }
-        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Souhaitez-vous que seuls les utilisateurs possédant un certain rôle puissent participer? \`oui/non\``).setFooter(`TADAA | v${json.version}`)
+        embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createRoleAMessage).setFooter(lang.footer.split("%version%").join(json.version))
         await message.channel.send(embed)
         answered = false
         while (answered === false) {
@@ -323,7 +306,7 @@ console.log = function(d) {
                     await database.set(`data.isrequiredrole`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return msg.delete();
                 }
@@ -332,17 +315,17 @@ console.log = function(d) {
                     await database.set(`data.creation`, 'off').write()
                     await database.set(`data.isrequiredrole`, 'Erreur!').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Vous devez choisir entre oui ou non, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createRoleAError.splice("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
                 }
                 await database.set(`data.isrequiredrole`, mess).write()
                 await database.set(`data.requiredrole`, mess).write()
-                var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(`${info} Création d'un giveaway`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**\nRôle requis?: **${database.get(`data.isrequiredrole`).value()}**`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createRoleAField.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`)).split("%requiredrole%").join(await database.get(`data.isrequiredrole`).value())).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                 answered = true
                 await msg.edit(editembed)
             }).catch(async () => {
-                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 await database.set(`data.creation`, 'off').write()
                 await database.set(`data.isrequiredrole`, 'Erreur!').write()
@@ -358,7 +341,7 @@ console.log = function(d) {
             return;
         }
         if (await database.get(`data.isrequiredrole`).value() === 'oui') {
-            embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Mentionnez ou donnez l'id du rôle souhaité`).setFooter(`TADAA | v${json.version}`)
+            embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createRoleMMessage).setFooter(lang.footer.split("%version%").join(json.version))
             await message.channel.send(embed)
             answered = false
             while (answered === false) {
@@ -379,7 +362,7 @@ console.log = function(d) {
                         await database.set(`data.requiredrole`, 'Erreur!').write()
                         await database.set(`data.creation`, 'off').write()
                         answered = true
-                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                         message.channel.send(embed)
                         return msg.delete();
                     }
@@ -392,18 +375,18 @@ console.log = function(d) {
                         await database.set(`data.requiredrole`, 'Erreur!').write()
                         await database.set(`data.creation`, 'off').write()
                         answered = true
-                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Rôle introuvable, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createRoleMError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                         message.channel.send(embed)
                         return;
                     } else {
                         await database.set(`data.requiredrole`, role.id).write()
                     }
                     if (await database.get(`data.requiredrole`).value() === 'Erreur!') return;
-                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(`${info} Création d'un giveaway`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**\nRôle requis?: **${database.get(`data.isrequiredrole`).value()}\nRôle: <@&${database.get(`data.requiredrole`).value()}>`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createRoleMField.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`)).split("%requiredrole%").join(`<@&${await database.get(`data.requiredrole`).value()}>`)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     answered = true
                     await msg.edit(editembed)
                 }).catch(async () => {
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     await database.set(`data.creation`, 'off').write()
                     await database.set(`data.requiredrole`, 'Erreur!').write()
@@ -421,7 +404,7 @@ console.log = function(d) {
             return;
         }
 
-       embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Souhaitez-vous que les utilisateurs soient sur un serveur spécifiques pour participer? \`oui/non\``).setFooter(`TADAA | v${json.version}`)
+       embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerMessage).setFooter(lang.footer.split("%version%").join(json.version))
         await message.channel.send(embed)
         answered = false
         while (answered === false) {
@@ -442,7 +425,7 @@ console.log = function(d) {
                     await database.set(`data.isrequiredserver`, 'Erreur!').write()
                     await database.set(`data.creation`, 'off').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return msg.delete();
                 }
@@ -451,16 +434,21 @@ console.log = function(d) {
                     await database.set(`data.creation`, 'off').write()
                     await database.set(`data.isrequiredserver`, 'Erreur!').write()
                     answered = true
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Vous devez choisir entre oui ou non, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerError.split("%nope%").join("client.nope")).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
                 }
                 await database.set(`data.isrequiredserver`, mess).write()
-                var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(`${info} Création d'un giveaway`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**\nServeur requis?: **${database.get(`data.isrequiredserver`).value()}**`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                var editembed;
+                if(await database.get(`data.isrequiredrole`).value() === "oui") {
+                editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerFieldRole.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`)).split("%requiredrole%").join(`<@&${await database.get(`data.requiredrole`).value()}>`).split("%requiredserver%").join(await database.get(`data.isrequiredserver`))).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
+                } else {
+                editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerFieldNoRole.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`)).split("%requiredserver%").join(await database.get(`data.isrequiredserver`))).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
+                }
                 answered = true
                 await msg.edit(editembed)
             }).catch(async () => {
-                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 await database.set(`data.creation`, 'off').write()
                 await database.set(`data.isrequiredserver`, 'Erreur!').write()
@@ -476,7 +464,7 @@ console.log = function(d) {
             return;
         }
         if (await database.get(`data.isrequiredserver`).value() === 'oui') {
-            embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`Veuillez donner l'identifiant du serveur`).setFooter(`TADAA | v${json.version}`)
+            embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerIMessage).setFooter(lang.footer.split("%version%").join(json.version))
             await message.channel.send(embed)
             answered = false
             while (answered === false) {
@@ -497,7 +485,7 @@ console.log = function(d) {
                         await database.set(`data.requiredserver`, 'Erreur!').write()
                         await database.set(`data.creation`, 'off').write()
                         answered = true
-                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} *Opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationCanceled.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
                         message.channel.send(embed)
                         return msg.delete();
                     }
@@ -510,7 +498,7 @@ console.log = function(d) {
                         await database.set(`data.requiredserver`, 'Erreur!').write()
                         await database.set(`data.creation`, 'off').write()
                         answered = true
-                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Serveur introuvable, Le bot n'est pas présent sur le serveur ou l'id est incorrect, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerIError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                         message.channel.send(embed)
                         return;
                     } else {
@@ -518,11 +506,17 @@ console.log = function(d) {
                         await database.set(`data.requiredservername`, role.name).write()
                     }
                     if (await database.get(`data.requiredrole`).value() === 'Erreur!') return;
-                    var editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(`${info} Création d'un giveaway`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**\nRôle requis?: **${database.get(`data.isrequiredrole`).value()}\nServeur requis: ${database.get(`data.requiredservername`).value()}`).setFooter(`Tapez 'cancel' pour annuler |  créé par ezzud`, message.author.avatarURL())
+                    var editembed;
+                    if(await database.get(`data.isrequiredrole`).value() === "oui") {
+                    editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldRole.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`)).split("%requiredrole%").join(`<@&${await database.get(`data.requiredrole`).value()}>`).split("%requiredserver%").join(await database.get(`data.isrequiredserver`))).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
+                    } else {
+                    editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldNoRole.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`)).split("%requiredserver%").join(`${client.guilds.cache.get(await database.get(`data.requiredserver`)).name}`)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
+                    }
                     answered = true
                     await msg.edit(editembed)
-                }).catch(async () => {
-                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                }).catch(async (err) => {
+                    console.log(err)
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     await database.set(`data.creation`, 'off').write()
                     await database.set(`data.requiredserver`, 'Erreur!').write()
@@ -545,14 +539,13 @@ console.log = function(d) {
     let Isrequiredrole;
     let requiredrole;
     if (await database.get(`data.isrequiredrole`).value() === 'oui') {
-        editedembed = new Discord.MessageEmbed().setTitle(`TADAA`).setDescription(`${what} Confirmation de la création du giveaway`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**\nPrix: \`${database.get(`data.price`).value()}\`\nRole requis: <@&${database.get(`data.requiredrole`).value()}>`).setFooter(`TADAA | v${json.version}`, message.author.avatarURL())
         Isrequiredrole = true
         requiredrole = database.get(`data.requiredrole`).value()
     } else {
-        editedembed = new Discord.MessageEmbed().setTitle(`TADAA`).setDescription(`${what} Confirmation de la création du giveaway`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).addField(`Valeurs:`, `Salon: <#${database.get(`data.channel`).value()}>\nDurée: **${database.get(`data.time`).value()}**\nNombre de gagnants: **${database.get(`data.winnerstr`).value()}**\nPrix: \`${database.get(`data.price`).value()}\` `).setFooter(`TADAA | v${json.version}`, message.author.avatarURL())
         Isrequiredrole = false
         requiredrole = null
     }
+    editedembed = new Discord.MessageEmbed().setTitle(`TADAA`).setDescription(lang.createConfirmHeader.split("%what%").join(client.what)).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).addField(lang.createEmbedFieldTitle, lang.createConfirmField.split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`).split("%duration%").join(await database.get(`data.time`).value()).split("%winners%").join(await database.get(`data.winnerstr`).value()).split("%prize%").join(await database.get(`data.price`)).split("%requiredrole%").join(await database.get(`data.isrequiredrole`).value()).split("%requiredserver%").join(await database.get(`data.isrequiredserver`))).setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
     let isrequiredserver;
     let requiredserver;
     let requiredservername;
@@ -591,7 +584,7 @@ console.log = function(d) {
                         requiredServerName: requiredservername
                     }).then(async (gData) => {
                         console.log(`SHARD #${client.shard.ids[0]} - Nouveau giveaway lancé dans le serveur " ${client.guilds.cache.get(gData.guildID).name} "`);
-                        embed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${okay} Le giveaway a été lancé dans le salon ${message.guild.channels.cache.get(`${database.get(`data.channel`).value()}`)}`).setFooter(`TADAA | v${json.version}`)
+                        embed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createConfirmSuccess.split("%okay%").join(client.okay).split("%channel%").join(`<#${await database.get(`data.channel`).value()}>`)).setFooter(lang.footer.split("%version%").join(json.version))
                         await message.channel.send(embed)
                         await database.set(`data.channel`, `Erreur!`).write()
                         await database.set(`data.time`, `Erreur!`).write()
@@ -609,7 +602,7 @@ console.log = function(d) {
                     await database.set(`data.creation`, `off`).write()
                 }
             }).catch(() => {
-                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${nope} *Délai de 60 secondes dépassé, opération annulée*`).setFooter(`TADAA | v${json.version}`)
+                embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createTimeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 return;
             });

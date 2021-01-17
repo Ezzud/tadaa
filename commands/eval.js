@@ -13,11 +13,8 @@ let emojiMap = {
     erreur: "760112864731201576"
 };
 
-function getEmoji(name) {
-    return `<:${name}:${emojiMap[name]}>`;
-}
 
-module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager, json, command) => {
+module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {
     let date = new Date();
     date.setHours(date.getHours() + 2); //

@@ -31,15 +31,9 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager, json) => {
-    var timer = new Date().getTime() - message.createdTimestamp
-    let uptime = (client.uptime / 1000);
-    let day = Math.floor(uptime / 86400);
-    let hour = Math.floor(uptime / 3600);
-    uptime %= 3600;
-    let minute = Math.floor(uptime / 60);
-    let seconde = uptime % 60;
-    seconde = Math.trunc(seconde)
+module.exports.run = async (client, pf, message, args, manager,json,lang) => {
+    var messagePing = new Date().getTime() - message.createdTimestamp
+    var apiPing = Math.trunc(client.ws.ping)
     let count3 = 0;
     let values3 = await client.shard.broadcastEval(`
     [
@@ -50,34 +44,69 @@ module.exports.run = async (client, pf, message, args, nope, info, okay, what, w
     values3.forEach((value) => {
         count3 = count3 + 1
     });
-    let daym;
-    let hourm;
-    let minutem;
-    let secondem;
-    if (day <= 1) {
-        daym = 'jour'
+    let remainingTime = new Date(client.uptime)
+    let roundTowardsZero = remainingTime > 0 ? Math.floor : Math.ceil;
+    let days = roundTowardsZero(remainingTime / 86400000),
+    hours = roundTowardsZero(remainingTime / 3600000) % 24,
+    minutes = roundTowardsZero(remainingTime / 60000) % 60,
+    seconds = roundTowardsZero(remainingTime / 1000) % 60;
+    let d;
+    let h;
+    let m;
+    let s;
+    if(days > 0) {
+       d = `${days} ${lang.infoDays}` 
+    } else if(days === 0) {
+       d = ``
+    } else if(days === 1) {
+        d = `${days} ${lang.infoDay}`
     } else {
-        daym = 'jours'
+    	d = ``
     }
-    if (hour <= 1) {
-        hourm = 'heure'
+    if(hours > 0) {
+       h = `${hours} ${lang.infoHours}` 
+    } else if(hours === 0) {
+       h = ``
+    } else if(hours === 1) {
+        h = `${hours} ${lang.infoHour}`
     } else {
-        hourm = 'heures'
+    	h = ``
     }
-    if (minute <= 1) {
-        minutem = 'minute'
+    if(minutes > 0) {
+       m = `${minutes} ${lang.infoMinutes}` 
+    } else if(minutes === 0) {
+       m = ``
+    } else if(minutes === 1){
+        m = `${minutes} ${lang.infoMinute}`
     } else {
-        minutem = 'minutes'
+    	m = ``
     }
-    if (seconde <= 1) {
-        secondem = 'seconde'
+    if(seconds > 0) {
+       s = `${seconds} ${lang.infoSeconds}` 
+    } else if(seconds === 0) {
+       s = ``
+    } else if(seconds === 1) {
+        s = `${seconds} ${lang.infoSecond}`
     } else {
-        secondem = 'secondes'
+    	s = ``
     }
+    let msg = `${d || " "} ${h || " "} ${m || " "} ${s || " "}`
     let req = await client.shard.fetchClientValues('guilds.cache.size');
     req = req.reduce((p, n) => p + n, 0);
     var memory = process.memoryUsage()
-    var embed = new Discord.MessageEmbed().setTitle(`Informations du bot`).setColor('#e4b400').setThumbnail(client.user.avatarURL()).addField(`${loadings} Ping`, `${timer}ms\n\u200B`, true).addField(`${getEmoji("sharding")} Shards`, `\`${count3}\`/\`${client.shard.count}\` | Shard du serveur: #${client.shard.ids[0]}\n\u200B`, true).addField(`${getEmoji("computer")} Uptime`, `${day} ${daym} ${hour} ${hourm} ${minute} ${minutem} ${seconde} ${secondem}\n\u200B`, false).addField(`${getEmoji("memoire")} Utilisation de la mémoire\u200B`, `\`${bts(memory.heapUsed)}\`/\`2 GB\`\n\u200B`, false).addField(`${getEmoji("dev")} Créateur\u200B`, "ezzud#0001\n\u200B", true).addField(`:house: Nombre de serveurs`, `\` ${req} \`\n\u200B`, true).addField(`:newspaper: Changelog`, `**Version:** \`${json.version}\`\n${json.changelog}\n\u200B`, false).addField(`\u200B`, `[Support](https://discord.gg/VGt9S66) - [Inviter le bot](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=355392&scope=bot)`).setFooter(`TADAA | v${json.version}`, message.author.avatarURL())
+    var embed = new Discord.MessageEmbed()
+    .setTitle(lang.infoTitle)
+    .setColor('#e4b400')
+    .setThumbnail(client.user.avatarURL())
+    .addField(lang.infoPingTitle.split("%loading%").join(loadings), `${lang.infoPingField.split("%messagePing%").join(messagePing).split("%apiPing%").join(apiPing)}`, true)
+    .addField(lang.infoShardsTitle.split("%shard%").join(getEmoji("sharding")), `${lang.infoShardsField.split("%activeShards%").join(count3).split("%maxShards%").join(client.shard.count).split("%shard%").join(client.shard.ids[0])}`, true)
+    .addField(lang.infoUptimeTitle.split("%uptime%").join(getEmoji("computer")), `${lang.infoUptimeField.split("%uptime%").join(msg)}`, false)
+    .addField(lang.infoMemoryTitle.split("%memory%").join(getEmoji("memoire")), `${lang.infoMemoryField.split("%memory%").join(bts(memory.heapUsed))}`, false)
+    .addField(lang.infoDevTitle.split("%dev%").join(getEmoji("dev")), `${lang.infoDevField}`, true)
+    .addField(lang.infoServersTitle, `${lang.infoServersField.split("%servers%").join(req)}`, true)
+    .addField(lang.infoChangelogTitle, `${lang.infoChangelogField.split("%version%").join(json.version).split("%changelogs%").join(json.changelog)}`, false)
+    .addField(`\u200B`, lang.infoSupportField)
+    .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
     await message.channel.send(embed)
 }
 module.exports.help = {

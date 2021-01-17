@@ -27,7 +27,7 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async (client, pf, message, args, nope, info, okay, what, warning, manager, json) => {
+module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {
     let date = new Date();
     date.setHours(date.getHours() + 2); //

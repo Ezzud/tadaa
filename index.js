@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const client = new Discord.Client({
-    partials: ['MESSAGE', 'REACTION']
+    partials: ['MESSAGE', 'REACTION', 'GUILD_MEMBER']
 });
 const ms = require('ms');
 const settings = require('./config.json');
@@ -99,7 +99,6 @@ console.log = function(d) {
     fs.appendFileSync(`${logstr}`, `\n${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
     log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
 };
-console.log(`Logs path set to: ${logstr}`)
 }, 300000);
 console.log = function(d) {
     let date = new Date();
