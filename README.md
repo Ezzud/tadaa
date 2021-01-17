@@ -23,7 +23,6 @@ Features
 - ~70-100ms
 - Actualisation rapide (10s)
 - Bot en constante amélioration
-
 </p>
 
 
@@ -58,5 +57,4 @@ Commandes de configuration (Permission requise: Administrateur):
 - t!config dmwin [Oui/Non] | Activer ou non l'envoi d'un message privé au(x) gagnant(s)
 - t!config lang [Langue] | Changer la langue parmis celles disponibles
 - t!config lang list | Voir la liste des langues
-
-  </p>
+</p>
