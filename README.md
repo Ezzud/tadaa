@@ -21,6 +21,9 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 - Interface graphique simple
 - ~70-100ms
 - Actualisation rapide (10s)
+- Aucun système de premium ou autre locker
+- Manipulation de giveaway facile et rapide
+- Totalement configurable
 - Bot en constante amélioration
 </p>
 
