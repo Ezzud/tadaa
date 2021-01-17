@@ -36,7 +36,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 </p>
 
 ![Commandes de giveaway](https://cdn.discordapp.com/attachments/800365015642275850/800365267645104168/giveaway.png)<br/>
-(Permission requise: Gérer le serveur ou rôle nommé 'Giveaways'):
+<h3>(Permission requise: Gérer le serveur ou rôle nommé 'Giveaways')</h3>
 <p>
 
 - t!create | Commencer le processus de création de giveaways
@@ -49,7 +49,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 </p>
 
 ![Commandes de configuration](https://cdn.discordapp.com/attachments/800365015642275850/800365266197807114/configuration.png)<br/>
-(Permission requise: Administrateur):
+<h3>(Permission requise: Administrateur)</h3>
 <p>
 
 - t!config | Voir la configuration actuelle du bot
