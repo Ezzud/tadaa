@@ -35,7 +35,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 - t!ping | Voir le ping du bot
 </p>
 
-![Commandes de giveaway](https://cdn.discordapp.com/attachments/800365015642275850/800365267645104168/giveaway.png)
+![Commandes de giveaway](https://cdn.discordapp.com/attachments/800365015642275850/800365267645104168/giveaway.png)<br/>
 (Permission requise: Gérer le serveur ou rôle nommé 'Giveaways'):
 <p>
 
@@ -48,7 +48,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 - t!list | Afficher la liste des giveaways sur le serveur
 </p>
 
-![Commandes de configuration](https://cdn.discordapp.com/attachments/800365015642275850/800365266197807114/configuration.png) 
+![Commandes de configuration](https://cdn.discordapp.com/attachments/800365015642275850/800365266197807114/configuration.png)<br/>
 (Permission requise: Administrateur):
 <p>
 
