@@ -1,7 +1,7 @@
 # TADAA
 
 [![Size](https://img.shields.io/github/last-commit/Ezzud/tadaa)]()\
-[![Github package.json version](https://img.shields.io/github/package-json/v/Ezzud/tadaa?style=flat-square)]()\
+[![Github package.json version](https://img.shields.io/github/package-json/v/Ezzud/tadaa)]()\
 [![ds.js version](https://img.shields.io/github/package-json/dependency-version/Ezzud/tadaa/discord.js)]()\
 <br>
 
