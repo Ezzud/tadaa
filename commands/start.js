@@ -24,7 +24,7 @@ console.log = function(d) {
     }
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
     let embed;
-    if (!message.guild.member(client.user).hasPermission(19456)) return (message.channel.send(permembed));
+    if (!message.guild.member(client.user).hasPermission(379968)) return (message.channel.send(permembed));
     if (!args[0]) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startSyntax.split("%nope%").join(client.nope).split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
         return (message.channel.send(embed));
@@ -86,7 +86,7 @@ console.log = function(d) {
         winnerCount: parseInt(winners),
         IsRequiredServer: false,
         requiredServer: null,
-        lang: "fr_FR",
+        lang: lang.id,
         langfile: lang,
         requiredServerName: null
     }).then((gData) => {

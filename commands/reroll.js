@@ -25,7 +25,7 @@ console.log = function(d) {
             return;
         }
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-    if (!message.guild.member(client.user).hasPermission(19456)) return (message.channel.send(permembed));
+    if (!message.guild.member(client.user).hasPermission(379968)) return (message.channel.send(permembed));
     if (!args[0]) {
         let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoID.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
         message.channel.send(embed)

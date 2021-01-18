@@ -29,7 +29,7 @@ console.log = function(d) {
     }
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
     let opembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationActive.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-    if (!message.guild.member(client.user).hasPermission(19456)) return (message.channel.send(permembed));
+    if (!message.guild.member(client.user).hasPermission(379968)) return (message.channel.send(permembed));
     if (await database.get(`data.creation`).value() === 'on') return (message.channel.send(opembed));
     await database.set(`data.creation`, 'on').write()
     await database.set(`data.channel`, 'Erreur!').write()
@@ -110,7 +110,7 @@ console.log = function(d) {
             await database.set(`data.creation`, 'off').write()
             return;
         }
-        if (!message.guild.channels.cache.get(database.get(`data.channel`).value()).memberPermissions(message.guild.member(client.user)).has(19456)) {
+        if (!message.guild.channels.cache.get(database.get(`data.channel`).value()).memberPermissions(message.guild.member(client.user)).has(379968)) {
             message.channel.send(lang.createChannelPermissionWarning)
         }
         if (database.get(`data.creation`).value() === 'off') {
@@ -311,13 +311,19 @@ console.log = function(d) {
                     return msg.delete();
                 }
                 mess = mess.toLowerCase();
-                if (mess !== "oui" && mess !== "non") {
+                if (mess !== "oui" && mess !== "non" && mess !== "no" && mess !== "yes") {
                     await database.set(`data.creation`, 'off').write()
                     await database.set(`data.isrequiredrole`, 'Erreur!').write()
                     answered = true
                     embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createRoleAError.splice("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
+                }
+                if(mess === "yes") {
+                    mess = "oui"
+                }
+                if(mess === "no") {
+                    mess = "non"
                 }
                 await database.set(`data.isrequiredrole`, mess).write()
                 await database.set(`data.requiredrole`, mess).write()
@@ -430,13 +436,19 @@ console.log = function(d) {
                     return msg.delete();
                 }
                 mess = mess.toLowerCase();
-                if (mess !== "oui" && mess !== "non") {
+                if (mess !== "oui" && mess !== "non" && mess !== "yes" && mess !== "no") {
                     await database.set(`data.creation`, 'off').write()
                     await database.set(`data.isrequiredserver`, 'Erreur!').write()
                     answered = true
                     embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerError.split("%nope%").join("client.nope")).setFooter(lang.footer.split("%version%").join(json.version))
                     message.channel.send(embed)
                     return;
+                }
+                if(mess === "yes") {
+                    mess = "oui"
+                }
+                if(mess === "no") {
+                    mess = "non"
                 }
                 await database.set(`data.isrequiredserver`, mess).write()
                 var editembed;
@@ -581,6 +593,7 @@ console.log = function(d) {
                         requiredRole: requiredrole,
                         IsRequiredServer: isrequiredserver,
                         requiredServer: requiredserver,
+                        lang: lang.id,
                         requiredServerName: requiredservername
                     }).then(async (gData) => {
                         console.log(`SHARD #${client.shard.ids[0]} - Nouveau giveaway lancé dans le serveur " ${client.guilds.cache.get(gData.guildID).name} "`);

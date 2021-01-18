@@ -57,7 +57,7 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
             message.channel.send(embed)
             return;
         }
-        if (args[1].toLowerCase() === 'oui') {
+        if (args[1].toLowerCase() === 'oui' || args[1].toLowerCase() === 'yes') {
             if (await database.get(`data.isDMWin`).value() === true) {
                 let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(configDMWinAlreadyActivated.split("%nope%").join(client.nope)).addField(lang.configPrefixSyntaxTitle, lang.configDMWinSyntax.split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
@@ -66,7 +66,7 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
             await database.set(`data.isDMWin`, true).write()
             let embed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configDMWinActivated.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
             message.channel.send(embed)
-        } else if (args[1].toLowerCase() === 'non') {
+        } else if (args[1].toLowerCase() === 'non' || args[1].toLowerCase() === 'no') {
             if (await database.get(`data.isDMWin`).value() === false) {
                 let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configDMWinAlreadyDesactivated.split("%nope%").join(client.nope)).addField(lang.configPrefixSyntaxTitle, lang.configDMWinSyntax.split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)

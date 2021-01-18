@@ -26,7 +26,7 @@ console.log = function(d) {
         }
     }
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-    if (!message.guild.member(client.user).hasPermission(19456)) return (message.channel.send(permembed));
+    if (!message.guild.member(client.user).hasPermission(379968)) return (message.channel.send(permembed));
     let onServer;
     onServer = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
     onServer = onServer.filter((g) => g.ended !== true);
@@ -36,7 +36,7 @@ console.log = function(d) {
     if (!onServer) {
         onServer = 'Aucun :('
     } else {
-        onServer = onServer.map(g => `${lang.listGiveawaysMap.split("%prize%").join(g.prize).split("%endDate%").join(`${moment(g.endAt.setHours(g.enAt.getHours() + 1)).format('L')} ${moment(g.endAt).format('LT')}`).split("%endAt%").join(moment(g.endAt).fromNow())} [${lang.listGiveawaysAccessButton}](https://discordapp.com/channels/${g.guildID}/${g.channelID}/${g.messageID})::`)
+        onServer = onServer.map(g => `${lang.listGiveawaysMap.split("%prize%").join(g.prize).split("%endDate%").join(`${moment(new Date(g.endAt).setHours(new Date(g.endAt).getHours() + 1)).format('L')} ${moment(new Date(g.endAt).setHours(new Date(g.endAt).getHours() + 1)).format('LT')}`).split("%endAt%").join(moment(g.endAt).fromNow())} [${lang.listGiveawaysAccessButton}](https://discordapp.com/channels/${g.guildID}/${g.channelID}/${g.messageID})::`)
         onServer = Array.from(onServer)
         if (onServer[6] !== undefined && onServer[10] !== undefined) {
             onServer2 = onServer.slice(6, 10)
