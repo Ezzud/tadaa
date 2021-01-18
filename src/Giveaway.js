@@ -81,7 +81,7 @@ class Giveaway extends EventEmitter {
             minuteUnit = minutes < 2 && (this.messages.units.pluralS || lang.infoMinutes.endsWith('s')) ? lang.infoMinutes.substr(0, lang.infoMinutes.length - 1) : lang.infoMinutes,
             secondUnit = seconds < 2 && (this.messages.units.pluralS || lang.infoSeconds.endsWith('s')) ? lang.infoSeconds.substr(0, lang.infoSeconds.length - 1) : lang.infoSeconds;
         let pattern = (!isDay ? '' : `{days} ${dayUnit}, `) + (!isHour ? '' : `{hours} ${hourUnit}, `) + (!isMinute ? '' : `{minutes} ${minuteUnit}, `) + `{seconds} ${secondUnit}`;
-        let content = this.messages.timeRemaining.replace('{duration}', pattern).replace('{days}', days).replace('{hours}', hours).replace('{minutes}', minutes).replace('{seconds}', seconds);
+        let content = lang.managerContent.replace('{duration}', pattern).replace('{days}', days).replace('{hours}', hours).replace('{minutes}', minutes).replace('{seconds}', seconds);
         return content;
     }
     async fetchMessage() {
