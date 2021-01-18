@@ -48,7 +48,7 @@ module.exports = async (client) => {
         req = req.reduce((p, n) => p + n, 0);
         await client.user.setPresence({
             activity: {
-                name: `@TADAA | Shard ${count2}/${client.shard.count} | ${req} serveurs | v${json.version}`
+                name: `@TADAA | ${req} serveurs | v${json.version} | Shard ${count2}/${client.shard.count}`
             },
             status: 'dnd'
         })
