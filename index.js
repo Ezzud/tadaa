@@ -234,7 +234,12 @@ manager.on('end', async (giveaway, winners) => {
         await database.set(`data.isDMWin`, true).write()
     }
     if (dmWin === true) {
-        const embedwin = new Discord.MessageEmbed().setAuthor(`Tu viens de remporter un giveaway!`, icon_url = 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#EFE106').addField(`\u200B`, `Tu viens de remporter le prix \`${giveaway.prize}\`\n[Clique ici](https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}) pour accéder au message`)
+    	let lang = await database.get(`data.lang`).value()
+    	if(!lang) {
+    		lang = "fr_FR"
+    	}
+    	lang = require(`./lang/${lang}.json`)
+        const embedwin = new Discord.MessageEmbed().setAuthor(`${lang.winText}`, icon_url = 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#EFE106').addField(`\u200B`, `${lang.winPrize.split("%prize%").join(giveaway.prize)}\n[${lang.winButton}](https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}) pour accéder au message`)
         winners.forEach((member) => {
             member.send(embedwin)
         });

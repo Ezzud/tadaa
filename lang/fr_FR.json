@@ -161,6 +161,12 @@
 	"managerEndedWinners":"Gagnant(s): %formattedWinners%",
 	"managerEndedNoWinner":"Aucun gagnant :(",
 	"managerRerollMessage":"🎁 Nouveau(x) gagnant(s): %winners%!",
-	"managerRerollError":"Aucun gagnant ne peut être choisi!"
+	"managerRerollError":"Aucun gagnant ne peut être choisi!",
+	"winText":"Tu viens de remporter un giveaway!",
+	"winPrize":"Tu viens de remporter le prix `%prize%`",
+	"winButton":"Clique ici",
+	"reactError":"Erreur!",
+	"reactNoRole":"Vous ne pouvez pas participer à ce giveaway car vous ne possédez pas le rôle `%rolename%`",
+	"reactNoServer":"Vous ne pouvez pas participer à ce giveaway car vous n'êtes pas sur le serveur `%requiredServerName%`"
 
 }

@@ -15,8 +15,8 @@ console.log = function(d) {
     log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
 };
     let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('17F0C9').addField(`\u200B`, lang.pingStart).setFooter(lang.footer.split("%version%").join(json.version))
-    await message.channel.send(embed).then(async (msg) => {
     var messagePing = new Date().getTime() - message.createdTimestamp
+    await message.channel.send(embed).then(async (msg) => {
     var apiPing = Math.trunc(client.ws.ping)
         let color;
         if (apiPing > 500) {

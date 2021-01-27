@@ -147,7 +147,7 @@
 	"startWinnersError":"%nope% *You must give a number*",
 	"startNoPrize":"%nope% *Please give a prize*",
 	"startPrizeError":"%nope% *Prize must not be larger than 100 characters*",
-	"startEmbedSuccess":"%okay% *Giveaway has been successfully started in %channel%*` channel",
+	"startEmbedSuccess":"%okay% *Giveaway has been successfully started in %channel%* channel",
 	"managerEmbedTitle":"Active giveaway!",
 	"managerEmbedFooter":"React with 🎁 to enter! | End date: %date%",
 	"managerEmbedPrize":"🏆 Prize: `%prize%`",
@@ -161,6 +161,12 @@
 	"managerEndedWinners":"Winner(s): %formattedWinners%",
 	"managerEndedNoWinner":"No Winner :(",
 	"managerRerollMessage":"🎁 New winner(s): %winners%!",
-	"managerRerollError":"No winner can be chosen!"
+	"managerRerollError":"No winner can be chosen!",
+	"winText":"You just won a giveaway!",
+	"winPrize":"You won `%prize%`",
+	"winButton":"Click here",
+	"reactError":"Error!",
+	"reactNoRole":"You can't enter giveaway because you didn't have the `%rolename%` role",
+	"reactNoServer":"You can't enter giveaway because you are not on `%requiredServerName%`"
 
 }

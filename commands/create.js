@@ -40,6 +40,7 @@ console.log = function(d) {
     await database.set(`data.requiredrole`, 'Erreur!').write()
     await database.set(`data.isrequiredserver`, 'Erreur!').write()
     await database.set(`data.requiredserver`, 'Erreur!').write()
+    await database.set(`data.requiredservername`, 'Erreur!').write()
     let embedd = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).setColor(`#FA921D`).addField(lang.createEmbedFieldTitle, lang.createEmbedFieldEmpty).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
     const member = message.author.id
     const channelID = message.channel.id
