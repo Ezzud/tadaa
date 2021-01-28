@@ -1,4 +1,7 @@
 # TADAA
+[![Discord Bots](https://top.gg/api/widget/732003715426287676.svg)](https://top.gg/bot/732003715426287676)
+
+
 
 [![Size](https://img.shields.io/github/last-commit/Ezzud/tadaa)]()\
 [![Github package.json version](https://img.shields.io/github/package-json/v/Ezzud/tadaa)]()\
