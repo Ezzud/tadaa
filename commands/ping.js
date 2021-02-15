@@ -27,7 +27,7 @@ console.log = function(d) {
             color = 'E58613'
         }
         let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor(color).addField(`\u200B`, lang.pingEnd.split("%messagePing%").join(messagePing).split("%apiPing%").join(apiPing)).setFooter(lang.footer.split("%version%").join(json.version))
-        await msg.edit(embed)
+        msg.edit(embed)
     })
 }
 module.exports.help = {

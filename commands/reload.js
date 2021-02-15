@@ -36,7 +36,7 @@ console.log = function(d) {
 };
     if (message.author.id === settings.ownerID) {
         let emoji = loadings;
-        let reloadEmbed = new Discord.MessageEmbed().setColor('D7E921').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\n\u200BEtat`, `${emoji} Redémarrage du shard \` ${client.shard.ids[0]} \` en cours\n\u200B`).setFooter(`TADAA | v${json.version}`)
+        let reloadEmbed = new Discord.MessageEmbed().setColor('D7E921').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\nEtat`, `${emoji} Redémarrage du shard \` ${client.shard.ids[0]} \` en cours\n\u200B`).setFooter(`TADAA | v${json.version}`)
         await message.channel.send(reloadEmbed);
         let dater = new Date().getTime();
         await client.destroy()
@@ -54,7 +54,7 @@ console.log = function(d) {
         values.forEach((value) => {
             count = count + 1
         });
-        let reloadedEmbed = new Discord.MessageEmbed().setColor('5BCA2F').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\n\u200BEtat`, `${okay} Redémarrage du shard \` ${client.shard.ids[0]} \` effectué (*${time}s*)`).addField(`Shards`, `\`${count}\`/\`${client.shard.count}\`\n\u200B`).setFooter(`TADAA | v${json.version}`)
+        let reloadedEmbed = new Discord.MessageEmbed().setColor('5BCA2F').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\nEtat`, `${client.okay} Redémarrage du shard \` ${client.shard.ids[0]} \` effectué (*${time}s*)`).addField(`Shards`, `\`${count}\`/\`${client.shard.count}\`\n\u200B`).setFooter(`TADAA | v${json.version}`)
         await message.channel.send(reloadedEmbed)
     }
 }

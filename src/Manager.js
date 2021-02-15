@@ -58,7 +58,7 @@ class GiveawaysManager extends EventEmitter {
                 return reject('Unable to get the channel of the giveaway with message ID ' + giveaway.messageID + '.');
             }
             if (giveaway.ended === true) {
-                return reject('Déjà terminé');
+                return;
             }
             await giveaway.fetchMessage().catch(() => {});
             if (!giveaway.message) {
@@ -76,18 +76,21 @@ class GiveawaysManager extends EventEmitter {
                 let date = new Date()
                 date.setHours(date.getHours() + 1);
                 let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEndedTitle).setColor(`#EF1106`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setFooter(giveaway.options.langfile.managerEndedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n\n${giveaway.options.langfile.managerEnedWinners.split("%formattedWinners%").join(formattedWinners)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEndedTitle).setColor(`#EF1106`).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setFooter(giveaway.options.langfile.managerEndedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n\n${giveaway.options.langfile.managerEndedWinners.split("%formattedWinners%").join(formattedWinners)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
                 await giveaway.message.edit({
-                    embed
-                });
-                await giveaway.message.channel.send(giveaway.messages.winMessage.replace('{winners}', formattedWinners).replace('{prize}', giveaway.prize));
+                    embed});
+                if(winners.length > 1) {
+                    await giveaway.message.channel.send(giveaway.options.langfile.winMessageP.replace('{winners}', formattedWinners).replace('{prize}', giveaway.prize));
+                } else {
+                    await giveaway.message.channel.send(giveaway.options.langfile.winMessageS.replace('{winners}', formattedWinners).replace('{prize}', giveaway.prize));
+                }
                 await this.emit('end', giveaway, winners);
                 resolve(winners);
             } else {
                 let date = new Date()
                 date.setHours(date.getHours() + 1);
                 let embed = this.v12 ? new Discord.MessageEmbed() : new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEndedTitle).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setColor(`#EF1106`).setFooter(giveaway.options.langfile.managerEndedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n\n${giveaway.options.langfile.managerEndedNoWinner}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEndedTitle).setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643197058809856/1596653471717.png').setColor(`#EF1106`).setFooter(giveaway.options.langfile.managerEndedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n\n${giveaway.options.langfile.managerEndedNoWinner}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
                 await giveaway.message.edit({
                     embed
                 });
@@ -163,7 +166,6 @@ class GiveawaysManager extends EventEmitter {
                     reaction: options.reaction
                 });
             let date = new Date(giveaway.endAt);
-            date.setHours(date.getHours() + 1);
             let embed;
             giveaway.IsRequiredRole = options.IsRequiredRole
             giveaway.IsRequiredServer = options.IsRequiredServer
@@ -173,19 +175,19 @@ class GiveawaysManager extends EventEmitter {
             console.log(`RequiredServer Verification ${giveaway.IsRequiredServer}`)
             if (options.IsRequiredRole === true && !options.IsRequiredServer) {
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
 
             } else if (!options.IsRequiredRole && !options.IsRequiredServer){
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
 
             } else if(options.IsRequiredRole === true && options.IsRequiredServer === true) {
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
 
             } else if(!options.IsRequiredRole && options.IsRequiredServer === true) {
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
             }
             let message = await channel.send({
                 embed
@@ -247,6 +249,7 @@ class GiveawaysManager extends EventEmitter {
             if (!giveawayData) {
                 return reject(`Giveaway introuvable`);
             }
+
             let giveaway = new Giveaway(this, giveawayData);
             if (giveaway.ended) {
                 return reject(`Ce giveaway est déjà terminé`);
@@ -264,8 +267,30 @@ class GiveawaysManager extends EventEmitter {
             if (options.addTime) modifiedGiveawayData.endAt = giveawayData.endAt + options.addTime;
             if (options.setEndTimestamp) modifiedGiveawayData.endAt = options.setEndTimestamp;
             let newGiveaway = new Giveaway(this, modifiedGiveawayData);
-            await this._saveGiveaway(newGiveaway);
-            await this._checkGiveaway()
+              let giveaway_Data;
+                giveaway_Data = {
+                    messageID: modifiedGiveawayData.messageID,
+                    channelID: modifiedGiveawayData.channelID,
+                    guildID: modifiedGiveawayData.guildID,
+                    startAt: modifiedGiveawayData.startAt,
+                    endAt: modifiedGiveawayData.endAt,
+                    ended: modifiedGiveawayData.ended,
+                    lang: modifiedGiveawayData.lang,
+                    winnerCount: modifiedGiveawayData.winnerCount,
+                    IsRequiredRole: modifiedGiveawayData.IsRequiredRole,
+                    requiredRole: modifiedGiveawayData.requiredRole,
+                    prize: modifiedGiveawayData.prize,
+                    messages: modifiedGiveawayData.messages,
+                    IsRequiredServer: modifiedGiveawayData.IsRequiredServer,
+                    requiredServer: modifiedGiveawayData.requiredServer,
+                    requiredServerName: modifiedGiveawayData.requiredServerName
+                };
+                this.giveaways = this.giveaways.filter(g => g.messageID !== modifiedGiveawayData.messageID);
+                await this.giveaways.push(giveaway_Data);
+                await writeFileAsync(this.options.storage, JSON.stringify(this.giveaways), 'utf-8');
+                storageContent = await readFileAsync(this.options.storage);
+                giveaways = await JSON.parse(storageContent);
+                this.giveaways = giveaways
             resolve(newGiveaway);
         });
     }
@@ -369,9 +394,8 @@ class GiveawaysManager extends EventEmitter {
     async _checkGiveaway() {
         let storageContent = await readFileAsync(this.options.storage);
         let giveaways = await JSON.parse(storageContent);
-        this.giveaways = giveaways;
         if (giveaways.length <= 0) return;
-        this.giveaways.forEach(async giveawayData => {
+        giveaways.forEach(async giveawayData => {
             let giveaway = new Giveaway(this, giveawayData);
             if (giveaway.ended === true) {
                 return;
@@ -387,23 +411,22 @@ class GiveawaysManager extends EventEmitter {
                 giveaway.options.langfile = require(`../lang/${giveaway.lang}.json`)
             }
             let date = new Date(giveaway.endAt);
-            date.setHours(date.getHours() + 1);
             let embed;
             if (giveaway.options.IsRequiredRole === true && giveaway.options.IsRequiredServer === false) {
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
 
             } else if (giveaway.options.IsRequiredRole === false && giveaway.options.IsRequiredServer === false){
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
 
             } else if(giveaway.options.IsRequiredRole === true && giveaway.options.IsRequiredServer === true) {
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
 
             } else if(giveaway.options.IsRequiredRole === false && giveaway.options.IsRequiredServer === true) {
                 embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('LLLL'))).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#10EEE1').setThumbnail('https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
 
             }                
             await giveaway.message.edit({embed});

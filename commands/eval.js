@@ -12,7 +12,9 @@ let emojiMap = {
     result: "760111980996067328",
     erreur: "760112864731201576"
 };
-
+function getEmoji(name) {
+    return `<:${name}:${emojiMap[name]}>`;
+}
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {
@@ -26,7 +28,7 @@ console.log = function(d) {
     }
     if (message.author.id !== settings.ownerID) return;
     let code = message.content.replace(pf, ``);
-    code = code.replace(command, ``);
+    code = code.replace("eval", "");
     console.log(code);
     if (!code) return (message.channel.send(`:x: **Aucun code renseigné!**`));
     try {
@@ -42,6 +44,7 @@ console.log = function(d) {
                 message.channel.send({
                     embed: embed(code, err, true)
                 });
+                console.log(err)
             });
         } else {
             message.channel.send({

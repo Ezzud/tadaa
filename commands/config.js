@@ -5,19 +5,20 @@ const moment = require('moment');
 const fs = require('fs');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
-
+const db = require('quick.db')
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 
     var adapting = new FileSync(`./data/${client.shard.ids[0]}/${message.guild.id}.json`);
     var database = low(adapting);
+    var data = new db.table("serverInfo")
     let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${client.nope} ${lang.YouHaveNoPermission}`).setFooter(lang.footer.split("%version%").join(json.version))
     if (!message.guild.member(message.author).hasPermission(8)) return (message.channel.send(embed));
     if (!args[0]) {
-        let dmWin = await database.get(`data.isDMWin`).value()
+        let dmWin = await data.get(`${message.guild.id}.isDMWin`)
         if (!dmWin) {
             dmWin = true
-            await database.set(`data.isDMWin`, true).write()
+            await data.set(`${message.guild.id}.isDMWin`, true)
         }
         let dmWinm;
         if (dmWin === true) {
@@ -37,7 +38,7 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
             message.channel.send(embed)
             return;
         }
-        if (args[1] === await database.get(`data.prefix`).value()) {
+        if (args[1] === await data.get(`${message.guild.id}.prefix`)) {
             let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configPrefixSame.split("%nope%").join(client.nope)).addField(lang.configPrefixSyntaxTitle, lang.configPrefixSyntax.split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
             message.channel.send(embed)
             return;
@@ -47,8 +48,8 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
             message.channel.send(embed)
             return;
         }
-        await database.set(`data.prefix`, args[1]).write()
-        let new_prefix = await database.get(`data.prefix`).value()
+        await data.set(`${message.guild.id}.prefix`, args[1])
+        let new_prefix = await data.get(`${message.guild.id}.prefix`)
         let embed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configPrefixSuccess.split("%okay%").join(client.okay).split("%new_prefix%").join(new_prefix)).setFooter(lang.footer.split("%version%").join(json.version))
         message.channel.send(embed)
     } else if (args[0].toLowerCase() === 'dmwin') {
@@ -58,21 +59,21 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
             return;
         }
         if (args[1].toLowerCase() === 'oui' || args[1].toLowerCase() === 'yes') {
-            if (await database.get(`data.isDMWin`).value() === true) {
+            if (await data.get(`${message.guild.id}.isDMWin`) === true) {
                 let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(configDMWinAlreadyActivated.split("%nope%").join(client.nope)).addField(lang.configPrefixSyntaxTitle, lang.configDMWinSyntax.split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 return;
             }
-            await database.set(`data.isDMWin`, true).write()
+            await data.set(`${message.guild.id}.isDMWin`, true)
             let embed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configDMWinActivated.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
             message.channel.send(embed)
         } else if (args[1].toLowerCase() === 'non' || args[1].toLowerCase() === 'no') {
-            if (await database.get(`data.isDMWin`).value() === false) {
+            if (await data.get(`${message.guild.id}.isDMWin`) === false) {
                 let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configDMWinAlreadyDesactivated.split("%nope%").join(client.nope)).addField(lang.configPrefixSyntaxTitle, lang.configDMWinSyntax.split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 return;
             }
-            await database.set(`data.isDMWin`, false).write()
+            await data.set(`${message.guild.id}.isDMWin`, false)
             let embed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configDMWinDesactivated.split("%okay%").join(client.okay)).setFooter(lang.footer.split("%version%").join(json.version))
             message.channel.send(embed)
         } else {
@@ -104,12 +105,12 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
         });
         let lang_file = client.langs.get(args[1]);
         if(lang_file) {
-            if(lang_file.id === await database.get(`data.lang`).value()) {
+            if(lang_file.id === await data.get(`${message.guild.id}.lang`)) {
             let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configLangSame.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
             message.channel.send(embed)
             return;              
             }
-            await database.set(`data.lang`, lang_file.id).write()
+            await data.set(`${message.guild.id}.lang`, lang_file.id)
             let embed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configLangSuccess.split("%lang%").join(lang_file.name)).setFooter(lang.footer.split("%version%").join(json.version))
             message.channel.send(embed)
             return; 

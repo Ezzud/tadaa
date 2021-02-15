@@ -17,6 +17,7 @@ const json = require('../package.json')
 const fs = require('fs');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
+const db = require('quick.db')
 const delay = new Set()
 const gwDelay = new Set()
 const GiveawaysManager = require('../src/Manager');
@@ -35,15 +36,16 @@ module.exports = async (client, message) => {
     if (message.channel.type === 'dm') return;
     var adapting = new FileSync(`./data/${client.shard.ids[0]}/${message.guild.id}.json`);
     var database = low(adapting);
-    let pf = await database.get(`data.prefix`).value()
+    var data = new db.table("serverInfo")
+    let pf = await data.get(`${message.guild.id}.prefix`)
     if (!pf) {
         pf = config.prefix
-        await database.set(`data.prefix`, pf).write()
+        await data.set(`${message.guild.id}.prefix`, pf)
     }
-    var lang = await database.get(`data.lang`).value()
+    var lang = await data.get(`${message.guild.id}.lang`)
     if (!lang) {
         lang = "fr_FR"
-        await database.set(`data.lang`, "fr_FR").write()
+        await data.set(`${message.guild.id}.lang`, "fr_FR")
     }
     if(lang === "fr_FR") {
         lang = require("../lang/fr_FR.json")
@@ -51,8 +53,7 @@ module.exports = async (client, message) => {
         lang = require("../lang/en_US.json")
     }
     const langage = lang
-    if (message.content === '<@!732003715426287676>' || message.content === '<@732003715426287676>') {
-        console.log(await database.get(`data.lang`).value())
+    if (message.content === `<@!${client.user.id}>` || message.content === `<@${client.user.id}>`) {
         var embed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${lang.mentionEmbed.split("%pf%").join(pf)}`).setColor(`#F67272`).setTimestamp().setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL)
         message.channel.send(embed)
     }
@@ -71,7 +72,7 @@ module.exports = async (client, message) => {
             let noPermembed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${getEmoji("nope")} ${lang.noPermission}`).setColor(`#F67272`).setTimestamp().setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL)      
             return message.author.send(noPermembed);
         }
-        if (command === 'edit' || command === 'delete' || command === 'end' || command === 'start') {
+        if (command === 'delete' || command === 'end' || command === 'start' || command === "create") {
             if (gwDelay.has(message.author.id)) {
                 let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.GWcommandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
