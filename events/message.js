@@ -41,6 +41,7 @@ module.exports = async (client, message) => {
     if (!pf) {
         pf = config.prefix
         await data.set(`${message.guild.id}.prefix`, pf)
+        console.log(`- Création d'une table de donnée pour le serveur "${message.guild.name}" `)
     }
     var lang = await data.get(`${message.guild.id}.lang`)
     if (!lang) {

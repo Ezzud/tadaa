@@ -175,7 +175,7 @@
 	"managerRerollError":"No winner can be chosen!",
 	"winText":"You just won a giveaway!",
 	"winPrize":"You won `%prize%`",
-	"winButton":"[Click here](https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}) to go to message",
+	"winButton":"[Click here](%link%) to go to message",
 	"winMessageS":"Congratulations {winners}! You just won: **{prize}**!",
 	"winMessageP":"Congratulations {winners}! You just won: **{prize}**!",
 	"reactErrorMessage":"to access message",

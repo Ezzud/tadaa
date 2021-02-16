@@ -6,7 +6,6 @@ const sleep = (milliseconds) => {
 };
 const Topgg = require(`@top-gg/sdk`)
 const config = require('../config.json')
-const api = new Topgg.Api(config.topggToken)
 const json = require('../package.json')
 module.exports = async (client) => {
     let delay = new Date() - client.time;
@@ -25,8 +24,9 @@ module.exports = async (client) => {
         },
         status: 'dnd'
     })
+    let api = new Topgg.Api(config.topggToken)
 await api.postStats({
-  serverCount: 35,
+  serverCount: prereq,
   shardCount: client.shard.count
 })
     setInterval(async () => {
@@ -42,8 +42,9 @@ await api.postStats({
             },
             status: 'dnd'
         })
+        let api = new Topgg.Api(config.topggToken)
 await api.postStats({
-  serverCount: 35,
+  serverCount: req,
   shardCount: client.shard.count
 })
 

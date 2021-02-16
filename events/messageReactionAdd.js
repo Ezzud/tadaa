@@ -50,8 +50,8 @@ module.exports = async (client, messageReaction, user) => {
         } else {
             try {
                 await messageReaction.users.remove(user.id)
-                const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoRole.split("%rolename%").join(role.name)} \n[${lang.winButton}](https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}) ${lang.reactErrorMessage}`)
-                await user.send(embed)
+                const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoRole.split("%rolename%").join(role.name)} \n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)}`)
+                user.send(embed)
             } catch (error) {
                 console.error(error);
             }
@@ -66,8 +66,8 @@ module.exports = async (client, messageReaction, user) => {
         if(!member) {
             try {
                 await messageReaction.users.remove(user.id)
-                const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoServer.split("%requiredServerName%").join(gw2[0].requiredServerName)} \n[${lang.winButton}](https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}) ${lang.reactErrorMessage}`)
-                await user.send(embed)
+                const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoServer.split("%requiredServerName%").join(gw2[0].requiredServerName)} \n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)} ${lang.reactErrorMessage}`)
+                user.send(embed)
             } catch (error) {
                 console.error(error);
             }
