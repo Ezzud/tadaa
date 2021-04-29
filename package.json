@@ -1,8 +1,8 @@
 {
   "name": "TADAA",
-  "version": "1.3.0",
+  "version": "1.3.3",
   "description": "Bot discord de giveaways français, permet de créer des giveaways personnalisés",
-  "changelog": "- Système de langue, uniquement français disponible pour le moment\n- Tout les messages sont repertorié dans un seul fichier .json\n- Exportation des émojis dans le client et non séparément\n- Ajout des langues sur le manager\n- Langue modifiable dans le t!config",
+  "changelog": "Ajout du mode rainbow (t!config)\nAjout du 'hébergé par'\nPrévu: ajouter une blacklist",
   "main": "shard.js",
   "scripts": {
     "test": "mocha -R spec"
@@ -17,8 +17,8 @@
     "eslint-config-standard": "^5.3.1",
     "eslint-plugin-promise": "^1.1.0",
     "eslint-plugin-standard": "^1.3.2",
-    "mocha": "^2.5.2",
-    "standard-version": "^2.2.1",
+    "mocha": "^8.3.2",
+    "standard-version": "^9.2.0",
     "watchd": "github:mklabs/watchd"
   },
   "bake": {
@@ -39,17 +39,18 @@
     "node": ">=0.7.x"
   },
   "dependencies": {
-    "merge-options": "^2.0.0",
-    "pretty-ms": "^6.0.1",
+    "@top-gg/sdk": "^3.0.7",
     "better-sqlite3": "^7.1.1",
     "discord.js": "^12.4.1",
     "discord.js-commando": "^0.10.0",
     "edit-json-file": "^1.4.0",
     "fs": "0.0.1-security",
     "lowdb": "^1.0.0",
+    "merge-options": "^2.0.0",
     "moment": "^2.24.0",
     "opusscript": "0.0.7",
     "path": "^0.12.7",
+    "pretty-ms": "^6.0.1",
     "quick.db": "^7.1.3",
     "sqlite3": "^5.0.0"
   },
