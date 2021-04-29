@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client({
-    partials: ['MESSAGE', 'REACTION', 'GUILD_MEMBER']
+    partials: ['MESSAGE', 'REACTION', 'GUILD_MEMBER'],
+    disableMentions: "everyone"
 });
 const ms = require('ms');
 const settings = require('./config.json');
@@ -18,43 +19,6 @@ const db = new storage.table('giveaways')
 if(!db.get("giveaways")) db.set("giveaways", []);
  
 const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
- 
-    // This function is called when the manager needs to get all the giveaway stored in the database.
-    async getAllGiveaways(){
-        // Get all the giveaway in the database
-        return db.get("giveaways");
-    }
- 
-    // This function is called when a giveaway needs to be saved in the database (when a giveaway is created or when a giveaway is edited).
-    async saveGiveaway(messageID, giveawayData){
-        // Add the new one
-        db.push("giveaways", giveawayData);
-        // Don't forget to return something!
-        return true;
-    }
- 
-    async editGiveaway(messageID, giveawayData){
-        // Gets all the current giveaways
-        const giveaways = db.get("giveaways");
-        // Remove the old giveaway from the current giveaways ID
-        const newGiveawaysArray = giveaways.filter((giveaway) => giveaway.messageID !== messageID);
-        // Push the new giveaway to the array
-        newGiveawaysArray.push(giveawayData);
-        // Save the updated array
-        db.set("giveaways", newGiveawaysArray);
-        // Don't forget to return something!
-        return true;
-    }
- 
-    // This function is called when a giveaway needs to be deleted from the database.
-    async deleteGiveaway(messageID){
-        // Remove the giveaway from the array
-        const newGiveawaysArray = db.get("giveaways").filter((giveaway) => giveaway.messageID !== messageID);
-        // Save the updated array
-        db.set("giveaways", newGiveawaysArray);
-        // Don't forget to return something!
-        return true;
-    }
  
 };
 let date = new Date();
@@ -148,8 +112,7 @@ const manager = new GiveawayManagerWithOwnDatabase(client, {
 
 
 client.giveawaysManager = manager;
-console.log(`\x1b[34m[MANAGER]` + ` \x1b[0mManager pour Shard  Enabled` + `\x1b[0m`);
-console.log(`\x1b[34m[MANAGER]` + ` \x1b[0mStorage location: ${manager.options.storage}` + `\x1b[0m`)
+console.log(`\x1b[34m[MANAGER]` + ` \x1b[0mManager pour Shard ${client.shard.ids[0]} activé` + `\x1b[0m`);
 // START
 launch().then(console.log(`\x1b[0m[Statut]` + ` \x1b[32m ON` + `\x1b[0m`));
 async function launch() {
@@ -157,6 +120,7 @@ async function launch() {
     await _commandHandler();
     await _dataHandler();
 }
+console.log(`\x1b[34m[API]` + ` \x1b[0mConnexion au shard #${client.shard.ids[0]} en cours...` + `\x1b[0m`)
 /*/
 
     Configuration et fonctions
@@ -192,7 +156,7 @@ function _eventHandler() {
         }
         f.forEach((f) => {
             const events = require(`./events/${f}`);
-            console.log(`\x1b[32m[EVENTS]` + ` \x1b[0mFichier ${f}` + `\x1b[0m`);
+            console.log(`\x1b[35m[EVENTS]` + ` \x1b[0mFichier ${f}` + `\x1b[0m`);
             const event = f.split(".")[0];
             client.on(event, events.bind(null, client));
         });
@@ -201,7 +165,7 @@ function _eventHandler() {
 }
 
 function _dataHandler() {
-    fs.readdir(`./data/${client.shard.ids[0]}/`, (err, files) => {
+    /*fs.readdir(`./data/${client.shard.ids[0]}/`, (err, files) => {
         if (err) console.log(err);
         let jsfile = files.filter(f => f.split(".").pop() === "json");
         if (jsfile.length <= 0) {
@@ -221,25 +185,38 @@ function _dataHandler() {
             });
             console.log(`\x1b[32m` + ` \x1b[32mChargement des fichiers de données effectué` + `\x1b[0m`);
         }
-    });
+        
+
+    });*/
+    var data = new storage.table("serverInfo")
+    data.all().forEach(async database => {
+        console.log(`\x1b[33m[DATA]` + ` \x1b[37mIdentifiant de serveur ${database.ID}` + `\x1b[0m`);
+                await data.set(`${database.ID}.creation`, 'off')
+                await data.set(`${database.ID}.channel`, 'Erreur!')
+                await data.set(`${database.ID}.time`, 'Erreur!')
+                await data.set(`${database.ID}.winnerstr`, 'Erreur!')
+                await data.set(`${database.ID}.price`, 'Erreur!')      
+    })
+    console.log(`\x1b[32m` + ` \x1b[32mChargement des fichiers de données effectué` + `\x1b[0m`);
 }
 manager.on('end', async (giveaway, winners) => {
     let gld = client.guilds.cache.get(giveaway.guildID)
     if (!gld) return;
     var adapting = new FileSync(`./data/${client.shard.ids[0]}/${giveaway.guildID}.json`);
     var database = low(adapting);
-    let dmWin = await database.get(`data.isDMWin`).value()
+    var data = new storage.table("serverInfo")
+    let dmWin = await data.get(`${giveaway.guildID}.isDMWin`)
     if (dmWin === undefined) {
         dmWin = true
-        await database.set(`data.isDMWin`, true).write()
+        await data.set(`${giveaway.guildID}.isDMWin`, true)
     }
     if (dmWin === true) {
-    	let lang = await database.get(`data.lang`).value()
+    	let lang = await data.get(`${giveaway.guildID}.lang`)
     	if(!lang) {
     		lang = "fr_FR"
     	}
     	lang = require(`./lang/${lang}.json`)
-        const embedwin = new Discord.MessageEmbed().setAuthor(`${lang.winText}`, icon_url = 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#EFE106').addField(`\u200B`, `${lang.winPrize.split("%prize%").join(giveaway.prize)}\n[${lang.winButton}](https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}) pour accéder au message`)
+        const embedwin = new Discord.MessageEmbed().setAuthor(`${lang.winText}`, icon_url = 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#EFE106').addField(`\u200B`, `${lang.winPrize.split("%prize%").join(giveaway.prize)}\n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}`)}`)
         winners.forEach((member) => {
             member.send(embedwin)
         });
@@ -255,4 +232,5 @@ client.login(settings.token);
 if (client.shard.ids[0] === 0) {
     console.log(`\n----------------------------------\n`)
 }
-console.log(`[DISCORD.JS] Connexion...`);
+console.log(`\x1b[34m[API]` + `\x1b[37m Connexion...` + `\x1b[0m`);
+client.time = new Date()

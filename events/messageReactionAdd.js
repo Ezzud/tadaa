@@ -1,5 +1,9 @@
 'use strict';
 const Discord = require("discord.js");
+const fs = require('fs');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
+
 module.exports = async (client, messageReaction, user) => {
 	if(!messageReaction) return;
     if (messageReaction.partial) {
@@ -30,16 +34,24 @@ module.exports = async (client, messageReaction, user) => {
         let gw2;
         gw2 = await client.giveawaysManager.giveaways.filter((g) => g.messageID === messageReaction.message.id);
         if (!gw2) return;
+    var adapting = new FileSync(`./data/${client.shard.ids[0]}/${messageReaction.message.guild.id}.json`);
+    var database = low(adapting);
+        var lang = await database.get(`data.lang`).value()
+        if(!lang) {
+            lang = "fr_FR"
+        }
+        lang = require(`../lang/${lang}.json`)
         if (gw2[0].IsRequiredRole === true) {
         let role = guild.roles.cache.find(x => x.id === gw2[0].requiredRole)
         if (!role) return;
+
         if (guild.member(user.id).roles.cache.find(x => x.id === role.id)) {
 
         } else {
             try {
                 await messageReaction.users.remove(user.id)
-                const embed = new Discord.MessageEmbed().setAuthor(`Erreur!`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `Vous ne pouvez pas participer à ce giveaway car vous ne possédez pas le rôle \`${role.name}\` \n[Clique ici](https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}) pour accéder au message`)
-                await user.send(embed)
+                const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoRole.split("%rolename%").join(role.name)} \n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)}`)
+                user.send(embed)
             } catch (error) {
                 console.error(error);
             }
@@ -48,20 +60,20 @@ module.exports = async (client, messageReaction, user) => {
         }
     }
     if (gw2[0].IsRequiredServer === true) {
-        let guild = client.guilds.cache.get(gw2[0].requiredServer)
-        let member = guild.members.cache.get(user.id)
+        let guild = await client.guilds.fetch(gw2[0].requiredServer)
+        if(!guild) return;
+        let member = await guild.members.fetch(user.id)
         if(!member) {
             try {
                 await messageReaction.users.remove(user.id)
-                const embed = new Discord.MessageEmbed().setAuthor(`Erreur!`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `Vous ne pouvez pas participer à ce giveaway car vous n'êtes pas sur le serveur \`${gw2[0].requiredServerName}\` \n[Clique ici](https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}) pour accéder au message`)
-                await user.send(embed)
+                const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoServer.split("%requiredServerName%").join(gw2[0].requiredServerName)} \n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)} ${lang.reactErrorMessage}`)
+                user.send(embed)
             } catch (error) {
                 console.error(error);
             }
             
             return;     
         }
-        console.log(member.id)
     }
 
 
