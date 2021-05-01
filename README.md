@@ -9,7 +9,7 @@
 <br>
 
 Si vous aimez le bot et souhaitez me soutenir:<br>
-[![follow](https://img.shields.io/github/followers/Ezzud?label=Follow%20me&style=social)]() [![follow](https://img.shields.io/github/stars/Ezzud/tadaa?style=social)]() [![follow](https://img.shields.io/github/watchers/Ezzud/tadaa?label=Suis%20le%20repo&style=social)]()
+[![follow](https://img.shields.io/github/followers/Ezzud?label=Follow%20me&style=social)]() [![follow](https://img.shields.io/github/stars/Ezzud/tadaa?style=social)]() [![follow](https://img.shields.io/github/watchers/Ezzud/tadaa?label=Follow%20repository&style=social)]()
 
 
 
