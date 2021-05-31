@@ -8,7 +8,7 @@
 [![ds.js version](https://img.shields.io/github/package-json/dependency-version/Ezzud/tadaa/discord.js)]()\
 <br>
 
-Si vous aimez le bot et souhaitez me soutenir:<br>
+If you like the code and want to support me:<br>
 [![follow](https://img.shields.io/github/followers/Ezzud?label=Follow%20me&style=social)]() [![follow](https://img.shields.io/github/stars/Ezzud/tadaa?style=social)]() [![follow](https://img.shields.io/github/watchers/Ezzud/tadaa?label=Follow%20repository&style=social)]()
 
 
@@ -23,7 +23,69 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 <br />
 
 
-![Features](https://cdn.discordapp.com/attachments/800365015642275850/800365270408757268/features.png)
+# 🇬🇧 English version
+
+TADAA is a bot who allow you to create custom giveaways with server or role requirement.
+Default prefix is "t!" but he can be changed. You can @Mention the bot to get his prefix.
+
+
+![Features](https://media.discordapp.net/attachments/740991539148488754/843951994230145061/features.png)
+<p>
+  
+- Fast and complete giveaway commands
+- Allow you to create giveaways with a specific role requirement
+- Allow you to create giveaways with a specific server requirement (where the bot should be in)
+- Multi Language
+- Easy to use
+- ~70-100ms
+- Fast refresh(10s)
+- No premium, All is free :D
+- Editable giveaways
+- Totally configurable
+- Constantly in development
+</p>
+
+
+![Main Commands](https://media.discordapp.net/attachments/740991539148488754/843951995332853760/commands1.png)
+<p>
+
+- t!help | See the bot's help menu
+- t!info | See the bot's informations
+- t!ping | See the bot's ping
+</p>
+
+![Commandes de giveaway](https://media.discordapp.net/attachments/740991539148488754/843951992820334633/commands2.png)<br/>
+<h3>(Permission: Manage server or 'Giveaways' role)</h3>
+<p>
+
+- t!create | Start the giveaway creation process
+- t!start #channel [duration] [winners count> [prize] | Start a giveaway with the creation process
+- t!end [message ID] | End a giveaway
+- t!reroll [message ID] |  Choose new winner(s)
+- t!delete [message ID] | Delete a giveaway
+- t!edit [message ID] [winners|prize] [value] | Edit a giveaway
+- t!list | Displays the list of all active giveaways in the server
+</p>
+
+![Configuration commands](https://media.discordapp.net/attachments/740991539148488754/843951991997988894/commands3.png)<br/>
+<h3>(Permission: Administrator)</h3>
+<p>
+
+- t!config | See the actual server's configuration
+- t!config prefix [New prefix] | Change the bot's prefix
+- t!config dmwin [Yes/No] | Enable/Disable sending DM to winners
+- t!config lang [Lang] | Change the bot's language
+- t!config lang list | See the lang list
+- t!config rainbow [Yes/No] | Enable/Disable rainbow mode
+</p>
+
+# 🇫🇷 Version Française
+
+TADAA est un bot qui vous permettra de créer des giveaways sur vos serveurs, il dispose de plusieurs commandes permettant de configurer vos giveaways.
+Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi récupérer le préfixe du bot en le mentionnant
+
+
+![Features](https://media.discordapp.net/attachments/740991539148488754/843951994230145061/features.png)
 <p>
   
 - Commandes de giveaway rapide
@@ -41,9 +103,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 </p>
 
 
-
-
-![Commandes principales](https://cdn.discordapp.com/attachments/800365015642275850/800365268710326292/principales.png)
+![Commandes principales](https://media.discordapp.net/attachments/740991539148488754/843951995332853760/commands1.png)
 <p>
 
 - t!help | Affiche le menu d'aide
@@ -51,7 +111,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 - t!ping | Voir le ping du bot
 </p>
 
-![Commandes de giveaway](https://cdn.discordapp.com/attachments/800365015642275850/800365267645104168/giveaway.png)<br/>
+![Commandes de giveaway](https://media.discordapp.net/attachments/740991539148488754/843951992820334633/commands2.png)<br/>
 <h3>(Permission requise: Gérer le serveur ou rôle nommé 'Giveaways')</h3>
 <p>
 
@@ -64,7 +124,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 - t!list | Afficher la liste des giveaways sur le serveur
 </p>
 
-![Commandes de configuration](https://cdn.discordapp.com/attachments/800365015642275850/800365266197807114/configuration.png)<br/>
+![Commandes de configuration](https://media.discordapp.net/attachments/740991539148488754/843951991997988894/commands3.png)<br/>
 <h3>(Permission requise: Administrateur)</h3>
 <p>
 
@@ -73,4 +133,5 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 - t!config dmwin [Oui/Non] | Activer ou non l'envoi d'un message privé au(x) gagnant(s)
 - t!config lang [Langue] | Changer la langue parmis celles disponibles
 - t!config lang list | Voir la liste des langues
+- t!config rainbow [Oui/Non] | Activer/Désactiver le mode rainbow
 </p>
