@@ -14,7 +14,9 @@ module.exports = async (client) => {
     await sleep(15000)
     let count = 0;
     let values = await client.shard.broadcastEval(`[this.shard.id]`);
-    values.forEach((value) => {count = count + 1});
+    values.forEach((value) => {
+        count = count + 1
+    });
     let prereq;
     prereq = await client.shard.fetchClientValues('guilds.cache.size');
     prereq = prereq.reduce((p, n) => p + n, 0);
@@ -22,13 +24,21 @@ module.exports = async (client) => {
         activity: {
             name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • Shard ${count}/${client.shard.count} • v${json.version}`
         },
-        status: 'dnd'
+        status: 'online'
     })
-    let api = new Topgg.Api(config.topggToken)
+    if (config.topggEnabled === true) {
+        let api = new Topgg.Api(config.topggToken)
+        await api.postStats({
+            serverCount: prereq,
+            shardCount: client.shard.count
+        })
+    }
     setInterval(async () => {
         let count2 = 0;
         let values2 = await client.shard.broadcastEval(`[this.shard.id]`);
-        values2.forEach((value) => {count2 = count2 + 1});
+        values2.forEach((value) => {
+            count2 = count2 + 1
+        });
         let req;
         req = await client.shard.fetchClientValues('guilds.cache.size');
         req = req.reduce((p, n) => p + n, 0);
@@ -36,9 +46,14 @@ module.exports = async (client) => {
             activity: {
                 name: `${config.prefix}help or @${client.user.username} • ${req} guilds • Shard ${count2}/${client.shard.count} • v${json.version}`
             },
-            status: 'dnd'
+            status: 'online'
         })
-        let api = new Topgg.Api(config.topggToken)
-
+        if (config.topggEnabled === true) {
+            let api = new Topgg.Api(config.topggToken)
+            await api.postStats({
+                serverCount: req,
+                shardCount: client.shard.count
+            })
+        }
     }, 300000);
 }

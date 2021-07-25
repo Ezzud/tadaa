@@ -1,4 +1,15 @@
 'use strict';
+
+/* /////////////////////////////////////////////////
+
+
+        Variables
+
+
+*/ /////////////////////////////////////////////////
+
+
+
 const Discord = require("discord.js");
 const ms = require('ms');
 const moment = require('moment');
@@ -7,8 +18,19 @@ var util = require('util');
 const log_stdout = process.stdout;
 var path = require('path');
 var commandname = path.basename(__filename);
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
+
+
+
+
+/* /////////////////////////////////////////////////
+
+
+        Main Code
+
+
+*/ /////////////////////////////////////////////////
+
+
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {
@@ -19,7 +41,7 @@ console.log = function(d) {
 };
     
     let LockEmbed = new Discord.MessageEmbed().setDescription(`${client.nope} Cette commande est désactivée pour le moment`)
-    return message.channel.send(LockEmbed);
+    //return message.channel.send(LockEmbed);
     if (message.guild.member(message.author).hasPermission(32) === false) {
         let role = message.guild.member(message.author).roles.cache.find(x => x.name === "Giveaways")
         if (role === undefined || role === false || role === null) {
@@ -96,8 +118,23 @@ console.log = function(d) {
             message.channel.send(noembed)
         });
     } else {
-        let noedmbed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.editUnknownOption.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        message.channel.send(noedmbed)
+        if (err === "GiveawayNotFound") {
+            message.react('❌');
+            let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWUnknownID.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+            message.channel.send(noembed)
+        } else if (err === "GiveawayUnknownChannel") {
+            message.react('❌');
+            let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWUnknownChannel.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+            message.channel.send(noembed)
+        } else if (err === "GiveawayAlreadyEnded") {
+            message.react('❌');
+            let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWAlreadyEnded.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+            message.channel.send(noembed)
+        } else {
+            message.react('❌');
+            let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWUnknownID.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+            message.channel.send(noembed)
+        }
     }
 }
 module.exports.help = {

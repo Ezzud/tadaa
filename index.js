@@ -17,10 +17,7 @@ const log_stdout = process.stdout;
 const storage = require("quick.db");
 const db = new storage.table('giveaways')
 if(!db.get("giveaways")) db.set("giveaways", []);
- 
-const GiveawayManagerWithOwnDatabase = class extends GiveawaysManager {
- 
-};
+
 let date = new Date();
 date.setHours(date.getHours() + 2);
 let path = `./logs/${moment(date).format('MM-D-YYYY')}-shard${client.shard.ids[0]}.log`;
@@ -95,7 +92,7 @@ function getEmoji(name) {
 
 
 
-const manager = new GiveawayManagerWithOwnDatabase(client, {
+const manager = new GiveawaysManager(client, {
     storage: `./data/storage/${client.shard.ids[0]}/giveaways.json`,
     updateCountdownEvery: 10000,
     default: {
