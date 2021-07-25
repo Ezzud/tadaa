@@ -116,7 +116,7 @@
 	"helpGiveawayEnd":"• **%pf%end** `<id du message>` - *Terminer un giveaway*",
 	"helpGiveawayReroll":"• **%pf%reroll** `<id du message>` - *Choisir un/des nouveau(x) gagnant(s) d'un giveaway*",
 	"helpGiveawayDelete":"• **%pf%delete** `<id du message>` - *Supprimer le giveaway*",
-	"helpGiveawayEdit":"• ~~**%pf%edit** `<id du message>` `<gagnants|prix>` `<valeur>` - *Éditer un giveaway*~~",
+	"helpGiveawayEdit":"• **%pf%edit** `<id du message>` `<gagnants|prix>` `<valeur>` - *Éditer un giveaway*",
 	"helpGiveawayList":"• **%pf%list** - *Afficher la liste des giveaways actifs du serveur*",
 	"helpConfigPermission":"%warning% `Permission requise: Administrateur`",
 	"helpConfigList":"• **%pf%config** - *Voir la configuration actuelle du bot*",

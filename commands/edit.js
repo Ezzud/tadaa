@@ -40,8 +40,6 @@ console.log = function(d) {
     log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
 };
     
-    let LockEmbed = new Discord.MessageEmbed().setDescription(`${client.nope} Cette commande est désactivée pour le moment`)
-    //return message.channel.send(LockEmbed);
     if (message.guild.member(message.author).hasPermission(32) === false) {
         let role = message.guild.member(message.author).roles.cache.find(x => x.name === "Giveaways")
         if (role === undefined || role === false || role === null) {
