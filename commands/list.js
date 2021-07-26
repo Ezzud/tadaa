@@ -7,8 +7,6 @@ var util = require('util');
 const log_stdout = process.stdout;
 var path = require('path');
 var commandname = path.basename(__filename);
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {

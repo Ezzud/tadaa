@@ -10,7 +10,10 @@ var commandname = path.basename(__filename);
 const request = require("request")
 const Topgg = require(`@top-gg/sdk`)
 const config = require('../config.json')
-const api = new Topgg.Api(config.topggToken)
+var api;
+if (config.topggEnabled === true) {
+    api = new Topgg.Api(config.topggToken)
+}
 const db = require('quick.db')
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
@@ -32,6 +35,7 @@ console.log = function(d) {
 const data = new db.table("serverInfo")
     let giveaways = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
     giveaways = giveaways.filter((g) => g.ended !== true);
+    if(config.topggEnabled === true) {
     if(await api.hasVoted(message.author.id) === false) {
    
         if(giveaways.length >= 10) {
@@ -44,7 +48,7 @@ const data = new db.table("serverInfo")
             return(message.channel.send(tm2Embed));
         }        
     }
-
+    }
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
     let embed;
     if (!message.guild.member(client.user).hasPermission(379968)) return (message.channel.send(permembed));
@@ -112,7 +116,7 @@ const data = new db.table("serverInfo")
         return (message.channel.send(embed));
     }
     if(!await data.get(`${message.guild.id}.rainbow`)) {
-        await data.set(`${message.guild.id}.rainbow`, true)
+        await data.set(`${message.guild.id}.rainbow`, false)
     }
     manager.start(channel, {
         time: ms(duration),

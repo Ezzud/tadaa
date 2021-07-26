@@ -7,12 +7,13 @@ var util = require('util');
 const log_stdout = process.stdout;
 var path = require('path');
 var commandname = path.basename(__filename);
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
 const db = require('quick.db')
 const Topgg = require(`@top-gg/sdk`)
 const config = require('../config.json')
-const api = new Topgg.Api(config.topggToken)
+var api;
+if (config.topggEnabled === true) {
+    api = new Topgg.Api(config.topggToken)
+}
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {
@@ -21,8 +22,6 @@ console.log = function(d) {
     fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
     log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
 };
-    var adapting = new FileSync(`./data/${client.shard.ids[0]}/${message.guild.id}.json`);
-    var database = low(adapting);
     var data = new db.table("serverInfo")
     if (message.guild.member(message.author).hasPermission(32) === false) {
         let role = message.guild.member(message.author).roles.cache.find(x => x.name === "Giveaways")
@@ -35,6 +34,7 @@ console.log = function(d) {
 
     let giveaways = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
     giveaways = giveaways.filter((g) => g.ended !== true);
+    if(config.topggEnabled === true) {
     if(api.hasVoted(message.author.id) === false) {
    
         if(giveaways.length >= 10) {
@@ -47,6 +47,7 @@ console.log = function(d) {
             return(message.channel.send(tm2Embed));
         }        
     }
+}
 
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
     let opembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createOperationActive.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
@@ -76,8 +77,15 @@ console.log = function(d) {
                 max: 1,
                 time: 60000
             }).then(async collected => {
-                if(!collected.first().content) return;
-let mess = collected.first().content
+                let col = collected.first()
+                if(!col) {
+                    answered = false
+                    return;
+                }
+                col = col.content
+                if(!col) return(console.log("No Content"));
+                let mess = collected.first().content
+
                 if (message.channel.id !== channelID) {
                     answered = false
                     return;
@@ -641,7 +649,7 @@ let mess = collected.first().content
                     msg2.delete()
                     await data.set(`${message.guild.id}.creation`, `off`)
                     if(!await data.get(`${message.guild.id}.rainbow`)) {
-                        await data.set(`${message.guild.id}.rainbow`, true)
+                        await data.set(`${message.guild.id}.rainbow`, false)
                     }
                     manager.start(message.guild.channels.cache.get(`${data.get(`${message.guild.id}.channel`)}`), {
                         time: ms(`${data.get(`${message.guild.id}.time`)}`),

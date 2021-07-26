@@ -3,14 +3,10 @@ const Discord = require("discord.js");
 const ms = require('ms');
 const moment = require('moment');
 const fs = require('fs');
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
 const db = require('quick.db')
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 
-    var adapting = new FileSync(`./data/${client.shard.ids[0]}/${message.guild.id}.json`);
-    var database = low(adapting);
     var data = new db.table("serverInfo")
     let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(`${client.nope} ${lang.YouHaveNoPermission}`).setFooter(lang.footer.split("%version%").join(json.version))
     if (!message.guild.member(message.author).hasPermission(8)) return (message.channel.send(embed));

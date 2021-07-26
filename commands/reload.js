@@ -7,8 +7,6 @@ var util = require('util');
 const log_stdout = process.stdout;
 var path = require('path');
 var commandname = path.basename(__filename);
-const low = require('lowdb');
-const FileSync = require('lowdb/adapters/FileSync');
 const settings = require('../config.json')
 let emojiMap = {
     link: "732605373185261629",
