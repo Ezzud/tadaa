@@ -660,6 +660,7 @@ let mess = collected.first().content
                         IsRequiredServer: isrequiredserver,
                         requiredServer: requiredserver,
                         lang: lang.id,
+                        shardID: client.shard.ids[0],
                         hostedBy: message.author.id,
                         rainbow: await data.get(`${message.guild.id}.rainbow`) || false,
                         requiredServerName: requiredservername

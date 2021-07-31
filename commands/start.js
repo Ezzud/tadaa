@@ -127,6 +127,7 @@ const data = new db.table("serverInfo")
         IsRequiredServer: false,
         requiredServer: null,
         lang: lang.id,
+        shardID: client.shard.ids[0],
         langfile: lang,
         hostedBy: message.author.id,
         rainbow: await data.get(`${message.guild.id}.rainbow`) || false,
