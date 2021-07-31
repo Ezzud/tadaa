@@ -28,13 +28,15 @@ module.exports = async (client) => {
         },
         status: 'online'
     })
-    let api = new Topgg.Api(config.topggToken)
-    await api.postStats({
-        serverCount: prereq,
-        shardCount: client.shard.count
-    }).catch(err => {
-        console.log(err)
-    })
+    if (config.topggEnabled === true) {
+        let api = new Topgg.Api(config.topggToken)
+        await api.postStats({
+            serverCount: prereq,
+            shardCount: client.shard.count
+        }).catch(err => {
+            console.log(err)
+        })
+    }
     setInterval(async () => {
         let count2 = 0;
         let values2 = await client.shard.broadcastEval(`[this.shard.id]`);
@@ -52,12 +54,14 @@ module.exports = async (client) => {
             },
             status: 'online'
         })
-        let api = new Topgg.Api(config.topggToken)
-        await api.postStats({
-            serverCount: req,
-            shardCount: client.shard.count
-        }).catch(err => {
-            console.log(err)
-        })
+        if (config.topggEnabled === true) {
+            let api = new Topgg.Api(config.topggToken)
+            await api.postStats({
+                serverCount: req,
+                shardCount: client.shard.count
+            }).catch(err => {
+                console.log(err)
+            })
+        }
     }, 300000);
 }
