@@ -213,7 +213,7 @@ manager.on('end', async (giveaway, winners) => {
     		lang = "fr_FR"
     	}
     	lang = require(`./lang/${lang}.json`)
-        const embedwin = new Discord.MessageEmbed().setAuthor(`${lang.winText}`, icon_url = 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#EFE106').addField(`\u200B`, `${lang.winPrize.split("%prize%").join(giveaway.prize)}\n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}`)}`)
+        const embedwin = new Discord.MessageEmbed().setAuthor(`${lang.winText}`, icon_url = 'https://ezzud.fr/images/openedFixed.png').setColor('#96F221').setDescription(`${lang.winPrize.split("%prize%").join(giveaway.prize)}`).addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}`)} ${lang.reactErrorMessage}`)
         winners.forEach((member) => {
             member.send(embedwin)
         });

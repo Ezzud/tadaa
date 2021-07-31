@@ -1,12 +1,43 @@
 {
   "name": "TADAA",
-  "version": "1.4.0-TEST",
+  "version": "1.4.1",
   "description": "Bot discord de giveaways français, permet de créer des giveaways personnalisés",
-  "changelog": "Big changes!\n✅ Added custom error codes\n✅ t!edit finally back!\n✅ Clone friendly! Option to enable/disable topgg API\n✅Giveaways data fully managed by quick.db\n✅Giveaways data fully managed by quick.db\n🔧 Old .json server config system completely removed, no need to create folders\n🔧 logs storage error FIXED\n🔧 t!create no collected data error FIXED\n🔧 Unknown message error FIXED\n🔧 Cannot send message to this user error FIXED\n🔧 Some little errors FIXED\n🔧 undefined guild removed the bot FIXED",
+  "changelog": "Big changes!\n✅ Added custom error codes\n✅ t!edit finally back!\n✅ Clone friendly! Option to enable/disable topgg API\n✅Giveaways data fully managed by quick.db\n\n🔧 Old .json server config system completely removed, no need to create folders\n🔧 logs storage error FIXED\n🔧 t!create no collected data error FIXED\n🔧 Unknown message error FIXED\n🔧 Cannot send message to this user error FIXED\n🔧 Some little errors FIXED\n🔧 undefined guild removed the bot FIXED",
   "main": "shard.js",
-  "private": false,
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-transform-regenerator": "^6.9.0",
+    "babel-preset-es2015": "^6.9.0",
+    "bake-cli": "^0.1.6",
+    "eslint": "^2.10.2",
+    "eslint-config-standard": "^5.3.1",
+    "eslint-plugin-promise": "^1.1.0",
+    "eslint-plugin-standard": "^1.3.2",
+    "mocha": "^8.3.2",
+    "standard-version": "^9.2.0",
+    "watchd": "github:mklabs/watchd"
+  },
+  "bake": {
+    "description": "Scaffold a basic ES6 setup",
+    "scripts": {
+      "start": "echo Starting generation of default template",
+      "prestart": "echo prestart",
+      "poststart": "echo poststart",
+      "install": "npm install --loglevel warn --cache-min Infinity",
+      "preinstall": "echo Installing dependencies ...",
+      "postinstall": "npm ls --depth 0"
+    }
+  },
+  "private": true,
   "author": "ezzud",
   "license": "MIT",
+  "engines": {
+    "node": ">=0.7.x"
+  },
   "dependencies": {
     "@top-gg/sdk": "^3.0.7",
     "better-sqlite3": "^7.1.1",

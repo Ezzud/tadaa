@@ -671,6 +671,11 @@ let mess = collected.first().content
                         await data.set(`${message.guild.id}.time`, `:x:`)
                         await data.set(`${message.guild.id}.winnerstr`, `:x:`)
                         await data.set(`${message.guild.id}.price`, `:x:`)
+            const stats = new db.table("stats")
+        if (!await stats.get("creation_count")) {
+            await stats.set("creation_count", 0)
+        }
+        await stats.add(`creation_count`, 1)
                     }).catch(async (err) => {
                         console.error(err)
                     });

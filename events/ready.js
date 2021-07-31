@@ -20,19 +20,21 @@ module.exports = async (client) => {
     let prereq;
     prereq = await client.shard.fetchClientValues('guilds.cache.size');
     prereq = prereq.reduce((p, n) => p + n, 0);
+    let onServer = client.giveawaysManager.giveaways.filter((g) => g.ended !== true);
+    onServer = onServer.length
     await client.user.setPresence({
         activity: {
-            name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • Shard ${count}/${client.shard.count} • v${json.version}`
+            name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • ${onServer} active giveaways`
         },
         status: 'online'
     })
-    if (config.topggEnabled === true) {
-        let api = new Topgg.Api(config.topggToken)
-        await api.postStats({
-            serverCount: prereq,
-            shardCount: client.shard.count
-        })
-    }
+    let api = new Topgg.Api(config.topggToken)
+    await api.postStats({
+        serverCount: prereq,
+        shardCount: client.shard.count
+    }).catch(err => {
+        console.log(err)
+    })
     setInterval(async () => {
         let count2 = 0;
         let values2 = await client.shard.broadcastEval(`[this.shard.id]`);
@@ -42,18 +44,20 @@ module.exports = async (client) => {
         let req;
         req = await client.shard.fetchClientValues('guilds.cache.size');
         req = req.reduce((p, n) => p + n, 0);
+        let onServer = client.giveawaysManager.giveaways.filter((g) => g.ended !== true);
+        onServer = onServer.length
         await client.user.setPresence({
             activity: {
-                name: `${config.prefix}help or @${client.user.username} • ${req} guilds • Shard ${count2}/${client.shard.count} • v${json.version}`
+                name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • ${onServer} active giveaways`
             },
             status: 'online'
         })
-        if (config.topggEnabled === true) {
-            let api = new Topgg.Api(config.topggToken)
-            await api.postStats({
-                serverCount: req,
-                shardCount: client.shard.count
-            })
-        }
+        let api = new Topgg.Api(config.topggToken)
+        await api.postStats({
+            serverCount: req,
+            shardCount: client.shard.count
+        }).catch(err => {
+            console.log(err)
+        })
     }, 300000);
 }

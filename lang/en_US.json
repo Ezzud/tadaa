@@ -126,6 +126,7 @@
 	"helpConfigLangList":"• **%pf%config lang list** - Show all avaible languages",
 	"helpInfoList":"• **%pf%info** - *Get bot's informations*",
 	"helpInfoHelp":"• **%pf%help** - *Show this message*",
+	"helpInfoStats":"• **%pf%stats** - *Show bot's statistics*",
 	"helpInfoPing":"• **%pf%ping** - *Show the bot's ping*",
 	"helpInfoVote":"• **%pf%vote** - *Get the bot's vote link and/or check if you have voted*",
 	"helpInfoInvite":"• **%pf%invite** - *Get the bot's invitation link*",
@@ -186,7 +187,7 @@
 	"managerRerollError":"No winner can be chosen!",
 	"winText":"You just won a giveaway!",
 	"winPrize":"You won `%prize%`",
-	"winButton":"[Click here](%link%) to go to message",
+	"winButton":"[Click here](%link%)",
 	"winMessageS":"Congratulations {winners}! You just won: **{prize}**!",
 	"winMessageP":"Congratulations {winners}! You just won: **{prize}**!",
 	"reactErrorMessage":"to access message",
@@ -196,7 +197,13 @@
 	"inviteText":"**You can invite bot by** [clicking here](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=355392&scope=bot)",
 	"inviteYesField":"%okay% Read messages\n%okay% Send messages\n%okay% Manage messages\n%okay% Send links and embeds\n%okay% Read old messages\n%okay% Add reactions\n%okay% Use external emojis",
 	"inviteNoField":"%nope% Manage roles\n%nope% Manage server\n%nope% Manage channels\n%nope% Administrator permission\n%nope% Manage users\n%nope% Ban members\n%nope% Kick members",
-	"inviteTitle":"Bot will have the followed permissions:"
+	"inviteTitle":"Bot will have the followed permissions:",
+	"statsEmbedTitle":"Bot's Statistics",
+	"statsCommandCount":"📫 Number of commands executed",
+	"statsCreationCount":"📫 Number of processes executed",
+	"statsGiveawaysCount":"🎉 Number of giveaways",
+	"statsGiveawaysGuildCount":"🎉 Number of giveaways in the server",
+	"statsGiveawaysMultiple":"**%active%** actives, **%ended%** ended"
 
 
 }

@@ -126,6 +126,7 @@
 	"helpConfigLangList":"• **%pf%config lang list** - Voir la liste des langues disponibles",
 	"helpInfoList":"• **%pf%info** - *Obtenir des informations sur le bot*",
 	"helpInfoHelp":"• **%pf%help** - *Afficher ce message*",
+	"helpInfoStats":"• **%pf%stats** - *Afficher les statistiques du bot*",
 	"helpInfoPing":"• **%pf%ping** - *Voir le ping actuel du bot*",
 	"helpInfoVote":"• **%pf%vote** - *Obtenir le lien de vote du bot et/ou vérifier si vous avez voté*",
 	"helpInfoInvite":"• **%pf%invite** - *Obtenir le lien d'invitation du bot*",
@@ -186,7 +187,7 @@
 	"managerRerollError":"Aucun gagnant ne peut être choisi!",
 	"winText":"Tu viens de remporter un giveaway!",
 	"winPrize":"Tu viens de remporter le prix `%prize%`",
-	"winButton":"[Clique ici](%link%) pour accéder au message",
+	"winButton":"[Clique ici](%link%)",
 	"winMessageS":"Félicitations {winners}! Tu remportes: **{prize}**!",
 	"winMessageP":"Félicitations {winners}! Vous remportez: **{prize}**!",
 	"reactErrorMessage":"pour accéder au message",
@@ -196,5 +197,13 @@
 	"inviteText":"**Vous pouvez inviter le bot en** [cliquant ici](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=355392&scope=bot)",
 	"inviteYesField":"%okay% Lire les messages\n%okay% Envoyer des messages\n%okay% Gérer les messages\n%okay% Intégrer des liens\n%okay% Voir les anciens messages\n%okay% Ajouter des réactions\n%okay% Utiliser des émojis externes",
 	"inviteNoField":"%nope% Gérer les rôles\n%nope% Gérer le serveur\n%nope% Gérer les salons\n%nope% Permissions Administrateur\n%nope% Gérer les utilisateurs\n%nope% Bannir les utilisateur\n%nope% Expulser des utilisateurs",
-	"inviteTitle":"Le bot aura les permissions suivantes:"
+	"inviteTitle":"Le bot aura les permissions suivantes:",
+	"statsEmbedTitle":"Statistiques du bot",
+	"statsCommandCount":"📫 Nombre de commandes éxécutées",
+	"statsCreationCount":"📫 Nombre de processus éxécutés",
+	"statsGiveawaysCount":"🎉 Nombre de giveaways total",
+	"statsGiveawaysGuildCount":"🎉 Nombre de giveaways total ici",
+	"statsGiveawaysMultiple":"**%active%** actifs, **%ended%** terminés"
+
+
 }

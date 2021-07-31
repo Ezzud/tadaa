@@ -76,10 +76,10 @@ class Giveaway extends EventEmitter {
         let isDay = days > 0,
             isHour = hours > 0,
             isMinute = minutes > 0;
-        let dayUnit = days < 2 && (this.messages.units.pluralS || lang.infoDays.endsWith('s')) ? lang.infoDays.substr(0, lang.infoDays.length - 1) : lang.infoDays,
-            hourUnit = hours < 2 && (this.messages.units.pluralS || lang.infoHours.endsWith('s')) ? lang.infoHours.substr(0, lang.infoHours.length - 1) : lang.infoHours,
-            minuteUnit = minutes < 2 && (this.messages.units.pluralS || lang.infoMinutes.endsWith('s')) ? lang.infoMinutes.substr(0, lang.infoMinutes.length - 1) : lang.infoMinutes,
-            secondUnit = seconds < 2 && (this.messages.units.pluralS || lang.infoSeconds.endsWith('s')) ? lang.infoSeconds.substr(0, lang.infoSeconds.length - 1) : lang.infoSeconds;
+        let dayUnit = days < 2 && (lang.infoDays.endsWith('s')) ? lang.infoDays.substr(0, lang.infoDays.length - 1) : lang.infoDays,
+            hourUnit = hours < 2 && (lang.infoHours.endsWith('s')) ? lang.infoHours.substr(0, lang.infoHours.length - 1) : lang.infoHours,
+            minuteUnit = minutes < 2 && (lang.infoMinutes.endsWith('s')) ? lang.infoMinutes.substr(0, lang.infoMinutes.length - 1) : lang.infoMinutes,
+            secondUnit = seconds < 2 && (lang.infoSeconds.endsWith('s')) ? lang.infoSeconds.substr(0, lang.infoSeconds.length - 1) : lang.infoSeconds;
         let pattern = (!isDay ? '' : `{days} ${dayUnit}, `) + (!isHour ? '' : `{hours} ${hourUnit}, `) + (!isMinute ? '' : `{minutes} ${minuteUnit}, `) + `{seconds} ${secondUnit}`;
         let content = lang.managerContent.replace('{duration}', pattern).replace('{days}', days).replace('{hours}', hours).replace('{minutes}', minutes).replace('{seconds}', seconds);
         return content;
