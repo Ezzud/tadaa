@@ -14,10 +14,10 @@ console.log = function(d) {
     fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
     log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
 };
-    let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('17F0C9').addField(`\u200B`, lang.pingStart).setFooter(lang.footer.split("%version%").join(json.version))
     var messagePing = new Date().getTime() - message.createdTimestamp
+    let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('17F0C9').addField(`\u200B`, lang.pingStart).setFooter(lang.footer.split("%version%").join(json.version))
     await message.channel.send(embed).then(async (msg) => {
-    var apiPing = Math.trunc(client.ws.ping)
+        var apiPing = Math.trunc(client.ws.ping)
         let color;
         if (apiPing > 500) {
             color = 'E3260F'

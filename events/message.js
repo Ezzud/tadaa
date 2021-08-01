@@ -23,6 +23,7 @@ const config = require('../config.json')
 const json = require('../package.json')
 const fs = require('fs');
 const db = require('quick.db')
+const stats = new db.table("stats")
 const delay = new Set()
 const gwDelay = new Set()
 const voterGwDelay = new Set()
@@ -36,9 +37,6 @@ var api;
 if (config.topggEnabled === true) {
     api = new Topgg.Api(config.topggToken)
 }
-
-
-
 /* /////////////////////////////////////////////////
 
 
@@ -86,8 +84,7 @@ module.exports = async (client, message) => {
             let noPermembed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${getEmoji("nope")} ${lang.noPermission}`).setColor(`#F67272`).setTimestamp().setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL)
             return message.author.send(noPermembed);
         }
-        
-        if(config.topggEnabled === true) {
+        if (config.topggEnabled === true) {
             const request = await api.hasVoted(message.author.id)
             if (command === 'delete' || command === 'end' || command === 'start' || command === "create") {
                 if (request === true) {
@@ -129,6 +126,10 @@ module.exports = async (client, message) => {
             }
         }
         let commande_file = client.commands.get(command);
+        if (!await stats.get("command_count")) {
+            await stats.set("command_count", 0)
+        }
+        await stats.add(`command_count`, 1)
         if (commande_file) commande_file.run(client, pf, message, args, manager, json, langage);
     }
 };

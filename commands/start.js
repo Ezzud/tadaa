@@ -127,12 +127,12 @@ const data = new db.table("serverInfo")
         IsRequiredServer: false,
         requiredServer: null,
         lang: lang.id,
+        shardID: client.shard.ids[0],
         langfile: lang,
         hostedBy: message.author.id,
         rainbow: await data.get(`${message.guild.id}.rainbow`) || false,
         requiredServerName: null
     }).then((gData) => {
-    	console.log(gData.lang)
         console.log(`SHARD #${client.shard.ids[0]} - Nouveau giveaway lancé dans le serveur " ${client.guilds.cache.get(gData.guildID).name} "`);
         let yembed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startEmbedSuccess.split("%okay%").join(client.okay).split("%channel%").join(`<#${gData.channelID}>`)).setFooter(lang.footer.split("%version%").join(json.version))
         message.channel.send(yembed)

@@ -52,6 +52,7 @@ Default prefix is "t!" but he can be changed. You can @Mention the bot to get hi
 - t!help | See the bot's help menu
 - t!info | See the bot's informations
 - t!ping | See the bot's ping
+- t!stats | See the bot's stats
 </p>
 
 ![Commandes de giveaway](https://media.discordapp.net/attachments/740991539148488754/843951992820334633/commands2.png)<br/>
@@ -109,6 +110,7 @@ Le préfixe par défaut est "t!" mais il peut être changé. Vous pouvez aussi r
 - t!help | Affiche le menu d'aide
 - t!info | Obtenir des informations sur le bot
 - t!ping | Voir le ping du bot
+- t!stats | Voir les statistiques du bot
 </p>
 
 ![Commandes de giveaway](https://media.discordapp.net/attachments/740991539148488754/843951992820334633/commands2.png)<br/>

@@ -8,7 +8,7 @@ module.exports = async (client, messageReaction, user) => {
         try {
             await messageReaction.fetch();
         } catch (error) {
-            console.log('Erreur: ', error);
+            console.log('Erreur lors de la récupération de la réaction: ', error);
         }
     }
     if (!user) return;
@@ -41,31 +41,57 @@ module.exports = async (client, messageReaction, user) => {
         lang = require(`../lang/${lang}.json`)
         if (gw2[0].IsRequiredRole === true) {
             let role = guild.roles.cache.find(x => x.id === gw2[0].requiredRole)
-            if (!role) return;
-            if (guild.member(user.id).roles.cache.find(x => x.id === role.id)) {} else {
-                try {
-                    await messageReaction.users.remove(user.id)
-                    const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoRole.split("%rolename%").join(role.name)} \n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)}`)
-                    user.send(embed)
-                } catch (error) {
-                    console.error(error);
+            if (role) {
+                if (guild.member(user.id).roles.cache.find(x => x.id === role.id)) {} else {
+                    try {
+                        await messageReaction.users.remove(user.id)
+                    } catch (error) {
+                        console.error(error);
+                    }
+                    const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://ezzud.fr/images/closedFixed.png').setColor('#ED3016').setDescription(`${lang.reactNoRole.split("%rolename%").join(role.name)}`).addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)} ${lang.reactErrorMessage}`)
+                    user.send(embed).catch(error => {
+                        if (error.code === 50007) {
+                            console.log(`Erreur: L'utilisateur n'a pas pu être DM`)
+                        }
+                    })
                 }
-                return;
             }
         }
         if (gw2[0].IsRequiredServer === true) {
             let guild = await client.guilds.fetch(gw2[0].requiredServer)
-            if (!guild) return;
-            let member = await guild.members.fetch(user.id)
-            if (!member) {
-                try {
-                    await messageReaction.users.remove(user.id)
-                    const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://cdn.discordapp.com/attachments/682274736306126925/740643196878454834/1596653488174.png').setColor('#ED3016').addField(`\u200B`, `${lang.reactNoServer.split("%requiredServerName%").join(gw2[0].requiredServerName)} \n${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)} ${lang.reactErrorMessage}`)
-                    user.send(embed)
-                } catch (error) {
-                    console.error(error);
+            if (guild) {
+                var sended = false
+                let member = await guild.members.fetch(user.id).catch(async err => {
+                    console.log("Error")
+                    if (err.code === 10007) {
+                        try {
+                            await messageReaction.users.remove(user.id)
+                        } catch (error) {
+                            console.error(error);
+                        }
+                        const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://ezzud.fr/images/closedFixed.png').setColor('#ED3016').setDescription(`${lang.reactNoServer.split("%requiredServerName%").join(gw2[0].requiredServerName)}`).addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)} ${lang.reactErrorMessage}`)
+                        user.send(embed).catch(error => {
+                            if (error.code === 50007) {
+                                console.log(`Erreur: L'utilisateur n'a pas pu être DM`)
+                            }
+                        })
+                        sended = true;
+                    }
+                })
+                if (sended === true) return;
+                if (!member) {
+                    try {
+                        await messageReaction.users.remove(user.id)
+                    } catch (error) {
+                        console.error(error);
+                    }
+                    const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://ezzud.fr/images/closedFixed.png').setColor('#ED3016').setDescription(`${lang.reactNoServer.split("%requiredServerName%").join(gw2[0].requiredServerName)}`).addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)} ${lang.reactErrorMessage}`)
+                    user.send(embed).catch(error => {
+                        if (error.code === 50007) {
+                            console.log(`Erreur: L'utilisateur n'a pas pu être DM`)
+                        }
+                    })
                 }
-                return;
             }
         }
     }
