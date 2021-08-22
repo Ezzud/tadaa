@@ -11,7 +11,6 @@ module.exports = async (client) => {
     let delay = new Date() - client.time;
     delay = delay / 1000
     console.log(`\x1b[34m[API]` + ` \x1b[0mShard #${client.shard.ids[0]} fonctionnel (${delay}s)`)
-    await sleep(15000)
     let count = 0;
     let values = await client.shard.broadcastEval(`[this.shard.id]`);
     values.forEach((value) => {
@@ -22,12 +21,6 @@ module.exports = async (client) => {
     prereq = prereq.reduce((p, n) => p + n, 0);
     let onServer = client.giveawaysManager.giveaways.filter((g) => g.ended !== true);
     onServer = onServer.length
-    await client.user.setPresence({
-        activity: {
-            name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • ${onServer} active giveaways`
-        },
-        status: 'online'
-    })
     if (config.topggEnabled === true) {
         let api = new Topgg.Api(config.topggToken)
         await api.postStats({
@@ -36,7 +29,27 @@ module.exports = async (client) => {
         }).catch(err => {
             console.log(err)
         })
+        client.votes = await api.getVotes()
     }
+    await client.user.setPresence({
+        activity: {
+            name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • ${onServer} active giveaways`
+        },
+        status: 'online'
+    })
+
+
+    
+    // Boucle
+
+    setInterval(async () => {
+        if (config.topggEnabled === true) {
+            let api = new Topgg.Api(config.topggToken)
+            client.votes = await api.getVotes()
+        }
+    }, 15000);
+
+
     setInterval(async () => {
         let count2 = 0;
         let values2 = await client.shard.broadcastEval(`[this.shard.id]`);
@@ -48,12 +61,6 @@ module.exports = async (client) => {
         req = req.reduce((p, n) => p + n, 0);
         let onServer = client.giveawaysManager.giveaways.filter((g) => g.ended !== true);
         onServer = onServer.length
-        await client.user.setPresence({
-            activity: {
-                name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • ${onServer} active giveaways`
-            },
-            status: 'online'
-        })
         if (config.topggEnabled === true) {
             let api = new Topgg.Api(config.topggToken)
             await api.postStats({
@@ -62,6 +69,13 @@ module.exports = async (client) => {
             }).catch(err => {
                 console.log(err)
             })
+            client.votes = await api.getVotes()
         }
+        await client.user.setPresence({
+            activity: {
+                name: `${config.prefix}help or @${client.user.username} • ${req} guilds • ${onServer} active giveaways`
+            },
+            status: 'online'
+        })
     }, 300000);
 }

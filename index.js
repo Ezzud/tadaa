@@ -188,11 +188,7 @@ function _dataHandler() {
     var data = new storage.table("serverInfo")
     data.all().forEach(async database => {
         console.log(`\x1b[33m[DATA]` + ` \x1b[37mIdentifiant de serveur ${database.ID}` + `\x1b[0m`);
-                await data.set(`${database.ID}.creation`, 'off')
-                await data.set(`${database.ID}.channel`, 'Erreur!')
-                await data.set(`${database.ID}.time`, 'Erreur!')
-                await data.set(`${database.ID}.winnerstr`, 'Erreur!')
-                await data.set(`${database.ID}.price`, 'Erreur!')      
+                await data.set(`${database.ID}.creation`, 'off')    
     })
     console.log(`\x1b[32m` + ` \x1b[32mChargement des fichiers de données effectué` + `\x1b[0m`);
 }
