@@ -446,8 +446,8 @@ class GiveawaysManager extends EventEmitter {
         giveaways.forEach(async giveawayData => {
             let giveaway = new Giveaway(this, giveawayData);
             let actual_date = new Date().getTime()
-            if(actual_date - giveaway.endAt > 7776000000) {
-                console.log(`Giveaway with prize ${giveaway.prize} removed, ended ${moment(giveaway.endAt).fromNow()}`)
+            if(actual_date - giveaway.endAt > (7776000000 * 2)) {
+                console.log(`\x1b[31m[INFO]` + ` \x1b[37mGiveaway with prize "${giveaway.prize}" removed | ended ${moment(giveaway.endAt).fromNow()}` + `\x1b[0m`);
                 this.delete(giveaway.messageID, true)
                 return;
             }
@@ -540,6 +540,7 @@ class GiveawaysManager extends EventEmitter {
     async _init() {
         this.ready = true;
         this.giveaways = await this._initStorage();
+        console.log(`\x1b[32m` + ` \x1b[32mSuccesfully loaded \x1b[33m${this.giveaways.length} \x1b[32mgiveaways` + `\x1b[0m`);
         await setInterval(async () => {
             if (this.client.readyAt) {
                 let storageContent = await db.get("giveaways")
