@@ -131,15 +131,15 @@ function _commandHandler() {
         if (err) console.log(err);
         let jsfile = files.filter(f => f.split(".").pop() === "js");
         if (jsfile.length <= 0) {
-            console.log("Aucun fichier trouvé dans ./commands/");
+            console.log("./commands/ is empty!");
             return;
         }
         jsfile.forEach((f, i) => {
             let props = require(`./commands/${f}`);
-            console.log(`\x1b[36m[COMMANDES]` + ` \x1b[0mFichier ${f}` + `\x1b[0m`);
+            console.log(`\x1b[36m[COMMANDS]` + ` \x1b[0mCommand file: ${f}` + `\x1b[0m`);
             client.commands.set(props.help.name, props);
         });
-        console.log(`\x1b[32m` + ` \x1b[32mChargement des commandes effectué` + `\x1b[0m`);
+        console.log(`\x1b[32m` + ` \x1b[32mSuccesfully loaded \x1b[33m${jsfile.length} \x1b[32mcommands` + `\x1b[0m`);
     });
 }
 
@@ -148,49 +148,26 @@ function _eventHandler() {
         if (err) console.log(err);
         let jsfile = f.filter(f => f.split(".").pop() === "js");
         if (jsfile.length <= 0) {
-            console.log("Aucun fichier trouvé dans ./events/");
+            console.log("./events/ is empty!");
             return;
         }
         f.forEach((f) => {
             const events = require(`./events/${f}`);
-            console.log(`\x1b[35m[EVENTS]` + ` \x1b[0mFichier ${f}` + `\x1b[0m`);
+            console.log(`\x1b[35m[EVENTS]` + ` \x1b[0mEvent file: ${f}` + `\x1b[0m`);
             const event = f.split(".")[0];
             client.on(event, events.bind(null, client));
         });
-        console.log(`\x1b[32m` + ` \x1b[32mChargement des events effectué` + `\x1b[0m`);
+        console.log(`\x1b[32m` + ` \x1b[32mSuccesfully loaded \x1b[33m${jsfile.length} \x1b[32mevents` + `\x1b[0m`);
     });
 }
 
 function _dataHandler() {
-    /*fs.readdir(`./data/${client.shard.ids[0]}/`, (err, files) => {
-        if (err) console.log(err);
-        let jsfile = files.filter(f => f.split(".").pop() === "json");
-        if (jsfile.length <= 0) {
-            console.log(`\x1b[31m[DATA]` + ` \x1b[31mAucun fichier trouvé dans ./data/${client.shard.ids[0]}/` + `\x1b[0m`);
-        } else {
-            jsfile.forEach(async (f, i) => {
-                let props = require(`./data/${client.shard.ids[0]}/${f}`);
-                let dbid = f.replace(".json", ``)
-                console.log(`\x1b[33m[DATA]` + ` \x1b[32mFichier de données ${f}` + `\x1b[0m`);
-                var adapting = new FileSync(`./data/${client.shard.ids[0]}/${f}`);
-                var database = low(adapting);
-                await database.set(`data.creation`, 'off').write()
-                await database.set(`data.channel`, 'Erreur!').write()
-                await database.set(`data.time`, 'Erreur!').write()
-                await database.set(`data.winnerstr`, 'Erreur!').write()
-                await database.set(`data.price`, 'Erreur!').write()
-            });
-            console.log(`\x1b[32m` + ` \x1b[32mChargement des fichiers de données effectué` + `\x1b[0m`);
-        }
-        
-
-    });*/
     var data = new storage.table("serverInfo")
     data.all().forEach(async database => {
-        console.log(`\x1b[33m[DATA]` + ` \x1b[37mIdentifiant de serveur ${database.ID}` + `\x1b[0m`);
+        console.log(`\x1b[33m[DATA]` + ` \x1b[37mTable with ID: ${database.ID}` + `\x1b[0m`);
                 await data.set(`${database.ID}.creation`, 'off')    
     })
-    console.log(`\x1b[32m` + ` \x1b[32mChargement des fichiers de données effectué` + `\x1b[0m`);
+    console.log(`\x1b[32m` + ` \x1b[32mSuccesfully loaded \x1b[33m${data.all().length} \x1b[32mdatabase tables` + `\x1b[0m`);
 }
 manager.on('end', async (giveaway, winners) => {
     let gld = client.guilds.cache.get(giveaway.guildID)
