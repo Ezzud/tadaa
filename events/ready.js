@@ -84,9 +84,11 @@ module.exports = async (client) => {
                 serverCount: req,
                 shardCount: client.shard.count
             }).catch(err => {
-                console.log(err)
+                if(err);
             })
-            client.votes = await api.getVotes()
+            client.votes = await api.getVotes().catch(err => {
+                if(err);
+            })
         }
         await client.user.setPresence({
             activity: {
