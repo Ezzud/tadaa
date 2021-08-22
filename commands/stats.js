@@ -55,16 +55,23 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 
         let guildGiveaways = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id).length
 
-        
+        let server_count;
+        server_count = await client.shard.fetchClientValues('guilds.cache.size');
+        server_count = server_count.reduce((p, n) => p + n, 0);      
+
+        let user_count = await client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0))
+        user_count = user_count.reduce((acc, memberCount) => acc + memberCount, 0)
 
         let embed = new Discord.MessageEmbed()
         .setAuthor(lang.statsEmbedTitle, message.author.avatarURL())
         .setColor("#F18718")
         .setThumbnail(client.user.avatarURL())
-        .addField(lang.statsCommandCount, ` \` ${command_count} \` `, true)
-        .addField(lang.statsCreationCount, ` \` ${creation_count} \` `)
-        .addField(lang.statsGiveawaysCount, ` \` ${totalGiveaways} \` (${lang.statsGiveawaysMultiple.split("%active%").join(totalGiveawaysActive).split("%ended%").join(totalGiveawaysEnded)}) `, true)
-        .addField(lang.statsGiveawaysGuildCount, ` \` ${guildGiveaways} \` `)
+        .addField(lang.statsCommandCount, ` \` ${command_count} \` `)
+        .addField(lang.statsCreationCount, ` \` ${creation_count} \` `, true)
+        .addField(lang.statsGiveawaysCount, ` \` ${totalGiveaways} \` (${lang.statsGiveawaysMultiple.split("%active%").join(totalGiveawaysActive).split("%ended%").join(totalGiveawaysEnded)}) `)
+        .addField(lang.statsGiveawaysGuildCount, ` \` ${guildGiveaways} \` `, true)
+        .addField(lang.statsServerCount, ` \`${server_count}\` `)
+        .addField(lang.statsUserCount, ` \`${user_count}\` `, true)
         .setFooter(lang.footer.split("%version%").join(json.version))
         message.channel.send(embed)
     }

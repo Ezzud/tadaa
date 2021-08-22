@@ -11,5 +11,7 @@ module.exports = async (client, packet) => {
         if (packet.t === 'MESSAGE_REACTION_ADD') {
             client.emit('messageReactionAdd', reaction, await client.users.cache.get(packet.d.user_id));
         }
-    });
+    }).catch(err => {
+    	if(err.code === 10008) return(console.log(`Erreur: Message introuvable`));
+    })
 }

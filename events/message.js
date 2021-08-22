@@ -58,13 +58,9 @@ module.exports = async (client, message) => {
     var lang = await data.get(`${message.guild.id}.lang`)
     if (!lang) {
         lang = "en_US"
-        await data.set(`${message.guild.id}.lang`, "fr_FR")
+        await data.set(`${message.guild.id}.lang`, "en_US")
     }
-    if (lang === "fr_FR") {
-        lang = require("../lang/fr_FR.json")
-    } else {
-        lang = require("../lang/en_US.json")
-    }
+    lang = require(`../lang/${lang}.json`)
     const langage = lang
     if (message.content === `<@!${client.user.id}>` || message.content === `<@${client.user.id}>`) {
         var embed = new Discord.MessageEmbed().setAuthor(`TADAA`, client.user.avatarURL).setDescription(`${lang.mentionEmbed.split("%pf%").join(pf)}`).setColor(`#F67272`).setTimestamp().setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL)
@@ -85,20 +81,9 @@ module.exports = async (client, message) => {
             return message.author.send(noPermembed);
         }
         if (config.topggEnabled === true) {
-            const request = await api.hasVoted(message.author.id)
+            const request = client.votes
             if (command === 'delete' || command === 'end' || command === 'start' || command === "create") {
-                if (request === true) {
-                    if (voterGwDelay.has(message.author.id)) {
-                        let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.GWcommandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
-                        message.channel.send(embed)
-                        return;
-                    } else {
-                        voterGwDelay.add(message.author.id)
-                        setTimeout(() => {
-                            voterGwDelay.delete(message.author.id)
-                        }, 5000)
-                    }
-                } else {
+                if (!request) {
                     if (gwDelay.has(message.author.id)) {
                         let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.GWcommandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
                         message.channel.send(embed)
@@ -109,18 +94,55 @@ module.exports = async (client, message) => {
                             gwDelay.delete(message.author.id)
                         }, 10000)
                     }
+                } else {
+                    if (request.find(x => x.id === message.author.id)) {
+                        if (voterGwDelay.has(message.author.id)) {
+                            let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.GWVotedcommandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
+                            message.channel.send(embed)
+                            return;
+                        } else {
+                            voterGwDelay.add(message.author.id)
+                            setTimeout(() => {
+                                voterGwDelay.delete(message.author.id)
+                            }, 5000)
+                        }
+                    } else {
+                        if (gwDelay.has(message.author.id)) {
+                            let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.GWcommandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
+                            message.channel.send(embed)
+                            return;
+                        } else {
+                            gwDelay.add(message.author.id)
+                            setTimeout(() => {
+                                gwDelay.delete(message.author.id)
+                            }, 10000)
+                        }
+                    }
                 }
             } else {
-                if (request !== true) {
-                    if (delay.has(message.author.id)) {
-                        let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.commandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
+                if (!request) {
+                    if (gwDelay.has(message.author.id)) {
+                        let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.GWcommandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
                         message.channel.send(embed)
                         return;
                     } else {
-                        delay.add(message.author.id)
+                        gwDelay.add(message.author.id)
                         setTimeout(() => {
-                            delay.delete(message.author.id)
+                            gwDelay.delete(message.author.id)
                         }, 3000)
+                    }
+                } else {
+                    if (!request.find(x => x.id === message.author.id)) {
+                        if (delay.has(message.author.id)) {
+                            let embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setColor('E3260F').addField(`\u200B`, `${lang.commandCooldown}`).setFooter(lang.footer.split("%version%").join(json.version))
+                            message.channel.send(embed)
+                            return;
+                        } else {
+                            delay.add(message.author.id)
+                            setTimeout(() => {
+                                delay.delete(message.author.id)
+                            }, 3000)
+                        }
                     }
                 }
             }

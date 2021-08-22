@@ -3,7 +3,6 @@
  *   Original creator: https://github.com/Androz2091/discord-giveaways
  *
  **/
-
 /* /////////////////////////////////////////////////
 
 
@@ -11,18 +10,25 @@
 
 
 */ /////////////////////////////////////////////////
-
-
-
-const {EventEmitter} = require('events');
+const {
+    EventEmitter
+} = require('events');
 const mergeOptions = require('merge-options');
-const {writeFile, readFile, exists} = require('fs');
-const {promisify} = require('util');
+const {
+    writeFile,
+    readFile,
+    exists
+} = require('fs');
+const {
+    promisify
+} = require('util');
 const writeFileAsync = promisify(writeFile);
 const existsAsync = promisify(exists);
 const readFileAsync = promisify(readFile);
 const Discord = require('discord.js');
-const {defaultGiveawaysManagerOptions} = require('./Util');
+const {
+    defaultGiveawaysManagerOptions
+} = require('./Util');
 const Giveaway = require('./Giveaway');
 const moment = require('moment')
 moment.locale('en')
@@ -31,9 +37,6 @@ const db = new quick.table("giveaways")
 const sleep = (milliseconds) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
 };
-
-
-
 /* /////////////////////////////////////////////////
 
 
@@ -41,8 +44,6 @@ const sleep = (milliseconds) => {
 
 
 */ /////////////////////////////////////////////////
-
-
 class GiveawaysManager extends EventEmitter {
     constructor(client, options) {
         super();
@@ -78,6 +79,7 @@ class GiveawaysManager extends EventEmitter {
             if (!giveaway.options.langfile) {
                 giveaway.options.langfile = require(`../lang/${giveaway.lang}.json`)
             }
+            if(giveaway.options.shardID !== this.client.shard.ids[0]) return;
             await this._markAsEnded(giveaway.messageID);
             let winners = await giveaway.roll();
             if (winners.length > 0) {
@@ -88,7 +90,9 @@ class GiveawaysManager extends EventEmitter {
                 embed.setAuthor(giveaway.options.langfile.managerEndedTitle).setColor(`#EF1106`).setThumbnail('https://ezzud.fr/images/openedFixed.png').setFooter(giveaway.options.langfile.managerEndedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n\n${giveaway.options.langfile.managerEndedWinners.split("%formattedWinners%").join(formattedWinners)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
                 await giveaway.message.edit({
                     embed
-                });
+                }).catch(err => {
+                    console.log(err)
+                })
                 if (winners.length > 1) {
                     await giveaway.message.channel.send(giveaway.options.langfile.winMessageP.replace('{winners}', formattedWinners).replace('{prize}', giveaway.prize));
                 } else {
@@ -136,8 +140,23 @@ class GiveawaysManager extends EventEmitter {
             if (!options.lang) {
                 options.lang = "fr_FR"
             }
+            if(options.shardID === undefined) {
+                console.log("Fixed shard IS")
+                options.shardID = 0
+            }
+            if(options.shardID !== this.client.shard.ids[0]) return;
             if (!options.langfile) {
                 options.langfile = require(`../lang/${options.lang}.json`)
+            }
+
+            if (!options.rainbow) {
+                options.rainbow = false
+            }
+            let color;
+            if (options.rainbow === true) {
+                color = Math.floor(Math.random() * 16777215).toString(16);
+            } else {
+                color = "#FFE5B2"
             }
             let giveaway;
             if (options.IsRequiredRole === false) {
@@ -146,6 +165,10 @@ class GiveawaysManager extends EventEmitter {
             if (options.IsRequiredServer === false) {
                 options.requiredServer = null
                 options.requiredServerName = undefined
+                options.requiredServerInvite = null
+            }
+            if (!options.requiredServerInvite) {
+                options.requiredServerInvite = "https://github.com/Ezzud/tadaa"
             }
             giveaway = new Giveaway(this, {
                 startAt: Date.now(),
@@ -164,36 +187,48 @@ class GiveawaysManager extends EventEmitter {
                 reaction: options.reaction,
                 lang: options.lang,
                 langfile: options.langfile,
+                shardID: options.shardID,
                 rainbow: options.rainbow,
                 botsCanWin: options.botsCanWin,
                 exemptPermissions: options.exemptPermissions,
                 exemptMembers: options.exemptMembers,
                 embedColor: options.embedColor,
                 embedColorEnd: options.embedColorEnd,
+                requiredServerInvite: options.requiredServerInvite,
                 reaction: options.reaction
             });
             let date = new Date(giveaway.endAt);
             let embed;
             giveaway.IsRequiredRole = options.IsRequiredRole
             giveaway.IsRequiredServer = options.IsRequiredServer
+            giveaway.requiredServerInvite = options.requiredServerInvite
+            giveaway.shardID = options.shardID
             giveaway.lang = options.lang
             giveaway.langfile = options.langfile
-            if (options.IsRequiredRole === true && !options.IsRequiredServer) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#FFE5B2').setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
-            } else if (!options.IsRequiredRole && !options.IsRequiredServer) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#FFE5B2').setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
-            } else if (options.IsRequiredRole === true && options.IsRequiredServer === true) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#FFE5B2').setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
-            } else if (!options.IsRequiredRole && options.IsRequiredServer === true) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor('#FFE5B2').setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+            var requirements = ""
+            if (giveaway.options.IsRequiredRole === true) {
+                requirements = requirements + `${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n`
             }
+            if (giveaway.options.IsRequiredServer === true) {
+                requirements = requirements + `${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName).split("%serverInvite%").join(giveaway.requiredServerInvite)}`
+            }
+            if (requirements && requirements !== "") {
+                requirements = `\n${giveaway.options.langfile.requirements}\n${requirements}`
+            }
+            embed = new Discord.MessageEmbed();
+            embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor(color).setThumbnail('https://media.discordapp.net/attachments/832299538223071352/832305590302146590/party.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${requirements}\n\u200B`)
             let message = await channel.send({
                 embed
-            });
+            }).catch(error => {
+                if (error.code === 50001) {
+                    console.log(`Erreur: Missing Access | ID: ${giveaway.guildID}`)
+                    return;
+                }
+                if (error.code === 50013) {
+                    console.log(`Erreur: Missing Permissions | ID: ${giveaway.guildID}`)
+                    return;
+                }
+            })
             giveaway.messageID = message.id;
             await this.giveaways.push(giveaway);
             await this._saveGiveaway(giveaway);
@@ -216,6 +251,7 @@ class GiveawaysManager extends EventEmitter {
             if (!giveaway.ended) {
                 return reject(`GiveawayNotEnded`);
             }
+            if(giveaway.options.shardID !== this.client.shard.ids[0]) return;
             if (!giveaway.channel) {
                 return reject(`GiveawayUnknownChannel`);
             }
@@ -254,6 +290,7 @@ class GiveawaysManager extends EventEmitter {
             if (giveaway.ended) {
                 return reject(`GiveawayAlreadyEnded`);
             }
+            if(giveaway.options.shardID !== this.client.shard.ids[0]) return;
             if (!giveaway.channel) {
                 return reject(`GiveawayUnknownChannel`);
             }
@@ -284,7 +321,9 @@ class GiveawaysManager extends EventEmitter {
                 requiredServerName: modifiedGiveawayData.requiredServerName,
                 hostedBy: (modifiedGiveawayData.hostedBy ? modifiedGiveawayData.hostedBy.toString() : null),
                 lang: modifiedGiveawayData.lang,
+                shardID: modifiedGiveawayData.shardID,
                 langfile: modifiedGiveawayData.langfile,
+                requiredServerInvite: modifiedGiveawayData.requiredServerInvite,
                 rainbow: modifiedGiveawayData.rainbow
             };
             this.giveaways = this.giveaways.filter(g => g.messageID !== modifiedGiveawayData.messageID);
@@ -307,7 +346,7 @@ class GiveawaysManager extends EventEmitter {
                 return reject(`GiveawayNotFound`);
             }
             let giveaway = new Giveaway(this, giveawayData);
-            if (!giveaway.channel) {
+            if (!giveaway.channelID) {
                 return reject(`GiveawayUnknownChannel`);
             }
             if (!doNotDeleteMessage) {
@@ -362,9 +401,11 @@ class GiveawaysManager extends EventEmitter {
             IsRequiredRole: giveaway.IsRequiredRole,
             requiredRole: giveaway.requiredRole,
             prize: giveaway.prize,
+            shardID: giveaway.shardID,
             IsRequiredServer: giveaway.IsRequiredServer,
             requiredServer: giveaway.requiredServer,
             requiredServerName: giveaway.requiredServerName,
+            requiredServerInvite: giveaway.requiredServerInvite,
             rainbow: giveaway.rainbow
         };
         if (giveaway.options.hostedBy) giveawayData.hostedBy = giveaway.options.hostedBy;
@@ -375,9 +416,15 @@ class GiveawaysManager extends EventEmitter {
         if (giveaway.options.exemptMembers) giveawayData.exemptMembers = giveaway.options.exemptMembers;
         if (giveaway.options.reaction) giveawayData.reaction = giveaway.options.reaction;
         if (giveaway.options.IsRequiredRole) giveawayData.IsRequiredRole = giveaway.options.IsRequiredRole;
-        if (giveaway.options.IsRequiredRole) giveawayData.IsRequiredServer = giveaway.options.IsRequiredServer;
+        if (giveaway.options.IsRequiredServer) giveawayData.IsRequiredServer = giveaway.options.IsRequiredServer;
         if (giveaway.options.lang) giveawayData.lang = giveaway.options.lang
+        if (giveaway.options.requiredServerInvite) giveawayData.requiredServerInvite = giveaway.options.requiredServerInvite
         if (giveaway.options.rainbow) giveawayData.rainbow = giveaway.options.rainbow
+        if (giveaway.options.shardID) giveawayData.shardID = giveaway.options.shardID
+        if(giveaway.options.shardID === undefined) {
+            giveawayData.shardID = 0
+        }
+        if(giveawayData.shardID !== this.client.shard.ids[0]) return(console.log("Not the good shard"));
         await this.giveaways.push(giveawayData);
         await db.set("giveaways", this.giveaways);
         await this._checkGiveaway()
@@ -398,9 +445,19 @@ class GiveawaysManager extends EventEmitter {
         if (giveaways.length <= 0) return;
         giveaways.forEach(async giveawayData => {
             let giveaway = new Giveaway(this, giveawayData);
+            let actual_date = new Date().getTime()
+            if(actual_date - giveaway.endAt > 7776000000) {
+                console.log(`Giveaway with prize ${giveaway.prize} removed, ended ${moment(giveaway.endAt).fromNow()}`)
+                this.delete(giveaway.messageID, true)
+                return;
+            }
             if (giveaway.ended === true) {
                 return;
             }
+        if(giveaway.options.shardID === undefined) {
+            giveaway.options.shardID = 0
+        }
+            if(giveaway.options.shardID !== this.client.shard.ids[0]) return(console.log("Not the good shard"));
             if (!giveaway.channel) return;
             await giveaway.fetchMessage().catch(() => {});
             if (!giveaway.message) {
@@ -420,21 +477,23 @@ class GiveawaysManager extends EventEmitter {
             } else {
                 color = "#FFE5B2"
             }
+            if (!giveaway.options.requiredServerInvite) {
+                giveaway.options.requiredServerInvite = "https://github.com/Ezzud/tadaa"
+            }
             let date = new Date(giveaway.endAt);
             let embed;
-            if (giveaway.options.IsRequiredRole === true && giveaway.options.IsRequiredServer === false) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor(color).setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
-            } else if (giveaway.options.IsRequiredRole === false && giveaway.options.IsRequiredServer === false) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor(color).setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
-            } else if (giveaway.options.IsRequiredRole === true && giveaway.options.IsRequiredServer === true) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor(color).setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
-            } else if (giveaway.options.IsRequiredRole === false && giveaway.options.IsRequiredServer === true) {
-                embed = new Discord.MessageEmbed();
-                embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor(color).setThumbnail('https://ezzud.fr/images/closedFixed.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName)}\n\u200B`).addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
+            var requirements = ""
+            if (giveaway.options.IsRequiredRole === true) {
+                requirements = requirements + `${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n`
             }
+            if (giveaway.options.IsRequiredServer === true) {
+                requirements = requirements + `${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName).split("%serverInvite%").join(giveaway.options.requiredServerInvite)}`
+            }
+            if (requirements && requirements !== "") {
+                requirements = `\n${giveaway.options.langfile.requirements}\n${requirements}`
+            }
+            embed = new Discord.MessageEmbed();
+            embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor(color).setThumbnail('https://media.discordapp.net/attachments/832299538223071352/832305590302146590/party.png').setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date).setDescription(giveaway.options.langfile.managerEmbedDescription).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedPrize.split("%prize%").join(giveaway.prize)}\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(giveaway.content)}\n${requirements}\n\u200B`)
             await giveaway.message.edit({
                 embed
             }).catch(error => {
@@ -454,16 +513,25 @@ class GiveawaysManager extends EventEmitter {
                 return;
             } else if (delay > giveaway.endAt) {
                 giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID);
+                await this.end.call(this, giveaway.messageID).catch(err => {
+                    console.log(err)
+                })
                 await this._markAsEnded(giveaway.messageID);
+                return;
             } else if (delayup > giveaway.endAt) {
                 giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID);
+                await this.end.call(this, giveaway.messageID).catch(err => {
+                    console.log(err)
+                })
                 await this._markAsEnded(giveaway.messageID);
+                return;
             } else if (giveaway.remainingTime < this.options.updateCountdownEvery) {
                 giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID);
+                await this.end.call(this, giveaway.messageID).catch(err => {
+                    console.log(err)
+                })
                 await this._markAsEnded(giveaway.messageID);
+                return;
             }
             return;
         });

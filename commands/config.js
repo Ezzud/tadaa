@@ -74,7 +74,7 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
         }
         if (args[1].toLowerCase() === 'oui' || args[1].toLowerCase() === 'yes') {
             if (await data.get(`${message.guild.id}.isDMWin`) === true) {
-                let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(configDMWinAlreadyActivated.split("%nope%").join(client.nope)).addField(lang.configPrefixSyntaxTitle, lang.configDMWinSyntax.split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
+                let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.configDMWinAlreadyActivated.split("%nope%").join(client.nope)).addField(lang.configPrefixSyntaxTitle, lang.configDMWinSyntax.split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
                 message.channel.send(embed)
                 return;
             }
