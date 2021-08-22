@@ -41,6 +41,7 @@ module.exports = async (client) => {
     let onServer = client.giveawaysManager.giveaways.filter((g) => g.ended !== true);
     onServer = onServer.length
     if (config.topggEnabled === true) {
+        client.votes = []
         let api = new Topgg.Api(config.topggToken)
         await api.postStats({
             serverCount: prereq,
