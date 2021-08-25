@@ -8,7 +8,13 @@ module.exports = async (client, messageReaction, user) => {
         try {
             await messageReaction.fetch();
         } catch (error) {
-            console.log('Erreur lors de la récupération de la réaction: ', error);
+            if(error.code === 50001) {
+                console.log(`Erreur lors de la récupération de la réaction: Missing Access`);
+            } else if(error.code === 50002) {
+               console.log(`Erreur lors de la récupération de la réaction: Missing Permission`); 
+            } else {
+                console.log(`Erreur lors de la récupération de la réaction: ${error.httpStatus} Code: ${error.code}`);
+            }
         }
     }
     if (!user) return;
