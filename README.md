@@ -1,11 +1,16 @@
-# TADAA
-[![Discord Bots](https://top.gg/api/widget/732003715426287676.svg)](https://top.gg/bot/732003715426287676)
+# TADAA 
+<img src="https://ezzud.fr/portfolio/attachments/other/github-tadaa.png"/>
+
+
+
+[![Discord Bots](https://top.gg/api/widget/status/732003715426287676.svg)](https://top.gg/bot/732003715426287676)\
+[![Discord Bots](https://top.gg/api/widget/servers/732003715426287676.svg)](https://top.gg/bot/732003715426287676)\
+[![Discord Bots](https://top.gg/api/widget/upvotes/732003715426287676.svg)](https://top.gg/bot/732003715426287676)
 
 
 
 [![Size](https://img.shields.io/github/last-commit/Ezzud/tadaa)]()\
 [![Github package.json version](https://img.shields.io/github/package-json/v/Ezzud/tadaa)]()\
-[![ds.js version](https://img.shields.io/github/package-json/dependency-version/Ezzud/tadaa/discord.js)]()\
 <br>
 
 If you like the code and want to support me:<br>
