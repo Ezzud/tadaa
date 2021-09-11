@@ -61,37 +61,10 @@ class Giveaway extends EventEmitter {
     get channel() {
         return this.manager.v12 ? this.client.channels.cache.get(this.channelID) : this.client.channels.get(this.channelID);
     }
-    get content() {
-        let roundTowardsZero = this.remainingTime > 0 ? Math.floor : Math.ceil;
-        let days = roundTowardsZero(this.remainingTime / 86400000),
-            hours = roundTowardsZero(this.remainingTime / 3600000) % 24,
-            minutes = roundTowardsZero(this.remainingTime / 60000) % 60,
-            seconds = roundTowardsZero(this.remainingTime / 1000) % 60;
-        let langs = this.lang
-        if(!langs) {
-            langs = "fr_FR"
-        }
-        let lang = require(`../lang/${langs}.json`);
-        if (seconds === 0) seconds++;
-        let isDay = days > 0,
-            isHour = hours > 0,
-            isMinute = minutes > 0;
-        let dayUnit = days < 2 && (lang.infoDays.endsWith('s')) ? lang.infoDays.substr(0, lang.infoDays.length - 1) : lang.infoDays,
-            hourUnit = hours < 2 && (lang.infoHours.endsWith('s')) ? lang.infoHours.substr(0, lang.infoHours.length - 1) : lang.infoHours,
-            minuteUnit = minutes < 2 && (lang.infoMinutes.endsWith('s')) ? lang.infoMinutes.substr(0, lang.infoMinutes.length - 1) : lang.infoMinutes,
-            secondUnit = seconds < 2 && (lang.infoSeconds.endsWith('s')) ? lang.infoSeconds.substr(0, lang.infoSeconds.length - 1) : lang.infoSeconds;
-        let pattern = (!isDay ? '' : `{days} ${dayUnit}, `) + (!isHour ? '' : `{hours} ${hourUnit}, `) + (!isMinute ? '' : `{minutes} ${minuteUnit}, `) + `{seconds} ${secondUnit}`;
-        let content = lang.managerContent.replace('{duration}', pattern).replace('{days}', days).replace('{hours}', hours).replace('{minutes}', minutes).replace('{seconds}', seconds);
-        return content;
-    }
     async fetchMessage() {
         return new Promise(async (resolve, reject) => {
             let message = null;
-            if (this.manager.v12) {
-                message = await this.channel.messages.fetch(this.messageID).catch(() => {});
-            } else {
-                message = await this.channel.fetchMessage(this.messageID).catch(() => {});
-            }
+            message = await this.channel.messages.fetch(this.messageID).catch(() => {});
             if (!message) {
                 return reject('Unable to fetch message with ID ' + this.messageID + '.');
             }

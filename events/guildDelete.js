@@ -7,7 +7,9 @@ module.exports = async (client, guild) => {
     var data = new db.table("serverInfo")
     await data.delete(`${guild.id}`)
     await fs.appendFileSync(`./logs/guildRemove/latest.log`, `- [-] Retiré sur ${guild.name}::${guild.memberCount}::${guild.id} \n`, "UTF-8",{'flags': 'a+'});
-    let channel = client.guilds.cache.get('656744068134469633').channels.cache.get('761338977713389609')
+    let channel = client.guilds.cache.get('656744068134469633')
+    if(!channel) return;
+    channel = channel.channels.cache.get('761338977713389609')
     if(!channel) return;
     var owner = guild.owner;
     let embed = new Discord.MessageEmbed()

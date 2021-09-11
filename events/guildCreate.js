@@ -2,15 +2,18 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const db = require('quick.db')
+const config = require('../config.json')
 
 module.exports = async (client, guild) => {
     var data = new db.table("serverInfo")
     await data.set(`${guild.id}.creation`, `off`)
-    await data.set(`${guild.id}.prefix`, `t!`)
+    await data.set(`${guild.id}.prefix`, config.prefix)
     await data.set(`${guild.id}.isDMWin`, true)
     await data.set(`${guild.id}.rainbow`, false)
     await fs.appendFileSync(`./logs/guildCreate/latest.log`, `- [+] Ajouté sur ${guild.name}::${guild.memberCount}::${guild.id} \n`, "UTF-8",{'flags': 'a+'});
-    let channel = client.guilds.cache.get('656744068134469633').channels.cache.get('761338977713389609')
+    let channel = client.guilds.cache.get('656744068134469633')
+    if(!channel) return;
+    channel = channel.channels.cache.get('761338977713389609')
     if(!channel) return;
     var owner = guild.owner;
     try {

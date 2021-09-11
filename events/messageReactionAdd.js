@@ -64,11 +64,10 @@ module.exports = async (client, messageReaction, user) => {
             }
         }
         if (gw2[0].IsRequiredServer === true) {
-            //let guild = await client.shard.broadcastEval(`this.guilds.cache.get("${gw2[0].requiredServer}")`); // WITH INTENT
-            let guild = await client.guilds.fetch(gw2[0].requiredServer) // WITHOUT INTENT
+            let guild = await client.guilds.cache.get(gw2[0].requiredServer)
             if (guild) {
                 var sended = false
-                let member = await guild.members.fetch(user.id).catch(async err => { //NOT WORKING WITHOUT INTENT AND USING client.shard.broadcastEval
+                let member = await guild.members.fetch(user.id).catch(async err => {
                     console.log("Error")
                     if (err.code === 10007) {
                         try {

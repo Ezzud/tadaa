@@ -28,6 +28,9 @@ module.exports = async (client) => {
     }
 
 
+    // AWAIT FOR SHARD READY
+    await sleep(5000);
+
 
     // DISCORD CHECKS
     let count = 0;

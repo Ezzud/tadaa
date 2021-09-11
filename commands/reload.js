@@ -25,20 +25,40 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async (client, pf, message, args, manager,json,lang) => {
-console.log = function(d) {
-    let date = new Date();
-    date.setHours(date.getHours() + 2); //
-    fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
-    log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
-};
+module.exports.run = async (client, pf, message, args, manager, json, lang) => {
+    console.log = function(d) {
+        let date = new Date();
+        date.setHours(date.getHours() + 2); //
+        fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8", {
+            'flags': 'a+'
+        });
+        log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
+    };
     if (message.author.id === settings.ownerID) {
         let emoji = loadings;
         let reloadEmbed = new Discord.MessageEmbed().setColor('D7E921').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\nEtat`, `${emoji} Redémarrage du shard \` ${client.shard.ids[0]} \` en cours\n\u200B`).setFooter(`TADAA | v${json.version}`)
-        await message.channel.send(reloadEmbed);
+        let sendedMessage = await message.channel.send(reloadEmbed);
         let dater = new Date().getTime();
-        await client.destroy()
-        await client.login(settings.token)
+        async function addCommands() {
+            await fs.readdir("./commands/", async (err, files) => {
+                if (err) console.log(err);
+                var jsfile = files.filter(f => f.split(".").pop() === "js");
+                if (jsfile.length <= 0) {
+                    console.log("../commands/ is empty!");
+                    return;
+                }
+                var f;
+                for (f in jsfile) {
+                    const commandName = jsfile[f].split(".")[0];
+                    delete require.cache[require.resolve(`./${commandName}.js`)];
+                    await client.commands.delete(commandName);
+                    const props = require(`../commands/${commandName}.js`);
+                    await client.commands.set(commandName, props);
+                }
+                console.log(`\x1b[32m` + ` \x1b[32mSuccesfully reloaded \x1b[33m${client.commands.size} \x1b[32mcommands` + `\x1b[0m`);
+            });
+        }
+        await addCommands()
         let datef = new Date().getTime();
         let time = datef - dater;
         time = time / 1000
@@ -52,8 +72,8 @@ console.log = function(d) {
         values.forEach((value) => {
             count = count + 1
         });
-        let reloadedEmbed = new Discord.MessageEmbed().setColor('5BCA2F').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\nEtat`, `${client.okay} Redémarrage du shard \` ${client.shard.ids[0]} \` effectué (*${time}s*)`).addField(`Shards`, `\`${count}\`/\`${client.shard.count}\`\n\u200B`).setFooter(`TADAA | v${json.version}`)
-        await message.channel.send(reloadedEmbed)
+        let reloadedEmbed = new Discord.MessageEmbed().setColor('5BCA2F').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\nEtat`, `${client.okay} Redémarrage du shard \` ${client.shard.ids[0]} \` effectué (*${time}s*)\nCommandes rechargées: **${client.commands.size}**`).addField(`Shards`, `\`${count}\`/\`${client.shard.count}\`\n\u200B`).setFooter(lang.footer.split("%version%").join(json.version))
+        await sendedMessage.edit(reloadedEmbed)
     }
 }
 module.exports.help = {

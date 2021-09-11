@@ -78,9 +78,12 @@ let emojiMap = {
     nope: "732581316880498782",
     info: "732581319971831808",
     what: "732581319678361662",
-    warn: "732581316217929782"
+    warn: "732581316217929782",
+    online: "886211570693193748",
+    dnd: "886211570705788938",
+    afk: "886211547117027339",
 };
-const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
+const loadings = `<a:8299_Loading:688433071573565440>`
 
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
@@ -93,12 +96,8 @@ function getEmoji(name) {
 
 
 const manager = new GiveawaysManager(client, {
-    storage: `./data/storage/${client.shard.ids[0]}/giveaways.json`,
-    updateCountdownEvery: 10000,
     default: {
         botsCanWin: false,
-        exemptPermissions: ["MANAGE_MESSAGES", "ADMINISTRATOR"],
-        embedColor: "#4FCAF1",
         reaction: "🎁"
     }
 });
@@ -165,15 +164,16 @@ function _dataHandler() {
     var data = new storage.table("serverInfo")
     data.all().forEach(async database => {
         console.log(`\x1b[33m[DATA]` + ` \x1b[37mTable with ID: ${database.ID}` + `\x1b[0m`);
-                await data.set(`${database.ID}.creation`, 'off')    
+        if(await data.get(`${database.ID}.creation`) !== "off") {
+            await data.set(`${database.ID}.creation`, 'off')  
+        }
+                  
     })
     console.log(`\x1b[32m` + ` \x1b[32mSuccesfully loaded \x1b[33m${data.all().length} \x1b[32mdatabase tables` + `\x1b[0m`);
 }
 manager.on('end', async (giveaway, winners) => {
     let gld = client.guilds.cache.get(giveaway.guildID)
     if (!gld) return;
-    var adapting = new FileSync(`./data/${client.shard.ids[0]}/${giveaway.guildID}.json`);
-    var database = low(adapting);
     var data = new storage.table("serverInfo")
     let dmWin = await data.get(`${giveaway.guildID}.isDMWin`)
     if (dmWin === undefined) {
@@ -186,7 +186,9 @@ manager.on('end', async (giveaway, winners) => {
     		lang = "fr_FR"
     	}
     	lang = require(`./lang/${lang}.json`)
-        const embedwin = new Discord.MessageEmbed().setAuthor(`${lang.winText}`, icon_url = 'https://ezzud.fr/images/openedFixed.png').setColor('#96F221').setDescription(`${lang.winPrize.split("%prize%").join(giveaway.prize)}`).addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}`)} ${lang.reactErrorMessage}`)
+        const embedwin = new Discord.MessageEmbed().setAuthor(`${lang.winText}`, 'https://ezzud.fr/images/openedFixed.png')
+        .setColor('#96F221').setDescription(`${lang.winPrize.split("%prize%").join(giveaway.prize).split("%server%").join(gld.name)}`)
+        .addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}`)} ${lang.reactErrorMessage}`)
         winners.forEach((member) => {
             member.send(embedwin)
         });
@@ -199,8 +201,5 @@ client.login(settings.token);
         Partie READY
 
 /*/
-if (client.shard.ids[0] === 0) {
-    console.log(`\n----------------------------------\n`)
-}
 console.log(`\x1b[34m[API]` + `\x1b[37m Connexion...` + `\x1b[0m`);
 client.time = new Date()
