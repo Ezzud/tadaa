@@ -11,7 +11,7 @@ module.exports = async (client) => {
     let delay = new Date() - client.time;
     delay = delay / 1000
     console.log(`\x1b[34m[API]` + ` \x1b[0mShard #${client.shard.ids[0]} fonctionnel (${delay}s)`)
-
+    client.pinglist = [70, 70, 70, 70, 70]
 
     // GITHUB CHECK
     console.log(`\x1b[33m[INFO]` + ` \x1b[37mChecking latest version from Github...` + `\x1b[0m`);
@@ -70,6 +70,11 @@ module.exports = async (client) => {
                 if (err) return;
             })
         }
+        var list = client.pinglist
+        var list2 = list.shift()
+        var ping = Math.trunc(client.ws.ping)
+        list.push(ping)
+        client.pinglist = list
     }, 15000);
     setInterval(async () => {
         let count2 = 0;

@@ -161,6 +161,7 @@ function _eventHandler() {
 }
 
 function _dataHandler() {
+    if(client.shard.ids[0] !== 0) return;
     var data = new storage.table("serverInfo")
     data.all().forEach(async database => {
         console.log(`\x1b[33m[DATA]` + ` \x1b[37mTable with ID: ${database.ID}` + `\x1b[0m`);

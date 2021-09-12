@@ -74,7 +74,7 @@ class GiveawaysManager extends EventEmitter {
                 requirements = requirements + `${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n`;
             }
             if (giveaway.options.IsRequiredServer === true) {
-                requirements = requirements + `${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName).split("%serverInvite%").join(giveaway.requiredServerInvite)}`;
+                requirements = requirements + `${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName).split("%serverInvite%").join(giveaway.options.requiredServerInvite)}`;
             }
             if (requirements && requirements !== "") {
                 requirements = `\n${giveaway.options.langfile.requirements}\n${requirements}`;
@@ -219,7 +219,7 @@ class GiveawaysManager extends EventEmitter {
                 requirements = requirements + `${giveaway.options.langfile.managerEmbedRole.split("%requiredRole%").join(`<@&${giveaway.requiredRole}>`)}\n`
             }
             if (giveaway.options.IsRequiredServer === true) {
-                requirements = requirements + `**${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName).split("%serverInvite%").join(giveaway.requiredServerInvite)}**`
+                requirements = requirements + `${giveaway.options.langfile.managerEmbedServer.split("%requiredServerName%").join(giveaway.requiredServerName).split("%serverInvite%").join(giveaway.requiredServerInvite)}`
             }
             if (requirements && requirements !== "") {
                 requirements = `\n${giveaway.options.langfile.requirements}\n${requirements}`

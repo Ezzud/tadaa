@@ -5,6 +5,7 @@ const moment = require('moment');
 const fs = require('fs');
 const Topgg = require(`@top-gg/sdk`)
 const config = require('../config.json')
+const QuickChart = require('quickchart-js');
 var api;
 if (config.topggEnabled === true) {
     api = new Topgg.Api(config.topggToken)
@@ -102,21 +103,33 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
     if (config.topggEnabled === true) {
         votes = await api.getVotes()
     }
+
+    const pingChart = new QuickChart();
+    await pingChart.setConfig({
+        type: 'bar',
+        data: { labels: ['1m ago',"45s ago","30s ago",'15s ago', 'Now'], datasets: [{ label: 'Average API ping', data: client.pinglist }] },
+    });
+    pingChart.setWidth(400).setHeight(200).setBackgroundColor('transparent');
+
+
+    var chart = await pingChart.getShortUrl();
+
     var embed = new Discord.MessageEmbed()
     .setTitle(lang.infoTitle)
-    .setColor('#e4b400')
+    .setColor('#F5E351')
     .setThumbnail(client.user.avatarURL())
     .addField(lang.infoPingTitle.split("%loading%").join(loadings), `${lang.infoPingField.split("%messagePing%").join(messagePing).split("%apiPing%").join(apiPing)}`, true)
-    .addField(lang.infoShardsTitle.split("%shard%").join(getEmoji("sharding")), `${lang.infoShardsField.split("%activeShards%").join(count3).split("%maxShards%").join(client.shard.count).split("%shard%").join(client.shard.ids[0])}`, true)
+    .addField(lang.infoShardsTitle.split("%shard%").join(getEmoji("sharding")), `${lang.infoShardsField.split("%activeShards%").join(count3).split("%maxShards%").join(client.shard.count).split("%shard%").join(client.shard.ids[0])}`, false)
     .addField(lang.infoUptimeTitle.split("%uptime%").join(getEmoji("computer")), `${lang.infoUptimeField.split("%uptime%").join(msg)}`, false);
     if (config.topggEnabled === true) {
         embed.addField(lang.infoVotesTitle.split("%vote%").join(":inbox_tray:"), `${lang.infoVotesField.split("%votes%").join(votes.length)}`, true)
     }
     embed.addField(lang.infoMemoryTitle.split("%memory%").join(getEmoji("memoire")), `${lang.infoMemoryField.split("%memory%").join(bts(memory.heapUsed))}`, true)
     .addField(lang.infoDevTitle.split("%dev%").join(getEmoji("dev")), `${lang.infoDevField}`, true)
-    .addField(lang.infoServersTitle, `${lang.infoServersField.split("%servers%").join(req)}`, false)
-    .addField(lang.infoChangelogTitle, `${lang.infoChangelogField.split("%version%").join(json.version).split("%changelogs%").join(json.changelog)}`, false)
+    .addField(lang.infoChangelogTitle, `${lang.infoChangelogField.split("%version%").join(json.version).split("%changelogs%").join(`[Github](https://github.com/Ezzud/tadaa) - [Website](https://ezzud.fr)`)}`, false)
+    .addField(lang.infoServersTitle, `${lang.infoServersField.split("%servers%").join(req)}`, true)
     .addField(`\u200B`, lang.infoSupportField)
+    .setImage(chart)
     .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL());
 
     await message.channel.send(embed)

@@ -37,9 +37,6 @@ function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
 var api;
-if (config.topggEnabled === true) {
-    api = new Topgg.Api(config.topggToken)
-}
 /* /////////////////////////////////////////////////
 
 

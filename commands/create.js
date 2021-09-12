@@ -542,10 +542,6 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                         message.channel.send(embed)
                         return msg.delete();
                     }
-                    mess = mess.replace('<', '')
-                    mess = mess.replace('>', '')
-                    mess = mess.replace('@&', '')
-                    mess = mess.replace(' ', '')
                     let role = await client.guilds.cache.get(mess)
                     if (!role) {
                         creationRequiredServer = ":x:"
@@ -578,6 +574,8 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                 });
             }
         }
+        if(await data.get(`${message.guild.id}.creation`) === "off") return;
+        
         if (creationIsRequiredServer === "oui") {
             embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerInvite).setFooter(lang.footer.split("%version%").join(json.version))
             await message.channel.send(embed)
@@ -587,6 +585,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                     max: 1,
                     time: 60000
                 }).then(async collected => {
+                    if(!collected.first()) return;
                     if (!collected.first().content) return;
                     let mess = collected.first().content
                     if (message.channel.id !== channelID) {
@@ -606,6 +605,14 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                         return msg.delete();
                     }
                     let server = await client.guilds.cache.get(creationRequiredServer);
+                    if(!server) {
+                        creationRequiredServer = ":x:"
+                        await data.set(`${message.guild.id}.creation`, 'off')
+                        answered = true
+                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerIError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+                        message.channel.send(embed)
+                        return;                        
+                    }
                     if (mess === "none") {
                         if (!server.member(client.user).hasPermission("CREATE_INSTANT_INVITE")) {
                             creationRequiredServerInvite = ":x:"
