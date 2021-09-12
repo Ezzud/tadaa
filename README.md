@@ -53,36 +53,122 @@ Default prefix is "t!" but he can be changed. You can @Mention the bot to get hi
 
 ![Main Commands](https://media.discordapp.net/attachments/740991539148488754/843951995332853760/commands1.png)
 <p>
-
-- t!help | See the bot's help menu
-- t!info | See the bot's informations
-- t!ping | See the bot's ping
-- t!stats | See the bot's stats
+<table>
+  <tr>
+    <th>Command</th>
+    <th>Description </th>
+    <th>Usage</th>
+  </tr>
+  <tr>
+    <td>help</td>
+    <td>See the bot's informations </td>
+    <td>t!help</td>
+  </tr>
+  <tr>
+    <td>info</td>
+    <td>See the bot's informations</td>
+    <td>t!info</td>
+  </tr>
+  <tr>
+    <td>ping</td>
+    <td>See the bot's ping </td>
+    <td>t!ping</td>
+  </tr>
+  <tr>
+    <td>stats</td>
+    <td>See the bot's stats </td>
+    <td>t!stats</td>
+  </tr>
+</table>
 </p>
 
 ![Commandes de giveaway](https://media.discordapp.net/attachments/740991539148488754/843951992820334633/commands2.png)<br/>
 <h3>(Permission: Manage server or 'Giveaways' role)</h3>
 <p>
-
-- t!create | Start the giveaway creation process
-- t!start #channel [duration] [winners count> [prize] | Start a giveaway with the creation process
-- t!end [message ID] | End a giveaway
-- t!reroll [message ID] |  Choose new winner(s)
-- t!delete [message ID] | Delete a giveaway
-- t!edit [message ID] [winners|prize] [value] | Edit a giveaway
-- t!list | Displays the list of all active giveaways in the server
+<table>
+  <tr>
+    <th>Command</th>
+    <th>Description </th>
+    <th>Usage</th>
+  </tr>
+  <tr>
+    <td>create</td>
+    <td>Start the giveaway creation process</td>
+    <td>t!create/td>
+  </tr>
+  <tr>
+    <td>start</td>
+    <td>Start a giveaway without the creation proces</td>
+    <td>t!start #channel [duration] [winner count] [Prize] <-role @RoleID> <-guild guildID></td>
+  </tr>
+  <tr>
+    <td>end</td>
+    <td>End a giveaway</td>
+    <td>t!end [message ID]</td>
+  </tr>
+  <tr>
+    <td>reroll</td>
+    <td>Choose new winner(s)</td>
+    <td>t!reroll [message ID]</td>
+  </tr>
+  <tr>
+    <td>delete</td>
+    <td>Delete a giveaway</td>
+    <td>t!delete [message ID]</td>
+  </tr>
+  <tr>
+    <td>edit</td>
+    <td>Edit a giveaway</td>
+    <td>t!edit [message ID] [winners|prize] [value]</td>
+  </tr>
+  <tr>
+    <td>list</td>
+    <td>Displays the list of all active giveaways in the server</td>
+    <td>t!list</td>
+  </tr>
+</table>
 </p>
 
 ![Configuration commands](https://media.discordapp.net/attachments/740991539148488754/843951991997988894/commands3.png)<br/>
 <h3>(Permission: Administrator)</h3>
 <p>
-
-- t!config | See the actual server's configuration
-- t!config prefix [New prefix] | Change the bot's prefix
-- t!config dmwin [Yes/No] | Enable/Disable sending DM to winners
-- t!config lang [Lang] | Change the bot's language
-- t!config lang list | See the lang list
-- t!config rainbow [Yes/No] | Enable/Disable rainbow mode
+<table>
+  <tr>
+    <th>Command</th>
+    <th>Description </th>
+    <th>Usage</th>
+  </tr>
+  <tr>
+    <td>config</td>
+    <td>See the actual server's configuration</td>
+    <td>t!config</td>
+  </tr>
+  <tr>
+    <td>config</td>
+    <td>Change the bot's prefix</td>
+    <td>t!config prefix [New prefix]</td>
+  </tr>
+  <tr>
+    <td>config</td>
+    <td>Enable/Disable sending DM to winners</td>
+    <td>t!config dmwin [Yes/No]</td>
+  </tr>
+  <tr>
+    <td>config</td>
+    <td>Change the bot's language</td>
+    <td>t!config lang [Lang]</td>
+  </tr>
+  <tr>
+    <td>config</td>
+    <td>See the list of available languages</td>
+    <td>t!config lang list</td>
+  </tr>
+  <tr>
+    <td>config</td>
+    <td>Enable/Disable rainbow mode</td>
+    <td>t!config rainbow [Yes/No]</td>
+  </tr>
+</table>
 </p>
 
 # 🇫🇷 Version Française
