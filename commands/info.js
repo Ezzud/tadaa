@@ -55,10 +55,7 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
     hours = roundTowardsZero(remainingTime / 3600000) % 24,
     minutes = roundTowardsZero(remainingTime / 60000) % 60,
     seconds = roundTowardsZero(remainingTime / 1000) % 60;
-    let d;
-    let h;
-    let m;
-    let s;
+    let d,h,m,s;
     if(days > 0) {
        d = `${days} ${lang.infoDays}` 
     } else if(days === 0) {

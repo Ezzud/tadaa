@@ -14,6 +14,7 @@ module.exports = async (client) => {
     client.pinglist = [70, 70, 70, 70, 70]
 
     // GITHUB CHECK
+    if(config.checkForUpdate === true) {
     console.log(`\x1b[33m[INFO]` + ` \x1b[37mChecking latest version from Github...` + `\x1b[0m`);
     var octokit = require('@octokit/request')
     var atob = require("atob")
@@ -25,7 +26,9 @@ module.exports = async (client) => {
     } else {
         console.log(`\x1b[31m[INFO]` + ` \x1b[37mYou're not using the latest version of TADAA (${version}), download the latest version to get fixes & bugs updates at ` + `\x1b[4mhttps://github.com/Ezzud/tadaa\x1b[0m` + ` \x1b[37m(Your version: ${json.version})` + `\x1b[0m`);
 
+    }        
     }
+
 
 
     // AWAIT FOR SHARD READY

@@ -156,7 +156,7 @@
 	"listEmbedTitle":"Liste des giveaways",
 	"listEmbedNoGiveaway":"Aucun giveaway trouvé",
 	"listEmbedInfoTitle":"Info!",
-	"listEmbedInfoField":"*Ici vous pouvez voir la liste des giveaways active*",
+	"listEmbedInfoField":"*Ici vous pouvez voir la liste des giveaways actifs*",
 	"pingStart":"*Pinging...*",
 	"pingEnd":"%color% Pong! Ping du message: `%messagePing%ms` - Ping de l'API: `%apiPing%ms`",
 	"rerollEmbedSuccess":"%okay% *Le(s) nouveau(x) gagnant(s) a|ont été sélectionné(s)*",

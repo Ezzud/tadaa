@@ -81,11 +81,6 @@ class Giveaway extends EventEmitter {
         } else {
             users = (await reaction.users.fetch()).filter(u => u.bot === this.botsCanWin).filter(u => u.id !== this.message.client.id).filter(u => this.channel.guild.members.cache.get(u.id)).random(winnerCount || this.winnerCount).filter(u => u);
         }
-        if(this.IsRequiredServer === true) {
-            let guild = this.client.guilds.cache.get(this.requiredServer)
-            if(!guild) return;
-            users = users.filter(u => guild.members.cache.get(u.id) !== undefined)
-        }
         return users;
     }
 }

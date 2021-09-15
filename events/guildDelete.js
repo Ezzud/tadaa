@@ -7,17 +7,36 @@ module.exports = async (client, guild) => {
     var data = new db.table("serverInfo")
     await data.delete(`${guild.id}`)
     await fs.appendFileSync(`./logs/guildRemove/latest.log`, `- [-] Retiré sur ${guild.name}::${guild.memberCount}::${guild.id} \n`, "UTF-8",{'flags': 'a+'});
-    let channel = client.guilds.cache.get('656744068134469633')
-    if(!channel) return;
-    channel = channel.channels.cache.get('761338977713389609')
-    if(!channel) return;
+    let guildID = '656744068134469633'
+    let channelID = '761338977713389609'
     var owner = guild.owner;
-    let embed = new Discord.MessageEmbed()
-    .setTitle(`Suppression dans le shard ${client.shard.ids[0]}`)
-    .setColor('#FF5233')
-    .setThumbnail(guild.iconURL())
-    .addField(`ℹ Informations sur le serveur`, `Nom: \`${guild.name}\`\nID: \`${guild.id}\`\nPropriétaire: ${guild.owner} (${owner.user.tag})\nNombre de membres: **${guild.memberCount}**`)
-    .setTimestamp()
-    channel.send(embed)
+    try {
+        owner = await guild.members.fetch(guild.ownerID)
+    } catch(err) {
+        console.error(err)
+    }
+    await client.shard.broadcastEval(`    
+                    (async () => {
+                        const Discord = require('discord.js');
+                        let guild = this.guilds.cache.get('${guildID}');
+                        if (guild) {
+                            let channel = guild.channels.cache.get('${channelID}')
+                            if(channel) {
+                            let embed = new Discord.MessageEmbed()
+                            .setTitle("Suppression dans le shard ${client.shard.ids[0]}")
+                            .setColor('#FF5233')
+                            .setThumbnail("${guild.iconURL()}")
+                            .addField(":newspaper: Nom", "**${guild.name}**", false)
+                            .addField(":id: ID", "${guild.id}", true)
+                            .addField(":man_detective: Propriétaire", "${guild.owner} (${owner.user.tag})", false)
+                            .addField(":busts_in_silhouette: Membres", "**${guild.memberCount}**", true)
+                            .setTimestamp()
+                            channel.send(embed)
+                            }
+                        }
+                            
+                        return undefined;
+                    })();
+                `);
     return console.log(`- [-] Retiré de ${guild.name}`);
 }

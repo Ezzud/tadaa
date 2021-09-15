@@ -542,8 +542,21 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                         message.channel.send(embed)
                         return msg.delete();
                     }
-                    let role = await client.guilds.cache.get(mess)
-                    if (!role) {
+                    var guild = await client.shard.broadcastEval(`    
+                    (async () => {
+                        let guild = this.guilds.cache.get('${mess}');
+                        if (!guild) {
+                            return undefined;
+                        }
+                        var guildname = guild.name;
+                        var guildid = guild.id;   
+                        return { guildid, guildname };
+                    })();
+                    `);
+                    var completeList = { ...guild[0],
+                        ...guild[1]
+                    }
+                    if (!completeList.guildname || !completeList.guildid) {
                         creationRequiredServer = ":x:"
                         await data.set(`${message.guild.id}.creation`, 'off')
                         answered = true
@@ -551,15 +564,15 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                         message.channel.send(embed)
                         return;
                     } else {
-                        creationRequiredServer = role.id
-                        creationRequiredServerName = role.name
+                        creationRequiredServer = completeList.guildid
+                        creationRequiredServerName = completeList.guildname
                     }
                     if (creationRequiredRole === "oui") return;
                     var editembed;
                     if (creationIsRequiredRole === "oui") {
                         editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldRole.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredrole%").join(`<@&${creationRequiredRole}>`).split("%requiredserver%").join(creationIsRequiredServer)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     } else {
-                        editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldNoRole.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredserver%").join(`${client.guilds.cache.get(creationRequiredServer).name}`)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
+                        editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldNoRole.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredserver%").join(`${creationRequiredServerName}`)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     }
                     answered = true
                     await msg.edit(editembed)
@@ -574,8 +587,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                 });
             }
         }
-        if(await data.get(`${message.guild.id}.creation`) === "off") return;
-        
+        if (await data.get(`${message.guild.id}.creation`) === "off") return;
         if (creationIsRequiredServer === "oui") {
             embed = new Discord.MessageEmbed().setColor('F58F1C').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerInvite).setFooter(lang.footer.split("%version%").join(json.version))
             await message.channel.send(embed)
@@ -585,7 +597,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                     max: 1,
                     time: 60000
                 }).then(async collected => {
-                    if(!collected.first()) return;
+                    if (!collected.first()) return;
                     if (!collected.first().content) return;
                     let mess = collected.first().content
                     if (message.channel.id !== channelID) {
@@ -604,17 +616,8 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                         message.channel.send(embed)
                         return msg.delete();
                     }
-                    let server = await client.guilds.cache.get(creationRequiredServer);
-                    if(!server) {
-                        creationRequiredServer = ":x:"
-                        await data.set(`${message.guild.id}.creation`, 'off')
-                        answered = true
-                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerIError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                        message.channel.send(embed)
-                        return;                        
-                    }
                     if (mess === "none") {
-                        if (!server.member(client.user).hasPermission("CREATE_INSTANT_INVITE")) {
+                        /*if (!server.member(client.user).hasPermission("CREATE_INSTANT_INVITE")) {
                             creationRequiredServerInvite = ":x:"
                             await data.set(`${message.guild.id}.creation`, 'off')
                             answered = true
@@ -622,15 +625,41 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                             message.channel.send(embed)
                             return;
                         }
-                        var chx = server.channels.cache.filter(chx => chx.type === "text").find(x => x.position === 0);
+                        */
+                        let invite = await client.shard.broadcastEval(`    
+                    (async () => {
+                        let guild = this.guilds.cache.get('${creationRequiredServer}');
+                        if (!guild) {
+                            return undefined;
+                        }
+                        var chx = guild.channels.cache.filter(chx => chx.type === "text").find(x => x.position === 0);
                         let invite = await chx.createInvite({
                             temporary: false,
                             maxAge: 0
                         })
-                        creationRequiredServerInvite = invite.url
+                            
+                        return invite.url;
+                    })();
+                `);
+                        invite = invite.toString().replace(",", "")
+                        creationRequiredServerInvite = invite
                     } else {
+                        let invites = await client.shard.broadcastEval(`    
+                    (async () => {
+                        let guild = this.guilds.cache.get('${creationRequiredServer}');
+                        if (!guild) {
+                            return undefined;
+                        }
                         let invites = await server.fetchInvites()
-                        if (!invites.find(x => x.url === mess)) {
+                        if (invites.find(x => x.url === ${mess})) {
+                            return true;
+                        }   
+                        return undefined;
+                    })();
+                `);
+                        invites = invites.toString().replace(",", "")
+                        console.log(invites)
+                        if (!invites) {
                             creationRequiredServerInvite = ":x:"
                             await data.set(`${message.guild.id}.creation`, 'off')
                             answered = true
@@ -646,7 +675,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                     if (creationRequiredRole === "oui") {
                         editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldRole.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredrole%").join(`<@&${creationRequiredRole}>`).split("%requiredserver%").join(creationIsRequiredServer)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     } else {
-                        editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldNoRole.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredserver%").join(`${client.guilds.cache.get(creationRequiredServer).name}`)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
+                        editembed = new Discord.MessageEmbed().setTitle(`TADAA`).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).setDescription(lang.createEmbedHeader.split("%info%").join(client.info)).addField(lang.createEmbedFieldTitle, lang.createServerIFieldNoRole.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredserver%").join(`${creationRequiredServerName}`)).setFooter(`${lang.createFooter} | ${lang.footer.split("%version%").join(json.version)}`, message.author.avatarURL())
                     }
                     answered = true
                     await msg.edit(editembed)
@@ -692,12 +721,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
     } else if (creationIsRequiredServer === "non") {
         server_activation = lang.desactivated
     }
-    editedembed = new Discord.MessageEmbed()
-    .setTitle(`TADAA`)
-    .setDescription(lang.createConfirmHeader.split("%what%").join(client.what))
-    .setThumbnail(client.user.avatarURL()).setColor(`#FA921D`)
-    .addField(lang.createEmbedFieldTitle, lang.createConfirmField.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredrole%").join(role_activation).split("%requiredserver%").join(server_activation))
-    .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
+    editedembed = new Discord.MessageEmbed().setTitle(`TADAA`).setDescription(lang.createConfirmHeader.split("%what%").join(client.what)).setThumbnail(client.user.avatarURL()).setColor(`#FA921D`).addField(lang.createEmbedFieldTitle, lang.createConfirmField.split("%channel%").join(`<#${creationChannel}>`).split("%duration%").join(creationTime).split("%winners%").join(creationWinner).split("%prize%").join(creationPrice).split("%requiredrole%").join(role_activation).split("%requiredserver%").join(server_activation)).setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
     let isrequiredserver;
     let requiredserver;
     let requiredservername;
