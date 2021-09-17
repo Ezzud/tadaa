@@ -7,6 +7,7 @@ var util = require('util');
 const log_stdout = process.stdout;
 var path = require('path');
 var commandname = path.basename(__filename);
+const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 
 module.exports.run = async (client, pf, message, args, manager,json,lang) => {
 console.log = function(d) {
@@ -23,64 +24,63 @@ console.log = function(d) {
             return;
         }
     }
+
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
     if (!message.guild.member(client.user).hasPermission(379968)) return (message.channel.send(permembed));
-    let onServer;
-    onServer = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
-    onServer = onServer.filter((g) => g.ended !== true);
-    let onServer2;
-    let onServer3;
-    let onServer4;
-    if (!onServer) {
-        onServer = 'Aucun :('
-    } else {
-        onServer = onServer.map(g => `${lang.listGiveawaysMap.split("%prize%").join(g.prize).split("%endDate%").join(`${moment(new Date(g.endAt).setHours(new Date(g.endAt).getHours() + 1)).format('L')} ${moment(new Date(g.endAt).setHours(new Date(g.endAt).getHours() + 1)).format('LT')}`).split("%endAt%").join(moment(g.endAt).fromNow())} [${lang.listGiveawaysAccessButton}](https://discordapp.com/channels/${g.guildID}/${g.channelID}/${g.messageID})::`)
-        onServer = Array.from(onServer)
-        if (onServer[6] !== undefined && onServer[10] !== undefined) {
-            onServer2 = onServer.slice(6, 10)
-            onServer2 = onServer2.toString().replace(/::/g, `\n`).replace(/,/g, ``)
-        } else {
-            onServer2 = `\u200B`;
-        }
-        if (onServer[11] !== undefined && onServer[15] !== undefined) {
-            onServer3 = onServer.slice(11, 15)
-            onServer3 = onServer3.toString().replace(/::/g, `\n`).replace(/,/g, ``)
-        } else {
-            onServer3 = `\u200B`;
-        }
-        if (onServer[16] !== undefined && onServer[20] !== undefined) {
-            onServer4 = onServer.slice(16, 20)
-            onServer4 = onServer4.toString().replace(/::/g, `\n`).replace(/,/g, ``)
-        } else {
-            onServer4 = `\u200B`;
-        }
-        onServer = onServer.slice(0, 5)
-        onServer = onServer.toString().replace(/::/g, `\n`).replace(/,/g, ``)
-    }
-    if (onServer.lenght > 1000) {
-        onServer = 'Aucun :('
-    }
-    if (onServer2.lenght > 1000) {
-        onServer2 = `\u200B`
-    }
-    if (onServer3.lenght > 1000) {
-        onServer3 = `\u200B`
-    }
-    if (onServer4.lenght > 1000) {
-        onServer4 = `\u200B`
-    }
+
     var embed = new Discord.MessageEmbed()
-    .setAuthor(lang.listEmbedTitle)
-    .setThumbnail(client.user.avatarURL())
+    .setAuthor(lang.listEmbedTitle, client.user.avatarURL())
     .setColor(`#F79430`)
-    .addField(`\u200B`, onServer || lang.listEmbedNoGiveaway)
-    .addField(`\u200B`, `${onServer2 || `\u200B`}`)
-    .addField(`\u200B`, `${onServer3 || `\u200B`}`)
-    .addField(`\u200B`, `${onServer4 || `\u200B`}\n\n\u200B`)
+    .addField(`\u200B`, `${loadings} Loading active giveaways...`)
     .addField(lang.listEmbedInfoTitle, lang.listEmbedInfoField)
     .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
     .setTimestamp()
-    message.channel.send(embed)
+    let mm = await message.channel.send(embed)
+    let onServer;
+    onServer = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
+    onServer = onServer.filter((g) => g.ended !== true);
+        var list = [""]
+        var firstvalue = 0
+        var i = 0
+        for(i in onServer) {
+            if(list[firstvalue].length >= 900) {
+                list[firstvalue + 1] = ""
+                var giveaway = onServer[i];
+                var formatedDate = giveaway.endAt.toString();
+                formatedDate = formatedDate.substring(0, formatedDate.length - 3)
+                formatedDate = parseInt(formatedDate)
+                var msg = `:gift: ${giveaway.prize} - <t:${formatedDate}> (<t:${formatedDate}:R>) - <#${giveaway.channelID}>`
+                list[firstvalue + 1] = `${list[firstvalue + 1]}${msg}\n`
+                firstvalue++
+                i++
+            } else {
+                var giveaway = onServer[i];
+                var formatedDate = giveaway.endAt.toString();
+                formatedDate = formatedDate.substring(0, formatedDate.length - 3)
+                formatedDate = parseInt(formatedDate)
+                var msg = `:gift: ${giveaway.prize} - <t:${formatedDate}> (<t:${formatedDate}:R>) - <#${giveaway.channelID}>`
+                list[firstvalue] = `${list[firstvalue]}${msg}\n`
+                i++               
+            }
+
+        }
+    var embed = new Discord.MessageEmbed()
+    .setAuthor(lang.listEmbedTitle, client.user.avatarURL())
+    .setColor(`#2ADAEF`)
+    var listing = 0;
+    for(listing in list) {
+    	if(listing === 0) {
+        	embed.addField(`\u200B`, list[listing] || listEmbedNoGiveaway);
+        } else {
+        	embed.addField(`\u200B`, list[listing] || `\u200B`);
+        }
+        
+        listing++;
+    }
+    embed.addField(lang.listEmbedInfoTitle, lang.listEmbedInfoField)
+    .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
+    .setTimestamp()
+    await mm.edit(embed)
 }
 module.exports.help = {
     name: "list"

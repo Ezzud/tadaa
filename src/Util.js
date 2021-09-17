@@ -5,12 +5,11 @@
  **/
 const Discord = require('discord.js');
 const GiveawaysManagerOptions = {
-    DJSlib: Discord.version.split('.')[0] === '12' ? 'v12' : 'v11',
     default: {
         botsCanWin: false,
         reaction: '🎁'
     }
 };
 module.exports = {
-    defaultGiveawaysManagerOptions: GiveawaysManagerOptions,
+    GiveawaysManagerOptions: GiveawaysManagerOptions,
 };

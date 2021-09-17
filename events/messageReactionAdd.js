@@ -8,10 +8,10 @@ module.exports = async (client, messageReaction, user) => {
         try {
             await messageReaction.fetch();
         } catch (error) {
-            if(error.code === 50001) {
+            if (error.code === 50001) {
                 console.log(`Erreur lors de la récupération de la réaction: Missing Access`);
-            } else if(error.code === 50002) {
-               console.log(`Erreur lors de la récupération de la réaction: Missing Permission`); 
+            } else if (error.code === 50002) {
+                console.log(`Erreur lors de la récupération de la réaction: Missing Permission`);
             } else {
                 console.log(`Erreur lors de la récupération de la réaction: ${error.httpStatus} Code: ${error.code}`);
             }
@@ -64,29 +64,55 @@ module.exports = async (client, messageReaction, user) => {
             }
         }
         if (gw2[0].IsRequiredServer === true) {
-            //let guild = await client.shard.broadcastEval(`this.guilds.cache.get("${gw2[0].requiredServer}")`); // WITH INTENT
-            let guild = await client.guilds.fetch(gw2[0].requiredServer) // WITHOUT INTENT
-            if (guild) {
-                var sended = false
-                let member = await guild.members.fetch(user.id).catch(async err => { //NOT WORKING WITHOUT INTENT AND USING client.shard.broadcastEval
-                    console.log("Error")
-                    if (err.code === 10007) {
-                        try {
-                            await messageReaction.users.remove(user.id)
-                        } catch (error) {
-                            console.error(error);
+            var guild_to_get = await client.shard.broadcastEval(`    
+                    (async () => {
+                        let guild = this.guilds.cache.get('${gw2[0].requiredServer}');
+                        if (!guild) {
+                            return undefined;
                         }
-                        const embed = new Discord.MessageEmbed().setAuthor(`${lang.reactError}`, 'https://ezzud.fr/images/closedFixed.png').setColor('#ED3016').setDescription(`${lang.reactNoServer.split("%requiredServerName%").join(gw2[0].requiredServerName)}`).addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${messageReaction.message.guild.id}/${messageReaction.message.channel.id}/${messageReaction.message.id}`)} ${lang.reactErrorMessage}`)
-                        user.send(embed).catch(error => {
-                            if (error.code === 50007) {
-                                console.log(`Erreur: L'utilisateur n'a pas pu être DM`)
+                            
+                        return guild;
+                    })();
+                `);
+            var completeGuildList = { ...guild_to_get[0],
+                ...guild_to_get[1]
+            }
+            if (completeGuildList.id) {
+                var sended = false
+                var serv = await client.shard.broadcastEval(`    
+                    (async () => {
+                        let guild = await this.guilds.cache.get('${gw2[0].requiredServer}');
+                        if (guild) {
+                            var userd = await guild.members.fetch(${user.id})
+                            if(!userd) {
+                                console.log("No User in guild")
+                                return undefined;
                             }
-                        })
-                        sended = true;
+                            return userd;
+                        } else {
+                            return undefined;
+                        } 
+                    })();
+                `);
+                var completeList = { ...serv[0],
+                    ...serv[1]
+                }
+                const sorted = [];
+                let number = 0
+                for (let number in completeList) {
+                    const entry = completeList[number.toString()]
+                    if (sorted.length === 0) {
+                        sorted.push(entry);
+                        continue;
                     }
-                })
-                if (sended === true) return;
-                if (!member) {
+                    let i = 0;
+                    while (sorted[i] !== undefined) {
+                        i++;
+                    }
+                    sorted.splice(i, 0, entry)
+                }
+
+                if (!sorted.find(x => x.userID === user.id)) {
                     try {
                         await messageReaction.users.remove(user.id)
                     } catch (error) {

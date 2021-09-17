@@ -1,8 +1,8 @@
 {
   "name": "TADAA",
-  "version": "1.4.2",
+  "version": "1.4.3-BETA",
   "description": "Bot discord de giveaways français, permet de créer des giveaways personnalisés",
-  "changelog": "✅ Requirements separated in the embed\n✅ Added invite link to t!create\n✅ Delay fix\n✅ Some parts of the Manager.js optimized",
+  "changelog": "✅ t!create is faster!\n✅ Multiple shards support\n✅ Manager is more clean\n✅ New emojis on t!help and t!ping\n✅ ServerRequirement is fixed\n✅ Time remaining is now managed by Discord",
   "main": "shard.js",
   "private": true,
   "author": "ezzud",
@@ -19,10 +19,12 @@
     "lowdb": "^1.0.0",
     "merge-options": "^2.0.0",
     "moment": "^2.24.0",
+    "ms": "^2.1.3",
     "opusscript": "0.0.7",
     "path": "^0.12.7",
     "pretty-ms": "^6.0.1",
     "quick.db": "^7.1.3",
+    "quickchart-js": "^1.4.1",
     "sqlite3": "^5.0.0"
   },
   "optionalDependencies": {
