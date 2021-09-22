@@ -67,7 +67,7 @@ class GiveawaysManager extends EventEmitter {
             if (!giveaway.options.langfile) {
                 giveaway.options.langfile = require(`../lang/${giveaway.lang}.json`);
             }
-            if(giveaway.options.shardID !== this.client.shard.ids[0]) return;
+            if(!this.client.guilds.cache.get(giveaway.guildID)) return;
             await this._markAsEnded(giveaway.messageID);
             var requirements = "";
             if (giveaway.options.IsRequiredRole === true) {
@@ -265,7 +265,7 @@ class GiveawaysManager extends EventEmitter {
             if (!giveaway.ended) {
                 return reject(`GiveawayNotEnded`);
             }
-            if(giveaway.options.shardID !== this.client.shard.ids[0]) return;
+            if(!this.client.guilds.cache.get(giveaway.guildID)) return;
             if (!giveaway.channel) {
                 return reject(`GiveawayUnknownChannel`);
             }
@@ -304,7 +304,7 @@ class GiveawaysManager extends EventEmitter {
             if (giveaway.ended) {
                 return reject(`GiveawayAlreadyEnded`);
             }
-            if(giveaway.options.shardID !== this.client.shard.ids[0]) return;
+            if(!this.client.guilds.cache.get(giveaway.guildID)) return;
             if (!giveaway.channel) {
                 return reject(`GiveawayUnknownChannel`);
             }
@@ -438,7 +438,7 @@ class GiveawaysManager extends EventEmitter {
         if(giveaway.options.shardID === undefined) {
             giveawayData.shardID = 0
         }
-        if(giveawayData.shardID !== this.client.shard.ids[0]) return;
+        if(!this.client.guilds.cache.get(giveaway.guildID)) return;
         await this.giveaways.push(giveawayData);
         await db.set("giveaways", this.giveaways);
         await this._checkGiveaway()
