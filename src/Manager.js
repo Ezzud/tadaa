@@ -91,21 +91,23 @@ class GiveawaysManager extends EventEmitter {
                 .setDescription(giveaway.options.langfile.managerEmbedDescription.split("%prize%").join(giveaway.prize))
                 .addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${requirements}\n\n${giveaway.options.langfile.managerEndedWinners.split("%formattedWinners%").join(formattedWinners)}\n\u200B`)
                 .addField(`\u200B`, `[Upvote](https://top.gg/bot/732003715426287676) - [Invite](https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=379968&scope=bot)`)
-                await giveaway.message.edit({
-                    embed
-                }).catch(err => {
-                    console.log(err)
-                })
                 if (winners.length > 1) {
                     await giveaway.message.channel.send(giveaway.options.langfile.winMessageP.replace('{winners}', formattedWinners).replace('{prize}', giveaway.prize));
                 } else {
                     await giveaway.message.channel.send(giveaway.options.langfile.winMessageS.replace('{winners}', formattedWinners).replace('{prize}', giveaway.prize));
                 }
                 await this.emit('end', giveaway, winners);
+                await giveaway.message.edit({
+                    embed
+                }).catch(err => {
+                    console.log(err)
+                })
                 resolve(winners);
             } else {
                 let date = new Date()
                 date.setHours(date.getHours() + 1);
+                await this._markAsEnded(giveaway.messageID);
+                await this.emit('end', giveaway, winners);
                 let embed = new Discord.MessageEmbed()
                 embed.setAuthor(giveaway.options.langfile.managerEndedTitle)
                 .setThumbnail('https://ezzud.fr/images/openedFixed.png')
@@ -117,8 +119,6 @@ class GiveawaysManager extends EventEmitter {
                 await giveaway.message.edit({
                     embed
                 });
-                await this._markAsEnded(giveaway.messageID);
-                await this.emit('end', giveaway, winners);
                 resolve();
             }
         });
@@ -247,7 +247,6 @@ class GiveawaysManager extends EventEmitter {
             giveaway.messageID = message.id;
             await this.giveaways.push(giveaway);
             await this._saveGiveaway(giveaway);
-            await this._checkGiveaway()
             await message.react(giveaway.reaction);
             return resolve(giveaway);
         });
@@ -469,10 +468,7 @@ class GiveawaysManager extends EventEmitter {
             if (giveaway.ended === true) {
                 return;
             }
-        if(giveaway.options.shardID === undefined) {
-            giveaway.options.shardID = 0
-        }
-            if(giveaway.options.shardID !== this.client.shard.ids[0]) return;
+            if(!this.client.guilds.cache.get(giveaway.guildID)) return;
             if (!giveaway.channel) return;
             await giveaway.fetchMessage().catch(() => {});
             if (!giveaway.message) {
@@ -496,6 +492,17 @@ class GiveawaysManager extends EventEmitter {
                 giveaway.options.requiredServerInvite = "https://github.com/Ezzud/tadaa"
             }
             let date = new Date(giveaway.endAt);
+
+            let delay = new Date().getTime()
+            if (delay > giveaway.endAt) {
+                giveaway.ended = true;
+                await this.end.call(this, giveaway.messageID).catch(err => {
+                    console.log(err)
+                })
+                await this._markAsEnded(giveaway.messageID);
+                return;
+            }
+
             var formatedDate = giveaway.endAt.toString();
             formatedDate = formatedDate.substring(0, formatedDate.length - 3)
             formatedDate = parseInt(formatedDate)
@@ -513,7 +520,8 @@ class GiveawaysManager extends EventEmitter {
             embed = new Discord.MessageEmbed();
             embed.setAuthor(giveaway.options.langfile.managerEmbedTitle).setColor(color).setThumbnail('https://ezzud.fr/images/closedFixed.png')
             .setFooter(giveaway.options.langfile.managerEmbedFooter.split("%date%").join(moment(date).format('L'))).setTimestamp(date)
-            .setDescription(giveaway.options.langfile.managerEmbedDescription.split("%prize%").join(giveaway.prize)).addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(`<t:${formatedDate}:R> (<t:${formatedDate}>)`)}\n${requirements}\n\u200B`)
+            .setDescription(giveaway.options.langfile.managerEmbedDescription.split("%prize%").join(giveaway.prize))
+            .addField(`\u200B`, `\n\n${giveaway.options.langfile.managerEmbedWinners.split("%winnerCount%").join(giveaway.winnerCount)}\n${giveaway.options.langfile.managerHostedBy.split("%hostedby%").join(giveaway.hostedBy)}\n${giveaway.options.langfile.managerEmbedTime.split("%content%").join(`<t:${formatedDate}:R> (<t:${formatedDate}>)`)}\n${requirements}\n\u200B`)
             await giveaway.message.edit({
                 embed
             }).catch(error => {
@@ -526,33 +534,6 @@ class GiveawaysManager extends EventEmitter {
                     return;
                 }
             })
-            let delay = new Date()
-            let delayup = delay + this.options.updateCountdownEvery
-            let ending;
-            if (giveaway.ended === true) {
-                return;
-            } else if (delay > giveaway.endAt) {
-                giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID).catch(err => {
-                    console.log(err)
-                })
-                await this._markAsEnded(giveaway.messageID);
-                return;
-            } else if (delayup > giveaway.endAt) {
-                giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID).catch(err => {
-                    console.log(err)
-                })
-                await this._markAsEnded(giveaway.messageID);
-                return;
-            } else if (giveaway.remainingTime < this.options.updateCountdownEvery) {
-                giveaway.ended = true;
-                await this.end.call(this, giveaway.messageID).catch(err => {
-                    console.log(err)
-                })
-                await this._markAsEnded(giveaway.messageID);
-                return;
-            }
             return;
         });
         return;
