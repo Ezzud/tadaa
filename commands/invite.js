@@ -7,7 +7,7 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
     .setFooter(lang.footer.split("%version%").join(json.version))
     .addField(lang.inviteTitle, lang.inviteYesField.split("%okay%").join(client.okay), true)
     .addField("\n\u200B", lang.inviteNoField.split("%nope%").join(client.nope), true)
-    message.channel.send(embed)
+    message.channel.send({ embeds: [embed]})
 }
 module.exports.help = {
     name: "invite"

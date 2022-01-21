@@ -38,31 +38,31 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async (client, pf, message, args, manager,json,lang) => {
-        if (!await stats.get("command_count")) {
-            await stats.set("command_count", 0)
-        }
-        let command_count = await stats.get("command_count")
+module.exports.run = async(client, pf, message, args, manager, json, lang) => {
+    if (!await stats.get("command_count")) {
+        await stats.set("command_count", 0)
+    }
+    let command_count = await stats.get("command_count")
 
-        if (!await stats.get("creation_count")) {
-            await stats.set("creation_count", 0)
-        }
-        let creation_count = await stats.get("creation_count")
+    if (!await stats.get("creation_count")) {
+        await stats.set("creation_count", 0)
+    }
+    let creation_count = await stats.get("creation_count")
 
-        let totalGiveaways = client.giveawaysManager.giveaways.filter((g) => g.guildID !== undefined).length
-        let totalGiveawaysActive = client.giveawaysManager.giveaways.filter((g) => g.ended !== true).length
-        let totalGiveawaysEnded = client.giveawaysManager.giveaways.filter((g) => g.ended === true).length
+    let totalGiveaways = client.giveawaysManager.giveaways.filter((g) => g.guildID !== undefined).length
+    let totalGiveawaysActive = client.giveawaysManager.giveaways.filter((g) => g.ended !== true).length
+    let totalGiveawaysEnded = client.giveawaysManager.giveaways.filter((g) => g.ended === true).length
 
-        let guildGiveaways = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id).length
+    let guildGiveaways = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id).length
 
-        let server_count;
-        server_count = await client.shard.fetchClientValues('guilds.cache.size');
-        server_count = server_count.reduce((p, n) => p + n, 0);      
+    let server_count;
+    server_count = await client.shard.fetchClientValues('guilds.cache.size');
+    server_count = server_count.reduce((p, n) => p + n, 0);
 
-        let user_count = await client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0))
-        user_count = user_count.reduce((acc, memberCount) => acc + memberCount, 0)
+    let user_count = await client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0))
+    user_count = user_count.reduce((acc, memberCount) => acc + memberCount, 0)
 
-        let embed = new Discord.MessageEmbed()
+    let embed = new Discord.MessageEmbed()
         .setAuthor(lang.statsEmbedTitle, message.author.avatarURL())
         .setColor("#F18718")
         .setThumbnail(client.user.avatarURL())
@@ -73,8 +73,8 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
         .addField(lang.statsServerCount, ` \`${server_count}\` `)
         .addField(lang.statsUserCount, ` \`${user_count}\` `, true)
         .setFooter(lang.footer.split("%version%").join(json.version))
-        message.channel.send(embed)
-    }
+    message.channel.send({ embeds: [embed] })
+}
 module.exports.help = {
     name: "stats"
 }

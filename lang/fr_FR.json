@@ -171,7 +171,7 @@
 	"startWinnersError":"%nope% *Vous devez renseigner un nombre*",
 	"startNoPrize":"%nope% *Veuillez renseigner un prix*",
 	"startPrizeError":"%nope% *Le prix ne peut pas dépasser plus de 50 caractères*",
-	"startEmbedSuccess":"%okay% *Le giveaway a bien été lançé dans le salon %channel%*`",
+	"startEmbedSuccess":"%okay% *Le giveaway a bien été lançé dans le salon %channel%*",
 	"startRoleNoArg":"%nope% Veuillez mentionner un rôle ou donner son id",
 	"startServerNoArg":"%nope% Veuillez donner un identifiant de serveur",
 	"managerEmbedTitle":"Giveaway en cours!",
