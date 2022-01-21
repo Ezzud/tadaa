@@ -42,7 +42,7 @@ module.exports.run = async (client, pf, message, args, manager,json,lang) => {
     	.setThumbnail("https://top.gg/images/dblnew.png")
     	.setFooter(lang.footer.split("%version%").join(json.version))        
     }
- message.channel.send(embed)
+ message.channel.send({ embeds: [embed]})
 }
 module.exports.help = {
     name: "vote"

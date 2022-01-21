@@ -15,7 +15,7 @@ if (config.topggEnabled === true) {
     api = new Topgg.Api(config.topggToken)
 }
 const db = require('quick.db')
-module.exports.run = async (client, pf, message, args, manager, json, lang) => {
+module.exports.run = async(client, pf, message, args, manager, json, lang) => {
     console.log = function(d) {
         let date = new Date();
         date.setHours(date.getHours() + 1); //
@@ -24,11 +24,11 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
         });
         log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
     };
-    if (message.guild.member(message.author).hasPermission(32) === false) {
-        let role = message.guild.member(message.author).roles.cache.find(x => x.name === "Giveaways")
+    if (message.guild.members.cache.get(message.author.id).permissions.has(32) === false) {
+        let role = message.guild.members.cache.get(message.author.id).roles.cache.find(x => x.name === "Giveaways")
         if (role === undefined || role === false || role === null) {
             let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-            message.channel.send(embed)
+            message.channel.send({ embeds: [embed] })
             return;
         }
     }
@@ -39,48 +39,48 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
         if (await api.hasVoted(message.author.id) === false) {
             if (giveaways.length >= 10) {
                 let tmEmbed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.NoVotedGW.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                return (message.channel.send(tmEmbed));
+                return (message.channel.send({ embeds: [tmEmbed] }));
             }
         } else {
             if (giveaways.length >= 20) {
                 let tm2Embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.TooMuchGW.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                return (message.channel.send(tm2Embed));
+                return (message.channel.send({ embeds: [tm2Embed] }));
             }
         }
     }
     let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
     let embed;
-    if (!message.guild.member(client.user).hasPermission(379968)) return (message.channel.send(permembed));
+    if (!message.guild.members.cache.get(client.user.id).permissions.has(379968)) return (message.channel.send(permembed));
     if (!args[0]) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startSyntax.split("%nope%").join(client.nope).split("%pf%").join(pf)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     }
     let channel = message.mentions.channels.first()
     if (!channel) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startNoChannel.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     }
-    if (channel.type !== 'text' && channel.type !== "news") {
+    if (channel.type !== 'GUILD_TEXT' && channel.type !== 'GUILD_NEWS' && channel.type !== 'GUILD_STORE' && channel.type !== 'GUILD_PUBLIC_THREAD' && channel.type !== 'GUILD_PRIVATE_THREAD') {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startNoTextChannel.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     }
     let duration = args[1]
     if (!duration) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startNoDuration.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     }
     let timems = ms(duration)
     if (!timems) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startDurationError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     } else {
         if (timems > 5184000000) {
             embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startTooLargeDuration.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-            return (message.channel.send(embed));
+            return (message.channel.send({ embeds: [embed] }));
         } else if (timems > 596160000) {
             if (await api.hasVoted(message.author.id) === false) {
                 embed = new Discord.MessageEmbed().setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startNoVoted.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                return (message.channel.send(embed));
+                return (message.channel.send({ embeds: [embed] }));
             }
         }
         duration = duration.replace(/-/g, '')
@@ -88,14 +88,14 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
     let winners = args[2]
     if (!winners) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startNoWinners.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     }
     winners = winners.replace(/-/g, '')
     winners = parseInt(winners)
     winners = winners.toString()
     if (winners === 'NaN') {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startWinnersError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     } else {
         winners = parseInt(winners)
         winners = Math.trunc(winners);
@@ -108,11 +108,11 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
     prize = prize.split("-role")[0].split("-guild")[0]
     if (!args[3]) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startNoPrize.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     }
     if (prize.length > 50) {
         embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startPrizeError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        return (message.channel.send(embed));
+        return (message.channel.send({ embeds: [embed] }));
     }
     if (!await data.get(`${message.guild.id}.rainbow`)) {
         await data.set(`${message.guild.id}.rainbow`, false)
@@ -132,7 +132,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
             number += 1
             if (!args[number]) {
                 let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startRoleNoArg.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                message.channel.send(noembed);
+                message.channel.send({ embeds: [noembed] })
                 error = true
                 i++
                 continue;
@@ -142,7 +142,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
                 role = message.guild.roles.cache.get(role)
                 if (!role) {
                     let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createRoleMError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                    message.channel.send(noembed);
+                    message.channel.send({ embeds: [noembed] })
                     error = true
                     i++
                     continue;
@@ -160,59 +160,65 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
             number += 1
             if (!args[number]) {
                 let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startServerNoArg.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                message.channel.send(noembed);
+                message.channel.send({ embeds: [noembed] })
                 error = true
                 i++
                 continue;
             } else {
-                var guild = args[number]
-                guild = guild.replace('<', '').replace('>', '').replace('@&', '').replace(' ', '')
-                guild = await client.shard.broadcastEval(`    
-                    (async () => {
-                        let guild = this.guilds.cache.get('${guild}');
-                        if (!guild) {
-                            return undefined;
-                        }
-                            
-                        return guild;
-                    })();
-                `);
-                var completeList = { ...guild[0],
-                    ...guild[1]
+                var guild = await client.shard.broadcastEval((cl, context) => {
+                    let guild = cl.guilds.cache.get(context.guildID);
+                    if (!guild) {
+                        return undefined;
+                    }
+                    return guild;
+                }, { context: { "guildID": args[number] } })
+                var completeList = []
+                for (let i = 0; i < guild.length; i++) {
+                    if (guild[i]) {
+                        completeList.push(guild[i])
+                    }
                 }
-                if (completeList.id) {
-                        /*if (!guild.member(client.user).hasPermission("CREATE_INSTANT_INVITE")) {
-                            embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerInviteError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-                            message.channel.send(embed)
-                            i++
-                            continue;
-                        }
-                        */
-                let invite = await client.shard.broadcastEval(`    
-                    (async () => {
-                        let guild = this.guilds.cache.get('${args[number]}');
+                let rightServer = completeList.find(x => x.id === args[number])
+                if (rightServer) {
+                    /*if (!guild.member(client.user).permissions.has("CREATE_INSTANT_INVITE")) {
+                        embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerInviteError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+                        message.channel.send({ embeds: [embed]})
+                        i++
+                        continue;
+                    }
+                    */
+                    let invite = await client.shard.broadcastEval(async(cl, context) => {
+                        let guild = cl.guilds.cache.get(context.guildID);
                         if (!guild) {
                             return undefined;
                         }
-                        var chx = guild.channels.cache.filter(chx => chx.type === "text").find(x => x.position === 0);
+                        var chx = guild.channels.cache.filter(chx => chx.type === "GUILD_TEXT").find(x => x.position === 0);
+                        if (!chx) {
+                            return undefined;
+                        }
                         let invite = await chx.createInvite({
                             temporary: false,
                             maxAge: 0
                         })
-                            
+
                         return invite.url;
-                    })();
-                `);
-                invite = invite.toString().replace(",", "")
-                        isrequiredserver = true;
-                        requiredserver = completeList.id;
-                        requiredservername = completeList.name;
-                        requiredserverinvite = invite;
-                        i++
-                        continue;
-                    }
+                    }, { context: { "guildID": args[number] } })
+                    invite = invite.toString().replace(",", "")
+                    isrequiredserver = true;
+                    requiredserver = rightServer.id;
+                    requiredservername = rightServer.name;
+                    requiredserverinvite = invite;
+                    i++
+                    continue;
+                } else {
+                    embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.createServerIError.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+                    message.channel.send({ embeds: [embed] })
+                    error = true;
+                    i++
+                    continue;
                 }
-            
+            }
+
         }
     }
     if (error === true) return;
@@ -234,11 +240,11 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
     }).then((gData) => {
         console.log(`Nouveau giveaway lancé dans le serveur " ${client.guilds.cache.get(gData.guildID).name} "`);
         let yembed = new Discord.MessageEmbed().setColor('24E921').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.startEmbedSuccess.split("%okay%").join(client.okay).split("%channel%").join(`<#${gData.channelID}>`)).setFooter(lang.footer.split("%version%").join(json.version))
-        message.channel.send(yembed)
+        message.channel.send({ embeds: [yembed] })
     }).catch((err) => {
         message.react('❌');
         let noembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWUnknownID.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-        message.channel.send(noembed)
+        message.channel.send({ embeds: [noembed] })
     });
 }
 module.exports.help = {

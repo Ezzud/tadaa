@@ -37,7 +37,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
     if (message.author.id === settings.ownerID) {
         let emoji = loadings;
         let reloadEmbed = new Discord.MessageEmbed().setColor('D7E921').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\nEtat`, `${emoji} Redémarrage du shard \` ${client.shard.ids[0]} \` en cours\n\u200B`).setFooter(`TADAA | v${json.version}`)
-        let sendedMessage = await message.channel.send(reloadEmbed);
+        let sendedMessage = await message.channel.send({embeds: [reloadEmbed]});
         let dater = new Date().getTime();
         async function addCommands() {
             await fs.readdir("./commands/", async (err, files) => {
@@ -63,17 +63,12 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
         let time = datef - dater;
         time = time / 1000
         let count = 0;
-        let values = await client.shard.broadcastEval(`
-                  [
-                    this.shard.id,
-                    this.guilds.cache.size
-                  ]
-                `);
+        let values = await client.shard.fetchClientValues('shard.ids[0]');
         values.forEach((value) => {
             count = count + 1
         });
         let reloadedEmbed = new Discord.MessageEmbed().setColor('5BCA2F').setDescription(`\u200B`).setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).addField(`\nEtat`, `${client.okay} Redémarrage du shard \` ${client.shard.ids[0]} \` effectué (*${time}s*)\nCommandes rechargées: **${client.commands.size}**`).addField(`Shards`, `\`${count}\`/\`${client.shard.count}\`\n\u200B`).setFooter(lang.footer.split("%version%").join(json.version))
-        await sendedMessage.edit(reloadedEmbed)
+        await sendedMessage.edit({embeds: [reloadedEmbed]})
     }
 }
 module.exports.help = {
