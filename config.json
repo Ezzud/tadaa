@@ -1,7 +1,8 @@
 {
     "prefix": "t?",
-    "ownerID": "Your User ID",
-    "token": "",
-    "topggEnabled":false,
-    "topggToken":""
+    "ownerID": "YOUR ID",
+    "token": "TOKEN",
+    "checkForUpdate": true,
+    "topggEnabled": false,
+    "topggToken": "PUT YOUR TOPGG TOKEN HERE"
 }

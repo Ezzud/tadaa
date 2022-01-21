@@ -1,5 +1,7 @@
+const { Intents } = require('discord.js');
 const Discord = require("discord.js");
 const client = new Discord.Client({
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
     partials: ['MESSAGE', 'REACTION', 'GUILD_MEMBER'],
     disableMentions: "everyone"
 });
@@ -191,7 +193,7 @@ manager.on('end', async (giveaway, winners) => {
         .setColor('#96F221').setDescription(`${lang.winPrize.split("%prize%").join(giveaway.prize).split("%server%").join(gld.name)}`)
         .addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}`)} ${lang.reactErrorMessage}`)
         winners.forEach((member) => {
-            member.send(embedwin)
+            member.send({ embeds: [embedwin]})
         });
     }
     console.log(`- Fin d'un giveaway dans ${gld.name}`)
