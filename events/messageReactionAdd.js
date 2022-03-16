@@ -84,7 +84,14 @@ module.exports = async(client, messageReaction, user) => {
                 var serv = await client.shard.broadcastEval(async (cl, context) => {
                     let guild = await cl.guilds.cache.get(context.guildID);
                         if (guild) {
-                            var userd = await guild.members.fetch(context.userID)
+                            let error = false;
+                            var userd = await guild.members.fetch(context.userID).catch(err => {
+                                if(err.code === 10007) {
+                                    error = true
+                                    return undefined;
+                                }
+                            })
+                            if(error === true) return undefined;
                             if(!userd) {
                                 return undefined;
                             }

@@ -9,8 +9,6 @@ module.exports = async(client, guild) => {
     var data = new db.table("serverInfo")
     await data.delete(`${guild.id}`)
     await fs.appendFileSync(`./logs/guildRemove/latest.log`, `- [-] Retiré sur ${guild.name}::${guild.memberCount}::${guild.id} \n`, "UTF-8", { 'flags': 'a+' });
-    let guildID = '656744068134469633'
-    let channelID = '761338977713389609'
 
     let embed = new Discord.MessageEmbed()
         .setTitle(`Suppression dans le shard ${client.shard.ids[0]}`)
@@ -28,10 +26,11 @@ module.exports = async(client, guild) => {
         "embeds": [embed.toJSON()]
     };
     request({
-        url: "https://discord.com/api/webhooks/932098826918035476/1hdWq3o9UcNGrTgGmCnrNM1Yleg_j8yyuNNuw6v7t7XMNSxKIyLbT0Id5WwYCI4-H0C-",
+        url: "https://discord.com/api/webhooks/941641580085927946/EwhOVvCtR07hbR6J-HgG9VpipDUgSbh1QQRsYFmjZp56NsMQDZnOJ6sV8L8rrUDrupgF",
         method: "POST",
         json: true,
         body: myJSONObject
     }, function(error, response, body) {});
+
     return console.log(`- [-] Retiré de ${guild.name}`);
 }

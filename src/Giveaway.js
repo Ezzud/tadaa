@@ -19,9 +19,9 @@ class Giveaway extends EventEmitter {
         this.prize = options.prize;
         this.startAt = options.startAt;
         this.endAt = options.endAt;
-        this.IsRequiredRole = options.isRequiredRole;
+        this.IsRequiredRole = options.IsRequiredRole;
         this.requiredRole = options.requiredRole
-        this.IsRequiredServer = options.isRequiredServer;
+        this.IsRequiredServer = options.IsRequiredServer;
         this.requiredServer = options.requiredServer;
         this.requiredServerName = options.requiredServerName;
         this.ended = options.ended;
@@ -69,19 +69,45 @@ class Giveaway extends EventEmitter {
                 return reject('Unable to fetch message with ID ' + this.messageID + '.');
             }
             this.message = message;
-            resolve(message);
+            return resolve(message);
         });
     }
     async roll(winnerCount) {
-        let reaction = (this.manager.v12 ? this.message.reactions.cache : this.message.reactions).find(r => r.emoji.name === this.reaction);
+        let reaction = (this.message.reactions.cache).find(r => r.emoji.name === this.reaction);
         if (!reaction) return new Collection();
         let users;
-        if (this.IsRequiredRole === true) {
-            users = (await reaction.users.fetch()).filter(u => u.bot === this.botsCanWin).filter(u => u.id !== this.message.client.id).filter(u => this.channel.guild.member(u.id).roles.find(x => x.id === this.requiredRole)).filter(u => this.channel.guild.members.cache.get(u.id)).random(winnerCount || this.winnerCount).filter(u => u);
-        } else {
-            users = (await reaction.users.fetch()).filter(u => u.bot === this.botsCanWin).filter(u => u.id !== this.message.client.id).filter(u => this.channel.guild.members.cache.get(u.id)).random(winnerCount || this.winnerCount).filter(u => u);
-        }
-        return users;
+            users = (await reaction.users.fetch())
+            .filter(u => u.bot === false)
+            .filter(u => u.id !== this.message.client.id)
+            .filter(u => this.channel.guild.members.cache.get(u.id) !== undefined)
+            if(this.IsRequiredRole === true) {
+                users = users.filter(u => this.channel.guild.members.cache.get(u.id).roles.cache.find(x => x.id === this.requiredRole))
+            }
+            let wCount = winnerCount || this.winnerCount
+            let winners = []
+            users = Array.from(users)
+            for(let i = 0; i < wCount ; i++) {
+                let found = false;
+                while(found === false) {
+                    let pwIndex = Math.floor(Math.random() * users.length) 
+                    let pw = users[pwIndex]
+                    if(users.length <= winners.length) {
+                        found = true;
+                        continue;
+                    }
+                    if(winners.find(x => x === pw[1].id)) {
+                    } else {
+                        winners.push(pw[1].id)
+                        found = true
+                    }
+                    
+                    
+                }
+
+               
+            }
+            return winners;
+        
     }
 }
 module.exports = Giveaway;

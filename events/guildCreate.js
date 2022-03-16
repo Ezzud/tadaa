@@ -13,8 +13,6 @@ module.exports = async(client, guild) => {
     await data.set(`${guild.id}.isDMWin`, true)
     await data.set(`${guild.id}.rainbow`, false)
     await fs.appendFileSync(`./logs/guildCreate/latest.log`, `- [+] Ajouté sur ${guild.name}::${guild.memberCount}::${guild.id} \n`, "UTF-8", { 'flags': 'a+' });
-    let guildID = '656744068134469633'
-    let channelID = '761338977713389609'
 
     var owner;
     try {
@@ -33,13 +31,13 @@ module.exports = async(client, guild) => {
         .addField(":busts_in_silhouette: Membres", `**${guild.memberCount}**`, true)
         .setTimestamp()
     var myJSONObject = {
-        "username": "TADAA v1.5.0",
+        "username": "TADAA Logs",
         "avatar_url": "https://cdn.discordapp.com/avatars/732003715426287676/492801b4c8e9c1fe72f97d8cc609b147.png?size=4096",
         "embeds": [embed.toJSON()]
     };
 
     request({
-        url: "https://discord.com/api/webhooks/932098826918035476/1hdWq3o9UcNGrTgGmCnrNM1Yleg_j8yyuNNuw6v7t7XMNSxKIyLbT0Id5WwYCI4-H0C-",
+        url: "https://discord.com/api/webhooks/941641580085927946/EwhOVvCtR07hbR6J-HgG9VpipDUgSbh1QQRsYFmjZp56NsMQDZnOJ6sV8L8rrUDrupgF",
         method: "POST",
         json: true,
         body: myJSONObject

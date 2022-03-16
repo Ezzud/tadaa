@@ -2,9 +2,11 @@
 const Discord = require("discord.js");
 const moment = require('moment');
 
-module.exports.run = async (client, pf, message, args, manager, json, lang) => {
+module.exports.run = async (client, pf, message, manager, json, lang) => {
     var messagePing = new Date().getTime() - message.createdTimestamp
     var apiPing = Math.trunc(client.ws.ping)
+    await message.deferReply()
+    
     let color;
     if (apiPing + messagePing > 500) {
         color = client.dnd
@@ -13,7 +15,7 @@ module.exports.run = async (client, pf, message, args, manager, json, lang) => {
     } else {
         color = client.online
     }
-    message.channel.send(lang.pingEnd.split("%messagePing%").join(messagePing).split("%apiPing%").join(apiPing).split("%color%").join(color))
+    message.editReply(lang.pingEnd.split("%messagePing%").join(messagePing).split("%apiPing%").join(apiPing).split("%color%").join(color))
 }
 module.exports.help = {
     name: "ping"

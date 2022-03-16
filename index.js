@@ -5,6 +5,7 @@ const client = new Discord.Client({
     partials: ['MESSAGE', 'REACTION', 'GUILD_MEMBER'],
     disableMentions: "everyone"
 });
+const selectMenuAPI = require("./src/selectMenuAPI")
 const ms = require('ms');
 const settings = require('./config.json');
 const fs = require('fs');
@@ -85,7 +86,6 @@ let emojiMap = {
     dnd: "886211570705788938",
     afk: "886211547117027339",
 };
-const loadings = `<a:8299_Loading:688433071573565440>`
 
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
@@ -106,9 +106,15 @@ const manager = new GiveawaysManager(client, {
 
 
 
-
-
-
+    client.nope = getEmoji("nope");
+        client.info = getEmoji("info");
+        client.okay = getEmoji("okay");
+        client.what = getEmoji("what");
+        client.warning = getEmoji("warn");
+        client.online = getEmoji("online");
+        client.dnd = getEmoji("dnd");
+        client.afk = getEmoji("afk");
+        client.loadings = `<a:8299_Loading:688433071573565440>`;    
 client.giveawaysManager = manager;
 console.log(`\x1b[34m[MANAGER]` + ` \x1b[0mManager pour Shard ${client.shard.ids[0]} activé` + `\x1b[0m`);
 // START
@@ -117,6 +123,7 @@ async function launch() {
     await _eventHandler();
     await _commandHandler();
     await _dataHandler();
+    client.selectMenu = new selectMenuAPI(client);
 }
 console.log(`\x1b[34m[API]` + ` \x1b[0mConnexion au shard #${client.shard.ids[0]} en cours...` + `\x1b[0m`)
 /*/
@@ -193,7 +200,9 @@ manager.on('end', async (giveaway, winners) => {
         .setColor('#96F221').setDescription(`${lang.winPrize.split("%prize%").join(giveaway.prize).split("%server%").join(gld.name)}`)
         .addField(`\u200B`, `${lang.winButton.split("%link%").join(`https://discordapp.com/channels/${giveaway.channel.guild.id}/${giveaway.channel.id}/${giveaway.messageID}`)} ${lang.reactErrorMessage}`)
         winners.forEach((member) => {
-            member.send({ embeds: [embedwin]})
+            let usr = gld.members.cache.get(member)
+            if(usr) usr.send({ embeds: [embedwin]});
+            
         });
     }
     console.log(`- Fin d'un giveaway dans ${gld.name}`)

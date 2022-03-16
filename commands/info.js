@@ -36,9 +36,10 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async(client, pf, message, args, manager, json, lang) => {
+module.exports.run = async(client, pf, message, manager, json, lang) => {
         var messagePing = new Date().getTime() - message.createdTimestamp
         var apiPing = Math.trunc(client.ws.ping)
+        await message.deferReply()
         let count3 = 0;
         let values3 = await client.shard.fetchClientValues('shard.ids[0]');
         values3.forEach((value) => {
@@ -121,11 +122,11 @@ module.exports.run = async(client, pf, message, args, manager, json, lang) => {
         embed.addField(lang.infoMemoryTitle.split("%memory%").join(getEmoji("memoire")), `${lang.infoMemoryField.split("%memory%").join(bts(memory.heapUsed))}`, true)
         .addField(lang.infoServersTitle, `${lang.infoServersField.split("%servers%").join(req)}`, true)
         .setImage(chart)
-        .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL());
+        .setFooter(lang.footer.split("%version%").join(json.version), message.user.avatarURL());
 
     let buttonArray = []
     let websiteButton = new Discord.MessageButton().setLabel("Upvote").setStyle("LINK").setURL("https://top.gg/bot/732003715426287676").toJSON()
-    let inviteButton = new Discord.MessageButton().setLabel("Invite").setStyle("LINK").setURL("https://discord.com/oauth2/authorize?client_id=732003715426287676&permissions=388193&scope=bot").toJSON()
+    let inviteButton = new Discord.MessageButton().setLabel("Invite").setStyle("LINK").setURL("https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=414733167713&scope=bot%20applications.commands").toJSON()
     let supportButton = new Discord.MessageButton().setLabel("Support").setStyle("LINK").setURL("https://discord.gg/ezzud").toJSON()
 
     buttonArray.push(inviteButton);
@@ -133,7 +134,7 @@ module.exports.run = async(client, pf, message, args, manager, json, lang) => {
     buttonArray.push(supportButton);
     let buttons = new Discord.MessageActionRow().addComponents(buttonArray).toJSON()
 
-    message.channel.send({ components: [buttons], embeds: [embed] });
+    message.editReply({ components: [buttons], embeds: [embed] });
 
 }
 module.exports.help = {

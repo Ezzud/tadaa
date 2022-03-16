@@ -1,12 +1,14 @@
 {
     "name": "TADAA",
-    "version": "1.5.0",
+    "version": "1.5.5",
     "description": "Custom giveaway bot",
     "main": "shard.js",
     "private": true,
     "author": "ezzud",
     "license": "MIT",
     "dependencies": {
+        "@discordjs/builders": "^0.12.0",
+        "@discordjs/rest": "^0.3.0",
         "@octokit/request": "^5.6.1",
         "@top-gg/sdk": "^3.0.7",
         "atob": "^2.1.2",

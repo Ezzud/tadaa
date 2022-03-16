@@ -38,7 +38,7 @@ const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 function getEmoji(name) {
     return `<:${name}:${emojiMap[name]}>`;
 }
-module.exports.run = async(client, pf, message, args, manager, json, lang) => {
+module.exports.run = async(client, pf, message, manager, json, lang) => {
     if (!await stats.get("command_count")) {
         await stats.set("command_count", 0)
     }
@@ -63,7 +63,7 @@ module.exports.run = async(client, pf, message, args, manager, json, lang) => {
     user_count = user_count.reduce((acc, memberCount) => acc + memberCount, 0)
 
     let embed = new Discord.MessageEmbed()
-        .setAuthor(lang.statsEmbedTitle, message.author.avatarURL())
+        .setAuthor(lang.statsEmbedTitle, message.user.avatarURL())
         .setColor("#F18718")
         .setThumbnail(client.user.avatarURL())
         .addField(lang.statsCommandCount, ` \` ${command_count} \` `)
@@ -73,7 +73,7 @@ module.exports.run = async(client, pf, message, args, manager, json, lang) => {
         .addField(lang.statsServerCount, ` \`${server_count}\` `)
         .addField(lang.statsUserCount, ` \`${user_count}\` `, true)
         .setFooter(lang.footer.split("%version%").join(json.version))
-    message.channel.send({ embeds: [embed] })
+    message.reply({ embeds: [embed] })
 }
 module.exports.help = {
     name: "stats"

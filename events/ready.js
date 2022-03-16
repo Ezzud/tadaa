@@ -61,10 +61,12 @@ module.exports = async(client) => {
             if (err);
         })
     }
-    await client.user.setPresence({
-            activity: {
-                name: `${config.prefix}help or @${client.user.username} • ${prereq} guilds • ${onServer} active giveaways`
-            },
+        await client.user.setPresence({
+            activities: [{
+                name: `/help • ${prereq} guilds • ${onServer} active giveaways`,
+                type: `STREAMING`,
+                url: `https://ezzud.fr/`
+            }],
             status: 'online'
         })
         // Boucle
@@ -105,9 +107,11 @@ module.exports = async(client) => {
             })
         }
         await client.user.setPresence({
-            activity: {
-                name: `${config.prefix}help or @${client.user.username} • ${req} guilds • ${onServer} active giveaways`
-            },
+            activities: [{
+                name: `/help • ${req} guilds • ${onServer} active giveaways`,
+                type: `STREAMING`,
+                url: `https://ezzud.fr/`
+            }],
             status: 'online'
         })
     }, 300000);

@@ -9,33 +9,23 @@ var path = require('path');
 var commandname = path.basename(__filename);
 const loadings = `<a:erjbgtuezrftetgfret:688433071573565440>`
 
-module.exports.run = async (client, pf, message, args, manager,json,lang) => {
+module.exports.run = async (client, pf, message, manager,json,lang) => {
 console.log = function(d) {
     let date = new Date();
     date.setHours(date.getHours() + 2); //
     fs.appendFileSync(`${client.logs_path}`, `\n(${commandname}) ${moment(date).format('MM-D-YYYY hh:mm')} | ${d}`, "UTF-8",{'flags': 'a+'});
     log_stdout.write(`SHARD #${client.shard.ids[0]} ` + util.format(d) + '\n');
 };
-    if (message.guild.members.cache.get(message.author.id).permissions.has(32) === false) {
-        let role = message.guild.members.cache.get(message.author.id).roles.cache.find(x => x.name === "Giveaways")
+    if (message.guild.members.cache.get(message.user.id).permissions.has("MANAGE_GUILD") === false) {
+        let role = message.guild.members.cache.get(message.user.id).roles.cache.find(x => x.name === "Giveaways")
         if (role === undefined || role === false || role === null) {
-            let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-            message.channel.send({ embeds: [embed]})
+            let embed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.user.tag, message.user.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
+            message.reply({ embeds: [embed], ephemeral:true })
             return;
         }
     }
 
-    let permembed = new Discord.MessageEmbed().setColor('E93C21').setAuthor(message.author.tag, message.author.avatarURL(), `https://github.com/Ezzud/tadaa`).setDescription(lang.GWNoBotPermission.split("%nope%").join(client.nope)).setFooter(lang.footer.split("%version%").join(json.version))
-    if (!message.guild.member(client.user).permissions.has(379968)) return (message.channel.send(permembed));
-
-    var embed = new Discord.MessageEmbed()
-    .setAuthor(lang.listEmbedTitle, client.user.avatarURL())
-    .setColor(`#F79430`)
-    .addField(`\u200B`, `${loadings} Loading active giveaways...`)
-    .addField(lang.listEmbedInfoTitle, lang.listEmbedInfoField)
-    .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
-    .setTimestamp()
-    let mm = await message.channel.send({ embeds: [embed]})
+    await message.deferReply()
     let onServer;
     onServer = client.giveawaysManager.giveaways.filter((g) => g.guildID === message.guild.id);
     onServer = onServer.filter((g) => g.ended !== true);
@@ -68,19 +58,24 @@ console.log = function(d) {
     .setAuthor(lang.listEmbedTitle, client.user.avatarURL())
     .setColor(`#2ADAEF`)
     var listing = 0;
-    for(listing in list) {
-    	if(listing === 0) {
-        	embed.addField(`\u200B`, list[listing] || listEmbedNoGiveaway);
-        } else {
-        	embed.addField(`\u200B`, list[listing] || `\u200B`);
+    if(onServer.length < 1) {
+        embed.addField(`\u200B`, list[listing] || lang.listEmbedNoGiveaway);
+    } else {
+        for(listing in list) {
+            if(listing === 0) {
+                embed.addField(`\u200B`, list[listing] || lang.listEmbedNoGiveaway);
+            } else {
+                embed.addField(`\u200B`, list[listing] || `\u200B`);
+            }
+            
+            listing++;
         }
-        
-        listing++;
     }
+    
     embed.addField(lang.listEmbedInfoTitle, lang.listEmbedInfoField)
-    .setFooter(lang.footer.split("%version%").join(json.version), message.author.avatarURL())
+    .setFooter(lang.footer.split("%version%").join(json.version), message.user.avatarURL())
     .setTimestamp()
-    await mm.edit({embeds: [embed]})
+    await message.editReply({embeds: [embed]})
 }
 module.exports.help = {
     name: "list"
