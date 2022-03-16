@@ -18,7 +18,7 @@ If you like the code and want to support me:<br>
 
 <h3>⚠️ If you want to help translate the bot, DM me on discord: ezzud#0001 ⚠️</h3>
 
-<a href="https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=388193&scope=bot" target="_blank">![Inviter le bot](https://cdn.discordapp.com/attachments/800365015642275850/800368450975170570/invite-button.png)</a>        &nbsp;&nbsp;&nbsp;        <a href="https://discord.gg/VGt9S66" target="_blank">![Support](https://cdn.discordapp.com/attachments/800365015642275850/800368447526797332/support-button.png)</a>
+<a href="https://discord.com/api/oauth2/authorize?client_id=732003715426287676&permissions=355392&scope=bot" target="_blank">![Inviter le bot](https://cdn.discordapp.com/attachments/800365015642275850/800368450975170570/invite-button.png)</a>        &nbsp;&nbsp;&nbsp;        <a href="https://discord.gg/ezzud" target="_blank">![Support](https://cdn.discordapp.com/attachments/800365015642275850/800368447526797332/support-button.png)</a>
 
 <br />
 
